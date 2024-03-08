@@ -15,6 +15,7 @@ const sendSuccessResponse = <T>(res: Response, data: T, message: string, statusC
         message: message,
         data: data,
     };
+    console.log("success response")
     
     return status !== 200 ? res.status(status).json(responseData) : res.status(200).json(responseData);
 };

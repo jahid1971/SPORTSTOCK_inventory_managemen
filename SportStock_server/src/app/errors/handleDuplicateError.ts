@@ -3,6 +3,7 @@ import { TErrorIssue, TErrorResponse} from "../interface/error";
 
 const handleDuplicateError = (err: any): TErrorResponse => {
     //  using regex
+
     const match = err.message.match(/"([^"]*)"/);
 
     const extractedMessage = match && match[1];

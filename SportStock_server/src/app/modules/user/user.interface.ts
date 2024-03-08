@@ -1,12 +1,15 @@
 export interface IUser {
-    firstName:string,
-    lastName:string,
+    id: string;
+    fullName: string;
     email: string;
-    password: string; 
+    password: string;
     passwordChangedAt?: {
-       getTime(): unknown;
-       type: Date,
-     },
-     branch?: string;
-    role: 'seller' | 'branchManager'|'superAdmin'; 
-  }
+        getTime(): unknown;
+        type: Date;
+    };
+    needsPasswordChange: boolean;
+    branch?: string;
+    role: "seller" | "branchManager" | "superAdmin";
+    status: "active" | "blocked" | "pending";
+    isDeleted: boolean;
+}

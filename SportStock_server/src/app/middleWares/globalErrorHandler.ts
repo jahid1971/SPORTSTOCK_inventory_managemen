@@ -16,6 +16,7 @@ import { BSONError } from "bson";
 // eslint-disable-next-line no-unused-vars
 const globalErrorHandler: ErrorRequestHandler  = (err, req, res, next) => {
 
+
     let errorResponse: TErrorResponse | ICastErrorResult = {
         statusCode: err.statusCode || 500,
         message: err.name || "Something went wrong",
