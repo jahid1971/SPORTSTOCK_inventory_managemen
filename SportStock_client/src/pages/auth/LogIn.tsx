@@ -3,13 +3,14 @@ import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/redux/Hooks";
 import { useLogInMutation } from "@/redux/features/auth/authApi";
 import { TUser, setUser } from "@/redux/features/auth/authSlice";
-import { tryCatch } from "@/utls/tryCatch";
 import { verifyTYoken } from "@/utls/verifyToken";
 import { FieldValues, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useState } from "react";
+import tryCatch from "@/utls/tryCatch";
+import { jwtDecode } from "jwt-decode";
 
 const LogIn = () => {
     const navigate = useNavigate();
@@ -38,21 +39,18 @@ const LogIn = () => {
     const onSubmit = async (data: FieldValues) => {
         tryCatch(
             async () => {
-                const userInfo = {
-                    id: data.id,
-                    password: data.password,
-                };
 
-                const res = await logIn(userInfo).unwrap();
+                const res = await logIn(data).unwrap();
 
-                const user = verifyTYoken(res.data.accessToken) as TUser;
+                const user = jwtDecode(res.data.token) as TUser;
 
                 console.log(user);
 
-                dispatch(setUser({ user: user, token: res.data.accessToken }));
-                if (res.data.needsPasswordChange) {
-                    navigate("/change-password");
-                } else navigate(`/${user.role}`);
+                dispatch(setUser({ user: user, token: res.data.token }));
+                // if (res.data.needsPasswordChange) {
+                //     navigate("/change-password");
+                // } else navigate(`/${user.role}`);
+                // return res;
                 return res;
             },
             "Logged in successfully",

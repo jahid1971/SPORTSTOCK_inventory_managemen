@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const registerValidate = z
     .object({
-        name: z.string().trim().min(1, "Name is required").max(50, "Name is too long"),
+        fullName: z.string().trim().min(1, "Name is required").max(50, "Name is too long"),
         email: z.string().email("Invalid email").trim(),
         password: z
             .string()

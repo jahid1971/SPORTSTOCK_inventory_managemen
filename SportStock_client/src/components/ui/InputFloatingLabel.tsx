@@ -29,7 +29,7 @@ const FloatingInput = forwardRef<HTMLInputElement, TInputProps>(
                                 id={id}
                                 ref={ref}
                                 className={cn(
-                                    "block  px-2.5 pb-2.5 pt-5 w-full  text-gray-700 bg-primary-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-primary-500 focus:outline-none focus:ring-0 focus:border-primary-600 peer",
+                                    "block  px-2.5 pb-2.5 pt-5 w-full  text-gray-700 bg-primary-100 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-primary-500 focus:outline-none focus:ring-0 focus:border-primary-600 peer",
                                     className
                                 )}
                                 placeholder=" "

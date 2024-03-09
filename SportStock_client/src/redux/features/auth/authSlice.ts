@@ -1,12 +1,8 @@
 import { RootState } from "@/redux/Store";
+import { TUser } from "@/types/global.types";
 import { createSlice } from "@reduxjs/toolkit";
 
-export type TUser = {
-    userId: number;
-    role: string | undefined;
-    exp: number;
-    iat: number;
-};
+
 type TAuthState = {
     user: null | TUser;
     token: null | string;
@@ -24,6 +20,7 @@ const authSlice = createSlice({
             const { user, token } = action.payload;
             state.user = user;
             state.token = token;
+            console.log(action.payload, "action.payload")
         },
         logOut: (state) => {
             state.user = null;

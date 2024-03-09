@@ -1,19 +1,30 @@
 import React, { useState } from "react";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
+import Header from "../components/layout/Header";
+import Sidebar from "../components/layout/Sidebar";
 import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {
-    const [open, setOpen] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
     return (
         <>
-            <Header open={open} setOpen={setOpen}></Header>
-            {/* <div className="relative flex min-h-screen border-collapse">
-                <Sidebar open={open} setOpen={setOpen} />
-                <main className="container flex-1 overflow-y-auto overflow-x-hidden pt-16 bg-secondary/10 ">
-                    <Outlet />
-                </main>
-            </div> */}
+            <div className="flex min-h-screen">
+                <Sidebar
+                    desktopSidebarOpen={desktopSidebarOpen}
+                    mobileMenuOpen={mobileMenuOpen}
+                    setMobileMenuOpen={setMobileMenuOpen}
+                />
+                <div className="w-full flex flex-col">
+                    <Header
+                        desktopSidebarOpen={desktopSidebarOpen}
+                        setDesktopSidebarOpen={setDesktopSidebarOpen}
+                        mobileMenuOpen={mobileMenuOpen}
+                        setMobileMenuOpen={setMobileMenuOpen}></Header>
+                    <main className="container flex-1 overflow-y-auto overflow-x-hidden mt-5 bg-secondary/10 ">
+                        <Outlet />
+                    </main>
+                </div>
+            </div>
         </>
     );
 };

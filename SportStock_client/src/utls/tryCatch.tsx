@@ -2,22 +2,22 @@ import { toast } from "sonner";
 
 type ActionFunction = () => Promise<any>;
 
-type ResetFunction = () => void; // Define a type for the reset function
-
 type WithErrorHandlingFunction = (
     action: ActionFunction,
     successMessage: string,
     toastId?: string | undefined,
-    reset?: ResetFunction
+    action_2?: () => void
 ) => Promise<void>;
 
 export const tryCatch: WithErrorHandlingFunction = async (
     action,
     successMessage,
-    toastId,
-    reset
+    loadingMessage,
+    action_2
 ) => {
-    toastId = (toastId ? toast.loading(`${toastId}...`) : undefined) as string | undefined;
+    const toastId = (loadingMessage ? toast.loading(`${loadingMessage}...`) : undefined) as
+        | string
+        | undefined;
 
     try {
         const res = await action();
@@ -25,13 +25,17 @@ export const tryCatch: WithErrorHandlingFunction = async (
 
         if (res?.success || res?.data?.success || res?.data?.data?.success) {
             toast.success(successMessage, { id: toastId });
-            if (reset) reset();
-        } else if (res?.error?.data?.message) toast.error(res?.error?.data?.message, { id: toastId });
-        else toast.error("Something went wrong",  { id: toastId });
+            if (action_2) action_2();
+        } else if (res?.error?.data?.message || res?.error?.data?.errorMessage)
+            toast.error(res?.error?.data?.errorMessage || res?.error?.data?.message, { id: toastId });
+        else if (res.error) toast.error("Something went wrong", { id: toastId });
+
+        return res;
     } catch (err) {
         console.log(err, " in catch block");
-        err?.data?.message
-            ? toast.error(err?.data?.message, { id: toastId })
+        err?.data?.message || err?.data?.errorMessage
+            ? toast.error(err?.data?.errorMessage || err?.data?.message, { id: toastId })
             : toast.error("Something went wrong ", { id: toastId });
     }
 };
+export default tryCatch;

@@ -2,7 +2,7 @@ import { RxDashboard } from "react-icons/rx";
 import { MdOutlineInventory2 } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 
-export const adminMenuItems = [
+export const managerMenuItems = [
     {
         label: "Dashboard",
         path: "dashboard",
