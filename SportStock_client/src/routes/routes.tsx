@@ -7,6 +7,7 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import { userRole } from "@/constants/user";
 import { adminRoutes } from "./adminRoutes";
 
+
 const router = createBrowserRouter([
     {
         path: "/",

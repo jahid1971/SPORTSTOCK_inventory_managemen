@@ -17,7 +17,7 @@ function Header({ setMobileMenuOpen, mobileMenuOpen, desktopSidebarOpen, setDesk
     };
 
     return (
-        <div className=" w-full  bg-slate-100 shadow-sm  ">
+        <div className=" w-full  shadow-sm  ">
             <nav className="flex h-14 items-center justify-between  ">
                 <div className="flex gap-2 items-center">
                     {/* <Button

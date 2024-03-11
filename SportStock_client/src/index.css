@@ -56,5 +56,6 @@
     } */
     body {
         @apply  text-[14px];
+        @apply text-slate-700
     }
 }

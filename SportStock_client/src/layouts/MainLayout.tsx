@@ -20,7 +20,7 @@ const MainLayout = () => {
                         setDesktopSidebarOpen={setDesktopSidebarOpen}
                         mobileMenuOpen={mobileMenuOpen}
                         setMobileMenuOpen={setMobileMenuOpen}></Header>
-                    <main className="container flex-1 overflow-y-auto overflow-x-hidden mt-5 bg-secondary/10 ">
+                    <main className="container bg-slate-100 flex-1 overflow-y-auto overflow-x-hidden pt-5 bg-secondary/10 ">
                         <Outlet />
                     </main>
                 </div>

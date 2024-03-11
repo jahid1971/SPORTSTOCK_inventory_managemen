@@ -26,7 +26,7 @@ module.exports = {
         primary: {
           // DEFAULT: "hsl(var(--primary))",
           DEFAULT: "#f43f5e",
-          50: "#faf2f3",
+          50: "#fff1f2",
           100: "#ffe4e6",
           200: "#fecdd3",
           300: "#fda4af",

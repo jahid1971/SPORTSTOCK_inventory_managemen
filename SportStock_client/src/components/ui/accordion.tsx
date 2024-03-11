@@ -53,4 +53,17 @@ const AccordionContent = React.forwardRef<
 
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
+const CustomAccordion: React.FC<{
+    accordionTrigger: React.ReactNode;
+    children: React.ReactNode;
+    triggerClassName?: string;
+}> = ({ accordionTrigger, triggerClassName, children }) => (
+    <Accordion defaultValue="item-1" type="single" collapsible>
+        <AccordionItem value="item-1">
+            <AccordionTrigger className={triggerClassName}>{accordionTrigger}</AccordionTrigger>
+            <AccordionContent className="pt-5">{children}</AccordionContent>
+        </AccordionItem>
+    </Accordion>
+);
+
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent, CustomAccordion };
