@@ -5,11 +5,13 @@ import { PiPlusCircleBold } from "react-icons/pi";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import CreateSportType from "../product/createSportType";
 import CustomSelect from "../ui/CustomSelect";
-import { useGetAllSportTypesQuery } from "@/redux/features/product/productApi";
-import { TSportType } from "@/types/sportType";
+import { useGetAllBrandNamesQuery, useGetAllSportTypesQuery } from "@/redux/features/product/productApi";
+import { TBrand, TSportType } from "@/types/product";
+import AddBrand from "../product/AddBrand";
 
 const ProductInfo = () => {
     const { data: sportTypes, isFetching: isSportTypeFetching } = useGetAllSportTypesQuery(undefined);
+    const { data: brandNames, isFetching: isBrandNameFetching } = useGetAllBrandNamesQuery(undefined);
     const { control } = useForm();
     console.log(sportTypes, "sportTypes");
 
@@ -17,6 +19,11 @@ const ProductInfo = () => {
         value: sportType._id,
         label: sportType.sportType,
     }));
+    const brandNamesOptions = brandNames?.data?.map((brand: TBrand) => ({
+        value: brand._id,
+        label: brand.brandName,
+    }));
+
     return (
         <form action="">
             <div className="grid grid-cols-1 md:grid-cols-2  gap-4 items-end w-full">
@@ -50,15 +57,15 @@ const ProductInfo = () => {
                             </div>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
-                            <CreateSportType />
+                            <AddBrand />
                         </DialogContent>
                     </Dialog>
                     <CustomSelect
                         id="brandName"
                         label="Brand Name"
                         control={control}
-                        options={sportTypesOptions}
-                        disabled={isFetching}
+                        options={brandNamesOptions}
+                        disabled={isBrandNameFetching}
                     />
                 </div>
             </div>

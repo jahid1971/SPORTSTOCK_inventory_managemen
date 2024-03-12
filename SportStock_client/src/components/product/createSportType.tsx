@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { DialogClose } from "../ui/dialog";
 import { useCreateSportTypeMutation } from "@/redux/features/product/productApi";
 import tryCatch from "@/utls/tryCatch";
-import { TSportType } from "@/types/sportType";
+import { TSportType } from "@/types/product";
 
 const CreateSportType = () => {
     const [createSportType] = useCreateSportTypeMutation();

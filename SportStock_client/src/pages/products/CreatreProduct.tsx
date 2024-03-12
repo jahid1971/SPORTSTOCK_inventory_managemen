@@ -20,10 +20,10 @@ const CreatreProduct = () => {
                     Back to Product
                 </Button>
             </div>
-            <div className="bg-background p-5">
+            <div className="bg-background p-4">
                 <CustomAccordion
                     accordionTrigger={" Product Information"}
-                    triggerClassName="border-b border-b-slate-400 w-full pb-3 text-lg">
+                    triggerClassName="border-b border-b-slate-400 w-full pb-1 text-lg">
                     <ProductInfo />
                 </CustomAccordion>
             </div>

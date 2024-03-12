@@ -1,7 +1,8 @@
 import { baseApi } from "@/redux/api/baseApi";
 import { TQueryParam } from "@/types/global.types";
+import { mutationApiBuilder, queryApiBuilder } from "@/utls/api";
 
-const authApi = baseApi.injectEndpoints({
+const productApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         createSportType: builder.mutation({
             query: (data) => ({
@@ -30,8 +31,22 @@ const authApi = baseApi.injectEndpoints({
             },
             providesTags: ["sportType"],
         }),
-        
+
+        addBrand: builder.mutation({
+            query: mutationApiBuilder("brands/add-brand"),
+            invalidatesTags: ["brands"],
+        }),
+
+        getAllBrandNames: builder.query({
+            query: queryApiBuilder("brands"),
+            providesTags: ["brands"],
+        }),
     }),
 });
 
-export const { useCreateSportTypeMutation,useGetAllSportTypesQuery } = authApi;
+export const {
+    useCreateSportTypeMutation,
+    useGetAllSportTypesQuery,
+    useAddBrandMutation,
+    useGetAllBrandNamesQuery,
+} = productApi;
