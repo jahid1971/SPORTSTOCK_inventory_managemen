@@ -28,5 +28,5 @@ sportTypeSchema.pre('find', function (next) {
     next();
   });
 
-export const SportType = model<ISportType>("sportType", sportTypeSchema);
+export const SportType = model<ISportType>("SportType", sportTypeSchema);
 
