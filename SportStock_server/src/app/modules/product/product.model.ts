@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { ConditionType, IProduct, MaterialType, SportType } from "./product.interface";
+import { ConditionType, IProduct, MaterialType} from "./product.interface";
 
 const productSchema = new Schema({
     productName: { type: String, required: true },
@@ -7,7 +7,7 @@ const productSchema = new Schema({
     productQuantity: { type: Number, required: true },
     productSize: { type: String, required: true },
     productBranch: { type: String, required: true },
-    sportType: { type: String, enum: Object.values(SportType) },
+    sportType: { type: Schema.Types.ObjectId, ref: "SportType" }, 
     brand: { type: String },
     material: { type: String, enum: Object.values(MaterialType) },
     color: { type: String },

@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 /* eslint-disable no-unused-vars */
 export interface IProduct {
     productName: string;
@@ -5,7 +7,7 @@ export interface IProduct {
     productQuantity: number;
     productSize: string;
     productBranch: string;
-    sportType?: SportType;
+    sportType?: Types.ObjectId;
     brand?: string;
     material?: MaterialType;
     color?: string;
@@ -15,18 +17,23 @@ export interface IProduct {
     style?: string;
 }
 
-export enum SportType {
-    CRICKET = "cricket",
-    FOOTBALL = "football",
-    SOCCER = "soccer",
-    BASKETBALL = "basketball",
-    TENNIS = "tennis",
-    RUNNING = "running",
-    FITNESS = "fitness",
-    SWIMMING = "swimming",
-    GOLF = "golf",
-    YOGA = "yoga",
-    HIKING = "hiking",
+// export enum SportType {
+//     CRICKET = "cricket",
+//     FOOTBALL = "football",
+//     SOCCER = "soccer",
+//     BASKETBALL = "basketball",
+//     TENNIS = "tennis",
+//     RUNNING = "running",
+//     FITNESS = "fitness",
+//     SWIMMING = "swimming",
+//     GOLF = "golf",
+//     YOGA = "yoga",
+//     HIKING = "hiking",
+// }
+export interface ISportType {
+    type: string;
+    status: "active" | "inactive";
+    isDeleted: boolean;
 }
 
 export enum MaterialType {

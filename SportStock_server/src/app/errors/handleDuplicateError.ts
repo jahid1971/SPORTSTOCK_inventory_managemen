@@ -5,8 +5,10 @@ const handleDuplicateError = (err: any): TErrorResponse => {
     //  using regex
 
     const match = err.message.match(/"([^"]*)"/);
+    console.log(err.message, "matchhh")
 
     const extractedMessage = match && match[1];
+
 
     const errorIssues: TErrorIssue[] = [
         {
