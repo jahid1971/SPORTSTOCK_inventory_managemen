@@ -5,7 +5,6 @@ export interface IProduct {
     productName: string;
     productPrice: number;
     productQuantity: number;
-    productSize: string;
     productBranch: string;
     sportType?: Types.ObjectId;
     brand?: string;
@@ -30,11 +29,7 @@ export interface IProduct {
 //     YOGA = "yoga",
 //     HIKING = "hiking",
 // }
-export interface ISportType {
-    type: string;
-    status: "active" | "inactive";
-    isDeleted: boolean;
-}
+
 
 export enum MaterialType {
     LEATHER = "Leather",
