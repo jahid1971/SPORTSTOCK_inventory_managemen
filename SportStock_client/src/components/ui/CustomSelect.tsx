@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { Controller } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
@@ -5,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectVa
 type TCustomSelectProps = {
     id: string;
     label?: string;
-    options: { value: string; label: string }[];
+    options: { value: any; label: string }[];
     disabled?: boolean;
     control: any;
 };

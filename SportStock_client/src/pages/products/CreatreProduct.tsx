@@ -1,4 +1,5 @@
 import ProductInfo from "@/components/form/ProductInfo";
+import ProductStock from "@/components/form/ProductStock";
 import { Text } from "@/components/ui/Text";
 import {
     Accordion,
@@ -23,8 +24,14 @@ const CreatreProduct = () => {
             <div className="bg-background p-4">
                 <CustomAccordion
                     accordionTrigger={" Product Information"}
-                    triggerClassName="border-b border-b-slate-400 w-full pb-1 text-lg">
+                    triggerClassName="border-b border-b-primary w-full pb-1 text-lg">
                     <ProductInfo />
+                </CustomAccordion>
+                <CustomAccordion
+                    className="mt-8"
+                    accordionTrigger={" Product Stocking"}
+                    triggerClassName="border-b border-b-primary w-full pb-1 text-lg">
+                    <ProductStock />
                 </CustomAccordion>
             </div>
         </div>

@@ -58,8 +58,9 @@ const CustomAccordion: React.FC<{
     accordionTrigger: React.ReactNode;
     children: React.ReactNode;
     triggerClassName?: string;
-}> = ({ accordionTrigger, triggerClassName, children }) => (
-    <Accordion defaultValue="item-1" type="single" collapsible>
+    className?: string;
+}> = ({ className, accordionTrigger, triggerClassName, children }) => (
+    <Accordion className={className} defaultValue="item-1" type="single" collapsible>
         <AccordionItem value="item-1">
             <AccordionTrigger className={triggerClassName}>{accordionTrigger}</AccordionTrigger>
             <AccordionContent className="pt-5">{children}</AccordionContent>

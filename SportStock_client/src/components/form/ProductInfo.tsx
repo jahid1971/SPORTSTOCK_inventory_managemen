@@ -8,6 +8,7 @@ import CustomSelect from "../ui/CustomSelect";
 import { useGetAllBrandNamesQuery, useGetAllSportTypesQuery } from "@/redux/features/product/productApi";
 import { TBrand, TSportType } from "@/types/product";
 import AddBrand from "../product/AddBrand";
+import { productSizeOptions } from "@/constants/product";
 
 const ProductInfo = () => {
     const { data: sportTypes, isFetching: isSportTypeFetching } = useGetAllSportTypesQuery(undefined);
@@ -25,9 +26,10 @@ const ProductInfo = () => {
     }));
 
     return (
-        <form action="">
+      
             <div className="grid grid-cols-1 md:grid-cols-2  gap-4 items-end w-full">
                 <FloatingInput id="productName" label="Product Name" control={control} />
+                <FloatingInput id="productPrice" label="Product Price" type="number" control={control} />
                 <div>
                     <Dialog>
                         <DialogTrigger asChild>
@@ -68,8 +70,26 @@ const ProductInfo = () => {
                         disabled={isBrandNameFetching}
                     />
                 </div>
+                <CustomSelect
+                    id="productSize"
+                    label="productSize"
+                    control={control}
+                    options={productSizeOptions}
+                />
+
+                <FloatingInput id="colour" label="Colour" control={control} />
+                <FloatingInput id="material" label="Material" control={control} />
+                <CustomSelect
+                    id="condition"
+                    label="Condition"
+                    control={control}
+                    options={[
+                        { value: "new", label: "New" },
+                        { value: "used", label: "Used" },
+                    ]}
+                />
             </div>
-        </form>
+       
     );
 };
 

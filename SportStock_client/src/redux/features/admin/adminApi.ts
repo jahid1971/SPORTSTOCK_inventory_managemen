@@ -1,5 +1,6 @@
 import { baseApi } from "@/redux/api/baseApi";
 import { TQueryParam, TResponseRedux, TUser } from "@/types/global.types";
+import { mutationApiBuilder } from "@/utls/api";
 
 const adminApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -27,7 +28,11 @@ const adminApi = baseApi.injectEndpoints({
                 };
             },
         }),
+
+        createBranch: builder.mutation({
+            query: mutationApiBuilder("branches/create-branch"),
+        }),
     }),
 });
 
-export const { useGetAllUsersQuery } = adminApi;
+export const { useGetAllUsersQuery, useCreateBranchMutation } = adminApi;
