@@ -24,10 +24,9 @@ export default function Sidebar({
     return (
         <nav
             className={cn(
-                `sticky top-0 min-h-full hidden   py-5  md:block duration-500   overflow-y-scroll overflow-x-auto  `,
+                `sticky top-0 min-h-full hidden   py-5  md:block duration-500 scrollbar  overflow-y-scroll overflow-x-auto  `,
                 desktopSidebarOpen ? "w-[290px]" : "w-[60px] "
-            )}
-            style={{ scrollbarWidth: "thin" }}>
+            )}>
             {/* desktop sidebar..................................desktop sidebar */}
             {logo}
 

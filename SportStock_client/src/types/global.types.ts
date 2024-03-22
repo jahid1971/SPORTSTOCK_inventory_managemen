@@ -38,5 +38,13 @@ export type TQueryParam = {
     name: string;
     value: boolean | React.Key;
 };
+export type TBranch = {
+    _id: string;
+    branchName: string;
+    location: string;
+    status?: string;
+    createdAt?: string;
+    isDeleted?: boolean;
+};
 
 // export type TFieldValues = Record<string, any>;
