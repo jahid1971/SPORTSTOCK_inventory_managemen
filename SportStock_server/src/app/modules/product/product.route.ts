@@ -3,6 +3,6 @@ import { productControllers } from "./product.controller";
 
 const router = Router();
 
-router.post("/addProduct", productControllers.addProduct);
+router.post("/create-product", productControllers.createProduct);
 
 export const productRoutes = router;

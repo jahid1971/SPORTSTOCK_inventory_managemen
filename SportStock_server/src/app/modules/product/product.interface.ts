@@ -3,44 +3,31 @@ import { Types } from "mongoose";
 /* eslint-disable no-unused-vars */
 export interface IProduct {
     productName: string;
-    productPrice: number;
-    productQuantity: number;
-    productBranch: string;
+    nrice: number;
+    quantity: number;
+    branch: string;
     sportType?: Types.ObjectId;
     brand?: string;
     material?: MaterialType;
     color?: string;
-    size?: "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
+    size?: "s" | "m" | "l" | "xl" | "xxl" | "xxxl";
     condition?: ConditionType;
     weight?: string;
     style?: string;
 }
 
-// export enum SportType {
-//     CRICKET = "cricket",
-//     FOOTBALL = "football",
-//     SOCCER = "soccer",
-//     BASKETBALL = "basketball",
-//     TENNIS = "tennis",
-//     RUNNING = "running",
-//     FITNESS = "fitness",
-//     SWIMMING = "swimming",
-//     GOLF = "golf",
-//     YOGA = "yoga",
-//     HIKING = "hiking",
-// }
 
 
 export enum MaterialType {
-    LEATHER = "Leather",
-    SYNTHETIC = "Synthetic",
-    FABRIC = "Fabric",
-    PLASTIC = "Plastic",
-    METAL = "Metal",
-    WOOD = "Wood",
+    LEATHER = "leather",
+    SYNTHETIC = "synthetic",
+    FABRIC = "sabric",
+    PLASTIC = "slastic",
+    METAL = "metal",
+    WOOD = "wood",
 }
 
 export enum ConditionType {
-    NEW = "New",
-    USED = "Used",
+    NEW = "new",
+    USED = "used",
 }

@@ -9,7 +9,7 @@ import { BranchRoutes } from "../modules/branch/branch.route";
 const router = Router();
 
 router.use("/auth", authRoutes);
-router.use("/product", productRoutes);
+router.use("/products", productRoutes);
 router.use("/users", userRoutes);
 router.use("/sport-types", sportTypeRoutes);
 router.use("/brands", BrandRoutes);
