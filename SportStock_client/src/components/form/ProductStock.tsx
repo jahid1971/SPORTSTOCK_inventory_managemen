@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { Control } from "react-hook-form";
 import CustomSelect from "../ui/CustomSelect";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { PiPlusCircleBold } from "react-icons/pi";
@@ -7,8 +7,7 @@ import { useGetAllBranchesQuery } from "@/redux/features/admin/adminApi";
 import { TBranch } from "@/types/global.types";
 import { FloatingInput } from "../ui/InputFloatingLabel";
 
-const ProductStock = () => {
-    const { control } = useForm();
+const ProductStock = ({ control }: { control: Control }) => {
     const { data: branchNames, isFetching: isBranchNameFetching } = useGetAllBranchesQuery(undefined);
     const branchNamesOptions = branchNames?.data?.map((branch: TBranch) => ({
         value: branch._id,
@@ -30,7 +29,7 @@ const ProductStock = () => {
                     </DialogContent>
                 </Dialog>
                 <CustomSelect
-                    id="branchName"
+                    id="branch"
                     label="Branch Name"
                     control={control}
                     options={branchNamesOptions}
@@ -38,15 +37,6 @@ const ProductStock = () => {
                 />
             </div>
             <FloatingInput id="quantity" label="Product Quantity" type="number" control={control} />
-            <CustomSelect
-                id="unit"
-                label="Unit"
-                control={control}
-                options={[
-                    { value: "kg", label: "kg" },
-                    { value: "pcs", label: "pcs" },
-                ]}
-            />
         </div>
     );
 };

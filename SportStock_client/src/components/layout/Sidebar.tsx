@@ -24,7 +24,7 @@ export default function Sidebar({
     return (
         <nav
             className={cn(
-                `sticky top-0 min-h-full hidden   py-5  md:block duration-500 scrollbar  overflow-y-scroll overflow-x-auto  `,
+                `sticky top-0 min-h-full hidden   py-5  md:block duration-500 scrollbar  overflow-y-auto overflow-x-auto   shadow-lg`,
                 desktopSidebarOpen ? "w-[290px]" : "w-[60px] "
             )}>
             {/* desktop sidebar..................................desktop sidebar */}

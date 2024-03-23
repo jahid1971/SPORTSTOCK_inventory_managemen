@@ -4,6 +4,10 @@ import { mutationApiBuilder, queryApiBuilder } from "@/utls/api";
 
 const productApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
+        createProduct: builder.mutation({
+            query: mutationApiBuilder("products/create-product"),
+        }),
+
         createSportType: builder.mutation({
             query: (data) => ({
                 url: "sport-types/create-sport-type",
@@ -45,6 +49,7 @@ const productApi = baseApi.injectEndpoints({
 });
 
 export const {
+    useCreateProductMutation,
     useCreateSportTypeMutation,
     useGetAllSportTypesQuery,
     useAddBrandMutation,

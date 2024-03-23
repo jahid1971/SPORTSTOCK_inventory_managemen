@@ -6,16 +6,15 @@ import { Controller } from "react-hook-form";
 type TInputProps = {
     className?: string;
     label: string;
-    label_2?: any;
-    type?: string;
     error?: any;
     id: string;
+    rows?: number;
     control?: any;
     rules?: any;
 };
 
-const FloatingInput = forwardRef<HTMLInputElement, TInputProps>(
-    ({ className, label, label_2, type = "text", id, error, control, rules, ...props }, ref) => {
+const TextArea = forwardRef<HTMLTextAreaElement, TInputProps>(
+    ({ className, label, id, error, control, rows, rules, ...props }, ref) => {
         return (
             <div className="relative z-0 w-full">
                 {control ? (
@@ -25,8 +24,8 @@ const FloatingInput = forwardRef<HTMLInputElement, TInputProps>(
                         rules={rules}
                         defaultValue=""
                         render={({ field }) => (
-                            <input
-                                type={type}
+                            <textarea
+                                rows={rows}
                                 id={id}
                                 ref={ref}
                                 className={cn(
@@ -40,8 +39,7 @@ const FloatingInput = forwardRef<HTMLInputElement, TInputProps>(
                         )}
                     />
                 ) : (
-                    <input
-                        type={type}
+                    <textarea
                         id={id}
                         ref={ref}
                         className={cn(
@@ -62,18 +60,9 @@ const FloatingInput = forwardRef<HTMLInputElement, TInputProps>(
                     )}>
                     {label}
                 </label>
-
-                {label_2 && (
-                    <label
-                        htmlFor={id}
-                        className="absolute  text-gray-500 dark:text-gray-400  top-4 z-10 -translate-y-0
-                     origin-[0] end-4  cursor-pointer">
-                        {label_2}
-                    </label>
-                )}
             </div>
         );
     }
 );
 
-export { FloatingInput };
+export { TextArea };
