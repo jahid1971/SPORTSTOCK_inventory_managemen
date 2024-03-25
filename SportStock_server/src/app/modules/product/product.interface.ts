@@ -2,7 +2,9 @@ import { Types } from "mongoose";
 
 /* eslint-disable no-unused-vars */
 export interface IProduct {
+    _id?: Types.ObjectId;
     productName: string;
+    image?: string;
     price: number;
     quantity: number;
     branch: string;
@@ -10,8 +12,10 @@ export interface IProduct {
     brand?: string;
     material?: MaterialType;
     color?: string;
-    size?: "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
+    size?: "s" | "m" | "l" | "xl" | "xxl" | "xxxl";
     condition?: ConditionType;
+    description?: string;
+    isDeleted?: boolean;
 }
 
 // export enum SportType {
@@ -28,7 +32,6 @@ export interface IProduct {
 //     HIKING = "hiking",
 // }
 
-
 export enum MaterialType {
     LEATHER = "leather",
     SYNTHETIC = "synthetic",
@@ -39,6 +42,6 @@ export enum MaterialType {
 }
 
 export enum ConditionType {
-    NEW = "New",
-    USED = "Used",
+    NEW = "new",
+    USED = "used",
 }
