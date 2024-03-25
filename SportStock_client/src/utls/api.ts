@@ -1,12 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const mutationApiBuilder = (url: string, method = "POST") => {
+
+// api builder for create,
+export const createApiBuilder = (url: string) => {
     return (data: any) => ({
         url: url,
-        method: method,
+        method: "POST",
         body: data,
     });
 };
 
+// api builder for update
+export const updateApiBuilder = (url: string, method = "PATCH") => {
+    return (args: { data?: any; id?: string }) => ({
+        url: `${url}/${args?.id}`,
+        method: method,
+        body: args?.data,
+    });
+};
+
+// api builder for query
 import { TQueryParam } from "@/types/global.types";
 
 export const queryApiBuilder = (url: string) => {
@@ -25,4 +37,12 @@ export const queryApiBuilder = (url: string) => {
             params: params,
         };
     };
+};
+
+// api builder for single query
+export const singleQueryApiBuilder = (url: string) => {
+    return (id: string) => ({
+        url: `${url}/${id}`,
+        method: "GET",
+    });
 };

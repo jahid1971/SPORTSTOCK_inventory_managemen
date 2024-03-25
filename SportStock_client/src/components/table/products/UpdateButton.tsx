@@ -1,12 +1,12 @@
 import { useForm } from "react-hook-form";
-import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../ui/dialog";
-import { Button } from "../ui/button";
-import CustomSelect from "../ui/CustomSelect";
+import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../../ui/dialog";
+import { Button } from "../../ui/button";
+import CustomSelect from "../../ui/CustomSelect";
 import { useUpdateUserStatusMutation } from "@/redux/features/shared/sharedApi";
 import tryCatch from "@/utls/tryCatch";
 import { statusOptions } from "@/constants/user";
 
-export const updateButton = (params: any) => {
+export const UpdateButton = (params: any) => {
     const { control, handleSubmit } = useForm();
     const [updateUserStatus] = useUpdateUserStatusMutation();
 

@@ -12,6 +12,8 @@ type TInputProps = {
     id: string;
     control?: any;
     rules?: any;
+    onChange?: any;
+    value?: any;
 };
 
 const FloatingInput = forwardRef<HTMLInputElement, TInputProps>(
@@ -34,6 +36,7 @@ const FloatingInput = forwardRef<HTMLInputElement, TInputProps>(
                                     className
                                 )}
                                 placeholder=" "
+                                value={field.value ?? ""}
                                 onChange={field.onChange}
                                 {...props}
                             />

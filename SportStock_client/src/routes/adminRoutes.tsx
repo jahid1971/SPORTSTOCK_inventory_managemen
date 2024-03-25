@@ -1,6 +1,6 @@
 import CreatreProduct from "@/pages/products/CreatreProduct";
-import Users from "@/pages/shared/Users";
-
+import Products from "@/pages/products/Products";
+import Users from "@/pages/Users";
 
 export const adminRoutes = [
     {
@@ -8,7 +8,11 @@ export const adminRoutes = [
         element: <Users />,
     },
     {
-        path:"/create-product",
-        element: <CreatreProduct />
+        path: "/create-product",
+        element: <CreatreProduct />,
     },
-]
+    {
+        path: "/products",
+        element: <Products />,
+    },
+];

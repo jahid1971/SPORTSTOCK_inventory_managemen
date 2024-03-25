@@ -18,7 +18,13 @@ const CreateBranch = () => {
     };
     return (
         <div className="p-5">
-            <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
+            <form
+                className="flex flex-col gap-2"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return handleSubmit(onSubmit)();
+                }}>
                 <FloatingInput
                     id="branchName"
                     label="Branch Name"

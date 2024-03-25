@@ -6,6 +6,7 @@ export interface ISpinner {
     className?: string;
     backdrop?: boolean;
     loading?: boolean;
+    label?: string;
 }
 
 export const Spinner = ({ size = 40, backdrop, label, className }: ISpinner) => {
@@ -15,9 +16,9 @@ export const Spinner = ({ size = 40, backdrop, label, className }: ISpinner) => 
                 <div className="absolute inset-0 backdrop-filter backdrop-blur-[2px] z-10 bg-opacity-50 "></div>
             )}
 
-            <span className="absolute z-20 flex items-center gap-2">
+            <span className="absolute z-20 flex flex-col items-center gap-2 ">
                 <Loader className="animate-spin " style={{ animationDuration: "1.5s" }} size={size} />
-                {label && <span className=" text-lg">{label}...</span>}
+                {label && <span className=" text-lg text-nowrap">{label}...</span>}
             </span>
         </div>
     );

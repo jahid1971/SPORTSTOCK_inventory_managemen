@@ -22,7 +22,12 @@ const CreateSportType = () => {
     };
     return (
         <div className="p-5">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return handleSubmit(onSubmit)();
+                }}>
                 <FloatingInput
                     id="sportType"
                     label="Create SportType"
@@ -31,7 +36,9 @@ const CreateSportType = () => {
                 />
 
                 <DialogClose disabled={!isValid} asChild className="mt-3 mr-auto">
-                    <Button size={"xsm"} type="submit">Create Sport Type</Button>
+                    <Button size={"xsm"} type="submit">
+                        Create Sport Type
+                    </Button>
                 </DialogClose>
             </form>
         </div>

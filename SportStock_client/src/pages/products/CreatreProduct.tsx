@@ -10,17 +10,30 @@ import {
     CustomAccordion,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { defaultProduct } from "@/constants/defaultValues";
 import { useCreateProductMutation } from "@/redux/features/product/productApi";
 import { TProduct } from "@/types/product";
 import tryCatch from "@/utls/tryCatch";
 import { useForm } from "react-hook-form";
 
 const CreatreProduct = () => {
-    const { handleSubmit, control } = useForm();
+    const { control, handleSubmit } = useForm<TProduct>({
+        defaultValues: { ...defaultProduct },
+    });
     const [creatreProduct] = useCreateProductMutation();
 
     const onSubmit = (data: TProduct) => {
-        tryCatch(async () => await creatreProduct(data), "Product Created Successfully", "Creating Product");
+        const formData = new FormData();
+
+        formData.append("productData", JSON.stringify(data));
+        formData.append("file", data?.image);
+        tryCatch(
+            async () => await creatreProduct(formData),
+            "Product Created Successfully",
+            "Creating Product"
+        );
+
+        console.log(Object.fromEntries(formData.entries()), "formData");
     };
     return (
         <div className="flex flex-col">

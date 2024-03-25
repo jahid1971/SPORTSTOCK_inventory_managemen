@@ -45,8 +45,8 @@ const SidebarItems = ({ mobileMenuOpen, setMobileMenuOpen, desktopSidebarOpen }:
                 className={({ isActive }) =>
                     `${
                         isActive && `bg-primary-100 text-primary`
-                    } px-2 py-2 hover:bg-primary-100/70 hover:text-primary ${
-                        !desktopSidebarOpen && `lg:!pl-2`
+                    } px-3 py-2 hover:bg-primary-100/70 hover:text-primary ${
+                        !desktopSidebarOpen && `!pl-3`
                     }`
                 }
                 style={{ paddingLeft }}
@@ -54,7 +54,7 @@ const SidebarItems = ({ mobileMenuOpen, setMobileMenuOpen, desktopSidebarOpen }:
                 onClick={() => mobileMenuOpen && setMobileMenuOpen && setMobileMenuOpen(false)}>
                 <div className="flex gap-[6px] items-center">
                     {item.icon}
-                    <h3 className={`${!desktopSidebarOpen && "lg:hidden"} `}>{item.label}</h3>
+                    <h3 className={`${!desktopSidebarOpen && "lg:absolute right-24"} `}>{item.label}</h3>
                 </div>
             </NavLink>
         ) : (
@@ -63,10 +63,12 @@ const SidebarItems = ({ mobileMenuOpen, setMobileMenuOpen, desktopSidebarOpen }:
                     <AccordionTrigger
                         noIcon={desktopSidebarOpen ? false : true}
                         style={{ paddingLeft }}
-                        className="px-2 py-2 [&[data-state=open]]:text-primary  hover:bg-primary-100/70 hover:text-primary/90">
-                        <div className="flex gap-[6px] items-center">
+                        className="px-3 py-2 [&[data-state=open]]:text-primary  hover:bg-primary-100/70 hover:text-primary/90">
+                        <div className="flex gap-[6px] items-center text-nowrap">
                             {item.icon}
-                            <h3 className={`${!desktopSidebarOpen && "lg:hidden"} `}>{item.label}</h3>
+                            <h3 className={`${!desktopSidebarOpen && "lg:absolute right-24"} `}>
+                                {item.label}
+                            </h3>
                         </div>
                     </AccordionTrigger>
 

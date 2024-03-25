@@ -1,11 +1,32 @@
 import { baseApi } from "@/redux/api/baseApi";
 import { TQueryParam } from "@/types/global.types";
-import { mutationApiBuilder, queryApiBuilder } from "@/utls/api";
+import { createApiBuilder, queryApiBuilder, singleQueryApiBuilder, updateApiBuilder } from "@/utls/api";
 
 const productApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         createProduct: builder.mutation({
-            query: mutationApiBuilder("products/create-product"),
+            query: createApiBuilder("products/create-product"),
+            invalidatesTags: ["products"],
+        }),
+
+        getProducts: builder.query({
+            query: queryApiBuilder("products"),
+            providesTags: ["products"],
+        }),
+
+        getSingleProduct: builder.query({
+            query: singleQueryApiBuilder("products"),
+            providesTags: ["products"],
+        }),
+
+        deleteProduct: builder.mutation({
+            query: updateApiBuilder("products/delete-product", "PUT"),
+            invalidatesTags: ["products"],
+        }),
+
+        updateProduct: builder.mutation({
+            query: updateApiBuilder("products"),
+            invalidatesTags: ["products"],
         }),
 
         createSportType: builder.mutation({
@@ -37,7 +58,7 @@ const productApi = baseApi.injectEndpoints({
         }),
 
         addBrand: builder.mutation({
-            query: mutationApiBuilder("brands/add-brand"),
+            query: createApiBuilder("brands/add-brand"),
             invalidatesTags: ["brands"],
         }),
 
@@ -50,8 +71,12 @@ const productApi = baseApi.injectEndpoints({
 
 export const {
     useCreateProductMutation,
+    useGetProductsQuery,
     useCreateSportTypeMutation,
     useGetAllSportTypesQuery,
     useAddBrandMutation,
     useGetAllBrandNamesQuery,
+    useDeleteProductMutation,
+    useUpdateProductMutation,
+    useGetSingleProductQuery,
 } = productApi;

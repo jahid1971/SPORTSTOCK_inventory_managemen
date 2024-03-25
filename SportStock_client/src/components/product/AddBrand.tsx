@@ -19,7 +19,12 @@ const AddBrand = () => {
     };
     return (
         <div className="p-5">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return handleSubmit(onSubmit)(); // key is the () in the end
+                }}>
                 <FloatingInput
                     id="brandName"
                     label="Add A Brand Name"

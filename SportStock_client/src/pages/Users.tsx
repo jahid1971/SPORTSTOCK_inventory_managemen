@@ -6,7 +6,7 @@ import "@ag-grid-community/styles/ag-theme-quartz.css"; // Theme
 import { ColDef, ModuleRegistry } from "@ag-grid-community/core";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { useGetUsersQuery } from "@/redux/features/shared/sharedApi";
-import { updateButton } from "@/components/table/UpdateButton";
+import { UpdateButton } from "@/components/table/products/UpdateButton";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -37,7 +37,7 @@ const Users = () => {
         { field: "status" },
         {
             headerName: "Action",
-            cellRenderer: updateButton,
+            cellRenderer: UpdateButton,
         },
     ]);
 

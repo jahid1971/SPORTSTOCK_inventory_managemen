@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type TProduct = {
     _id: string;
+    image: any;
     productName: string;
     price: number;
     sportType: string;
@@ -7,10 +9,14 @@ export type TProduct = {
     size: string;
     colour: string;
     material: string;
-    branch: string;
+    branch: TBranch;
     quantity: number;
     createdAt?: string;
     isDeleted?: boolean;
+};
+export type TBranch = {
+    _id: string;
+    branchName: string;
 };
 
 export type TSportType = {

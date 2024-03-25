@@ -1,12 +1,12 @@
 import React from "react";
 import { FloatingInput } from "../ui/InputFloatingLabel";
-import { Control, useForm } from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
 import { PiPlusCircleBold } from "react-icons/pi";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import CreateSportType from "../product/createSportType";
 import CustomSelect from "../ui/CustomSelect";
 import { useGetAllBrandNamesQuery, useGetAllSportTypesQuery } from "@/redux/features/product/productApi";
-import { TBrand, TSportType } from "@/types/product";
+import { TBrand, TProduct, TSportType } from "@/types/product";
 import AddBrand from "../product/AddBrand";
 import { productSizeOptions } from "@/constants/product";
 import { TextArea } from "../ui/TextArea";
@@ -14,7 +14,6 @@ import { TextArea } from "../ui/TextArea";
 const ProductInfo = ({ control }: { control: Control }) => {
     const { data: sportTypes, isFetching: isSportTypeFetching } = useGetAllSportTypesQuery(undefined);
     const { data: brandNames, isFetching: isBrandNameFetching } = useGetAllBrandNamesQuery(undefined);
-    console.log(sportTypes, "sportTypes");
 
     const sportTypesOptions = sportTypes?.data?.map((sportType: TSportType) => ({
         value: sportType._id,
@@ -28,7 +27,24 @@ const ProductInfo = ({ control }: { control: Control }) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2  gap-4 items-end w-full">
             <FloatingInput id="productName" label="Product Name" control={control} />
+
+            <Controller
+                name="image"
+                control={control}
+                render={({ field: { onChange, value, ...field } }) => (
+                    <FloatingInput
+                        id="image"
+                        label="Product image"
+                        type="file"
+                        value={value?.fileName}
+                        {...field}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.files?.[0])}
+                    />
+                )}
+            />
+
             <FloatingInput id="price" label="Product Price" type="number" control={control} />
+
             <div>
                 <Dialog>
                     <DialogTrigger asChild>
@@ -42,7 +58,7 @@ const ProductInfo = ({ control }: { control: Control }) => {
                     </DialogContent>
                 </Dialog>
                 <CustomSelect
-                    id="SportType"
+                    id="sportType"
                     label="Sport Type"
                     control={control}
                     options={sportTypesOptions}
@@ -69,12 +85,7 @@ const ProductInfo = ({ control }: { control: Control }) => {
                     disabled={isBrandNameFetching}
                 />
             </div>
-            <CustomSelect
-                id="size"
-                label="product Size"
-                control={control}
-                options={productSizeOptions}
-            />
+            <CustomSelect id="size" label="product Size" control={control} options={productSizeOptions} />
 
             <FloatingInput id="colour" label="Colour" control={control} />
 
