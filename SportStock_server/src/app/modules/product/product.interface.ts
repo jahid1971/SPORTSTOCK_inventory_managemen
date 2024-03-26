@@ -10,7 +10,7 @@ export interface IProduct {
     brand?: string;
     material?: MaterialType;
     color?: string;
-    size?: "s" | "m" | "l" | "xl" | "xxl" | "xxxl";
+    size?: "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
     condition?: ConditionType;
 }
 
@@ -39,6 +39,6 @@ export enum MaterialType {
 }
 
 export enum ConditionType {
-    NEW = "new",
-    USED = "used",
+    NEW = "New",
+    USED = "Used",
 }
