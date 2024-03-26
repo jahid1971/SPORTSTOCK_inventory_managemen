@@ -1,4 +1,4 @@
-import { IProduct, ISportType } from "./product.interface";
+import { IProduct } from "./product.interface";
 import Product from "./product.model";
 
 const createProduct = async (payload: IProduct) => {

@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 /* eslint-disable no-unused-vars */
 export interface IProduct {
     productName: string;
-    nrice: number;
+    price: number;
     quantity: number;
     branch: string;
     sportType?: Types.ObjectId;
@@ -12,17 +12,28 @@ export interface IProduct {
     color?: string;
     size?: "s" | "m" | "l" | "xl" | "xxl" | "xxxl";
     condition?: ConditionType;
-    weight?: string;
-    style?: string;
 }
 
+// export enum SportType {
+//     CRICKET = "cricket",
+//     FOOTBALL = "football",
+//     SOCCER = "soccer",
+//     BASKETBALL = "basketball",
+//     TENNIS = "tennis",
+//     RUNNING = "running",
+//     FITNESS = "fitness",
+//     SWIMMING = "swimming",
+//     GOLF = "golf",
+//     YOGA = "yoga",
+//     HIKING = "hiking",
+// }
 
 
 export enum MaterialType {
     LEATHER = "leather",
     SYNTHETIC = "synthetic",
-    FABRIC = "sabric",
-    PLASTIC = "slastic",
+    FABRIC = "fabric",
+    PLASTIC = "Plastic",
     METAL = "metal",
     WOOD = "wood",
 }
