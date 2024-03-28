@@ -33,11 +33,11 @@ export const UpdateProduct = (params: any) => {
             <Dialog>
                 <DialogTrigger asChild>
                     <Button className="bg-primary/10 p-1 font-normal" variant="outline" size={"xsm"}>
-                        Update Product
+                        Update
                     </Button>
                 </DialogTrigger>
 
-                <DialogContent className="w-full">
+                <DialogContent className="lg:min-w-fit py-2 ">
                     <form onSubmit={handleSubmit(handleUpdtateProduct)}>
                         <div className="bg-background p-4">
                             <ProductInfo control={control} />

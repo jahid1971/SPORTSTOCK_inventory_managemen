@@ -11,7 +11,7 @@ import AddBrand from "../product/AddBrand";
 import { productSizeOptions } from "@/constants/product";
 import { TextArea } from "../ui/TextArea";
 
-const ProductInfo = ({ control }: { control: Control }) => {
+const ProductInfo = ({ control }: { control: any }) => {
     const { data: sportTypes, isFetching: isSportTypeFetching } = useGetAllSportTypesQuery(undefined);
     const { data: brandNames, isFetching: isBrandNameFetching } = useGetAllBrandNamesQuery(undefined);
 

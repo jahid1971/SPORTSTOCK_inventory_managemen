@@ -14,6 +14,7 @@ type TInputProps = {
     rules?: any;
     onChange?: any;
     value?: any;
+    disabled?: boolean;
 };
 
 const FloatingInput = forwardRef<HTMLInputElement, TInputProps>(
@@ -26,20 +27,23 @@ const FloatingInput = forwardRef<HTMLInputElement, TInputProps>(
                         control={control}
                         rules={rules}
                         defaultValue=""
-                        render={({ field }) => (
-                            <input
-                                type={type}
-                                id={id}
-                                ref={ref}
-                                className={cn(
-                                    "block  px-2.5 pb-2.5 pt-5 w-full  text-gray-700 bg-primary-50/50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-primary-500 focus:outline-none focus:ring-0 focus:border-primary-600 peer",
-                                    className
-                                )}
-                                placeholder=" "
-                                value={field.value ?? ""}
-                                onChange={field.onChange}
-                                {...props}
-                            />
+                        render={({ field,fieldState: { error } }) => (
+                            <>
+                                <input
+                                    type={type}
+                                    id={id}
+                                    ref={ref}
+                                    className={cn(
+                                        "block  px-2.5 pb-2.5 pt-5 w-full  text-gray-700 bg-primary-50/50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-primary-500 focus:outline-none focus:ring-0 focus:border-primary-600 peer",
+                                        className
+                                    )}
+                                    placeholder=" "
+                                    value={field.value ?? ""}
+                                    onChange={field.onChange}
+                                    {...props}
+                                />
+                                <small className="text-destructive">{error?.message}</small>
+                            </>
                         )}
                     />
                 ) : (

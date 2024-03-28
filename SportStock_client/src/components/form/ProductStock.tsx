@@ -7,7 +7,7 @@ import { useGetAllBranchesQuery } from "@/redux/features/admin/adminApi";
 import { TBranch } from "@/types/global.types";
 import { FloatingInput } from "../ui/InputFloatingLabel";
 
-const ProductStock = ({ control }: { control: Control }) => {
+const ProductStock = ({ control }: { control: any }) => {
     const { data: branchNames, isFetching: isBranchNameFetching } = useGetAllBranchesQuery(undefined);
     const branchNamesOptions = branchNames?.data?.map((branch: TBranch) => ({
         value: branch._id,

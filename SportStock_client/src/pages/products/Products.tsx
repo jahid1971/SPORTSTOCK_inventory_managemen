@@ -14,6 +14,16 @@ import { noRowsOverlayComponent } from "@/components/table/tableLoader/NoRowsOve
 import { DeleteButton } from "@/components/table/products/DeleteButton";
 import { UpdateProduct } from "@/components/table/products/UpdateProduct";
 import { Button } from "@/components/ui/button";
+import MultiSelect from "@/components/ui/MultiSelect";
+import { useForm } from "react-hook-form";
+import { useGetAllBranchesQuery } from "@/redux/features/admin/adminApi";
+import { TQueryParam } from "@/types/global.types";
+import { RxCross2 } from "react-icons/rx";
+import FilterByOptions from "@/components/table/FilterByOptions";
+import FilterByInput from "@/components/table/FilterByInput";
+import { Input } from "@/components/ui/input";
+import SearchInput from "@/components/table/SearchInput";
+import { SellProduct } from "@/components/table/products/SellProduct";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -27,8 +37,14 @@ interface IRow {
 }
 
 const Products = () => {
+    const { control, setValue } = useForm();
     const gridRef = useRef<AgGridReact>(null);
-    const { data, isFetching } = useGetProductsQuery(undefined);
+
+    const [params, setParams] = useState<TQueryParam[]>([]);
+    const { data, isFetching } = useGetProductsQuery(params);
+
+    const { data: branches, isLoading: isBranchesLoading } = useGetAllBranchesQuery(undefined);
+    const branchOptions = branches?.data?.map((branch) => ({ label: branch.branchName, value: branch._id }));
 
     const products = data?.data?.map((product: TProduct) => {
         return {
@@ -66,6 +82,10 @@ const Products = () => {
             cellRenderer: UpdateProduct,
         },
         {
+            headerName: "Sell",
+            cellRenderer: SellProduct,
+        },
+        {
             headerName: "Delete",
             cellRenderer: DeleteButton,
         },
@@ -83,12 +103,39 @@ const Products = () => {
 
     return (
         <div className="ag-theme-quartz ">
-            <div>
-                Filter by:{" "}
-                <Button variant={"outline"} size={""}>
-                    Brand
-                </Button>
+            {/* filter and search options .......... */}
+
+            <div className="mb-2 flex justify-between  flex-wrap gap gap-2">
+                <div className="flex gap-1">
+                    <SearchInput params={params} setParams={setParams} />
+                    {params.length > 0 && (
+                        <Button className="text-primary pr-6 text-base" variant={"outline"} onClick={() => setParams([])}>
+                             <RxCross2 className="size-5 mr-1 pt-0.5 " /> Reset
+                        </Button>
+                    )}
+                </div>
+
+                <div className="flex gap-1">
+                    {!isBranchesLoading && (
+                        <FilterByOptions
+                            title="Branches"
+                            filterBy="branch"
+                            params={params}
+                            setParams={setParams}
+                            filterItems={branchOptions}
+                        />
+                    )}
+                    <FilterByInput filterBy="Price" title="Price" params={params} setParams={setParams} />
+                    <FilterByInput
+                        filterBy="Quantity"
+                        title="Quantity"
+                        params={params}
+                        setParams={setParams}
+                    />
+                </div>
             </div>
+
+            {/* table..............table */}
             <AgGridReact
                 ref={gridRef}
                 rowData={products}
