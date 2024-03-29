@@ -1,12 +1,15 @@
+import mongoose, { PipelineStage } from "mongoose";
 import { sendImageToCloudinary } from "../../utls/sendImageToCloudinary";
 import { IProduct } from "./product.interface";
 import Product from "./product.model";
 
 const createProduct = async (file: any, payload: IProduct) => {
     const imageName = payload.productName;
-    const productImage = await sendImageToCloudinary(imageName, file?.path);
+    if (file) {
+        const productImage = await sendImageToCloudinary(imageName, file?.path);
 
-    payload.image = productImage?.secure_url as string;
+        payload.image = productImage?.secure_url as string;
+    }
     payload.isDeleted = false;
 
     const result = await Product.create(payload);
@@ -16,9 +19,140 @@ const createProduct = async (file: any, payload: IProduct) => {
 
 const getAllProducts = async (query: Record<string, unknown>) => {
     const queryObject = { ...query };
-    const result = Product.find(queryObject).populate("branch", "_id branchName");
-    return result;
+    const excludeFields = [
+        "searchTerm",
+        "page",
+        "limit",
+        "sortBy",
+        "sortOrder",
+        "minPrice",
+        "maxPrice",
+        "minQuantity",
+        "maxQuantity",
+    ];
+    excludeFields.forEach((value) => delete queryObject[value]);
+
+    const searchTerm = (query.searchTerm as string) || "";
+    const sortBy = (query?.sortBy as string) || "createdAt";
+    const sortOrder = query?.sortOrder === "desc" ? -1 : 1;
+    let page = Number(query?.page) || 1;
+    let limit = Number(query?.limit) || 10;
+    let skip = (page - 1) * limit;
+    const searchableFields = ["productName", "description"];
+
+    if (query?.minQuantity || query?.maxQuantity) {
+        queryObject.quantity = {
+            $gte: Number(query?.minQuantity) || 0,
+            $lte: Number(query?.maxQuantity) || Infinity,
+        };
+    }
+    if (query?.minPrice || query?.maxPrice) {
+        queryObject.price = {
+            $gte: Number(query?.minPrice) || 0,
+            $lte: Number(query?.maxPrice) || Infinity,
+        };
+    }
+    if (query.searchTerm && typeof query.searchTerm === "string" && query.searchTerm.trim() !== "") {
+        queryObject.$or = [
+            { productName: { $regex: query.searchTerm, $options: "i" } },
+            { description: { $regex: query.searchTerm, $options: "i" } },
+            // { sportType: { $regex: query.searchTerm, $options: "i" } },
+        ];
+    }
+
+    console.log(queryObject, "queryObject");
+    const result = await Product.find(queryObject).populate("branch", "_id branchName");
+    const total = await Product.countDocuments(queryObject);
+    const totalPages = Math.ceil(total / limit);
+    return { data: result, meta: { page, limit, total, totalPages } };
 };
+
+// const getAllProducts = async (query: Record<string, unknown>) => {
+//     const queryObject: Record<string, any> = { isDeleted:false, ...query };
+
+//     const excludeFields = [
+//         "searchTerm",
+//         "page",
+//         "limit",
+//         "sortBy",
+//         "sortOrder",
+//         "minPrice",
+//         "maxPrice",
+//         "minQuantity",
+//         "maxQuantity",
+//     ];
+
+//     excludeFields.forEach((value) => delete queryObject[value]);
+
+//     if (query?.minQuantity || query?.maxQuantity) {
+//         queryObject.quantity = {
+//             $gte: Number(query?.minQuantity) || 0,
+//             $lte: Number(query?.maxQuantity) || Infinity,
+//         };
+//     }
+//     if (query?.minPrice || query?.maxPrice) {
+//         queryObject.price = {
+//             $gte: Number(query?.minPrice) || 0,
+//             $lte: Number(query?.maxPrice) || Infinity,
+//         };
+//     }
+//     if (query?.branch) {
+//         if(Array.isArray(query.branch)) $in: query.branch;
+//         else queryObject.branch = query.branch;
+//     }
+
+//     const searchTerm = (query.searchTerm as string) || "";
+//     const sortBy = (query?.sortBy as string) || "createdAt";
+//     const sortOrder = query?.sortOrder === "desc" ? -1 : 1;
+//     let page = Number(query?.page) || 1;
+//     let limit = Number(query?.limit) || 10;
+//     let skip = (page - 1) * limit;
+//     const searchableFields = ["productName", "description"];
+//     const pipeline = [
+//         {
+//             $match: {
+//                 $or: searchableFields.map((field) => ({
+//                     [field]: { $regex: searchTerm, $options: "i" },
+//                 })),
+//                 ...queryObject,
+//             },
+//         },
+
+//         {
+//             $sort: { [sortBy]: sortOrder },
+//         },
+//         {
+//             $lookup: {
+//                 from: "branches",
+//                 localField: "branch",
+//                 foreignField: "_id",
+//                 as: "branch",
+//                 pipeline: [{ $project: { branchName: 1, _id: 1 } }],
+//             },
+//         },
+//         { $unwind: "$branch" },
+//         { $skip: skip },
+//         { $limit: limit },
+//     ];
+//     const countPipeline = [...pipeline, { $count: "total" }];
+//     const countResult = await Product.aggregate(countPipeline as PipelineStage[]);
+//     const total = countResult.length ? countResult[0].total : 0;
+//     const totalPages = Math.ceil(total / limit);
+
+//     // pipeline.push({
+//     //     $addFields: {
+//     //         meta: {
+//     //             page,
+//     //             limit,
+//     //             total: countResult.length ? countResult[0].total : 0,
+//     //         },
+//     //     },
+//     // });
+
+//     console.log(queryObject, "queryObject");
+//     const result = await Product.aggregate(pipeline);
+//     return { data: result, meta: { page, limit, total, totalPages } };
+// };
 
 const getSingleProduct = (id) => {
     const result = Product.findById(id);

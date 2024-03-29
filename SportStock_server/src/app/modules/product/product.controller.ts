@@ -8,7 +8,7 @@ const createProduct = catchAsynch(async (req, res) => {
 });
 const getAllProducts = catchAsynch(async (req, res) => {
     const result = await productServices.getAllProducts(req.query);
-    return sendSuccessResponse(res, result, "All products fetched successfully", 200);
+    return sendSuccessResponse(res, result?.data, "All products fetched successfully", 200, result?.meta);
 });
 
 const getSingleProduct = catchAsynch(async (req, res) => {

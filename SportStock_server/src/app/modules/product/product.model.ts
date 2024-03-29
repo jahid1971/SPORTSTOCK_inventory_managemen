@@ -10,7 +10,7 @@ const productSchema = new Schema(
         branch: { type: Schema.Types.ObjectId, ref: "Branch", required: true },
         sportType: { type: Schema.Types.ObjectId, ref: "SportType", required: true },
         brand: { type: String },
-        material: { type: String, enum: Object.values(MaterialType) },
+        material:{type:String},
         color: { type: String },
         size: { type: String, enum: ["s", "m", "l", "xl", "xxl", "xxxl"] },
         condition: { type: String, enum: Object.values(ConditionType) },
