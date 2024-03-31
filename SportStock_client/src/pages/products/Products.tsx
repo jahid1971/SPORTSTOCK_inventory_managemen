@@ -1,31 +1,27 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { AgGridReact } from "@ag-grid-community/react"; // React Grid Logic
-import "@ag-grid-community/styles/ag-grid.css"; // Core CSS
-import "@ag-grid-community/styles/ag-theme-quartz.css"; // Theme
+import {  useState } from "react";
 
-import { ColDef, ModuleRegistry } from "@ag-grid-community/core";
-import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
+// import "@ag-grid-community/styles/ag-grid.css"; // Core CSS
+// import "@ag-grid-community/styles/ag-theme-quartz.css"; // Theme
+
+import { ColDef } from "@ag-grid-community/core";
+
 
 import { useGetProductsQuery } from "@/redux/features/product/productApi";
 import { TProduct } from "@/types/product";
 
-import { loadingOverlayComponent } from "@/components/table/tableLoader/LoadingOverlay";
-import { noRowsOverlayComponent } from "@/components/table/tableLoader/NoRowsOverlay";
 import { DeleteButton } from "@/components/table/products/DeleteButton";
 import { UpdateProduct } from "@/components/table/products/UpdateProduct";
 import { Button } from "@/components/ui/button";
-import MultiSelect from "@/components/ui/MultiSelect";
-import { useForm } from "react-hook-form";
+
 import { useGetAllBranchesQuery } from "@/redux/features/admin/adminApi";
 import { TQueryParam } from "@/types/global.types";
 import { RxCross2 } from "react-icons/rx";
 import FilterByOptions from "@/components/table/FilterByOptions";
 import FilterByInput from "@/components/table/FilterByInput";
-import { Input } from "@/components/ui/input";
 import SearchInput from "@/components/table/SearchInput";
 import { SellProduct } from "@/components/table/products/SellProduct";
+import DataTable from "@/components/table/DataTable";
 
-ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 interface IRow {
     id: string;
@@ -37,9 +33,6 @@ interface IRow {
 }
 
 const Products = () => {
-    const { control, setValue } = useForm();
-    const gridRef = useRef<AgGridReact>(null);
-
     const [params, setParams] = useState<TQueryParam[]>([]);
     const { data, isFetching } = useGetProductsQuery(params);
 
@@ -91,15 +84,15 @@ const Products = () => {
         },
     ]);
 
-    const defaultColDef: ColDef = {
-        flex: 1,
-    };
+    // const defaultColDef: ColDef = {
+    //     flex: 1,
+    // };
 
-    useEffect(() => {
-        if (isFetching) gridRef.current?.api?.showLoadingOverlay();
-        else if (!isFetching && !products?.length) gridRef.current!.api?.showNoRowsOverlay();
-        else gridRef.current?.api?.hideOverlay();
-    }, [isFetching, products?.length]);
+    // useEffect(() => {
+    //     if (isFetching) gridRef.current?.api?.showLoadingOverlay();
+    //     else if (!isFetching && !products?.length) gridRef.current!.api?.showNoRowsOverlay();
+    //     else gridRef.current?.api?.hideOverlay();
+    // }, [isFetching, products?.length]);
 
     return (
         <div className="ag-theme-quartz ">
@@ -136,15 +129,8 @@ const Products = () => {
             </div>
 
             {/* table..............table */}
-            <AgGridReact
-                ref={gridRef}
-                rowData={products}
-                columnDefs={colDefs}
-                defaultColDef={defaultColDef}
-                domLayout="autoHeight"
-                loadingOverlayComponent={loadingOverlayComponent}
-                noRowsOverlayComponent={noRowsOverlayComponent}
-            />
+
+            <DataTable rowData={products} columnDefs={colDefs} isFetching={isFetching} />
         </div>
     );
 };

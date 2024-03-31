@@ -15,6 +15,7 @@ type TInputProps = {
     onChange?: any;
     value?: any;
     disabled?: boolean;
+    required?: boolean;
 };
 
 const FloatingInput = forwardRef<HTMLInputElement, TInputProps>(

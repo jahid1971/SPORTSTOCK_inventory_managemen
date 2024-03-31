@@ -6,7 +6,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Controller } from "react-hook-form";
 
-export function DatePicker({ id, control, label, ...props }) {
+export function DatePicker({ id, control, label, rules, ...props }) {
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
 
     return (
@@ -14,6 +14,7 @@ export function DatePicker({ id, control, label, ...props }) {
             name={id}
             control={control}
             defaultValue=""
+            rules={rules}
             render={({ field, fieldState: { error } }) => (
                 <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen} modal>
                     <PopoverTrigger data-state={field.value ? "open" : "closed"} asChild>
@@ -36,6 +37,7 @@ export function DatePicker({ id, control, label, ...props }) {
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </button>
                     </PopoverTrigger>
+                    {error && <small className="text-destructive">{error?.message}</small>}
                     <PopoverContent className="w-auto p-0 z-50 overflow-y-auto">
                         <Calendar
                             mode="single"
@@ -44,9 +46,7 @@ export function DatePicker({ id, control, label, ...props }) {
                                 field.onChange(date);
                                 setIsPopoverOpen(false);
                             }}
-                            // disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                             initialFocus
-                            
                         />
                     </PopoverContent>
                 </Popover>

@@ -11,23 +11,30 @@ import { useGetSingleProductQuery, useUpdateProductMutation } from "@/redux/feat
 import { TProduct } from "@/types/product";
 import { FloatingInput } from "@/components/ui/InputFloatingLabel";
 import { DatePicker } from "@/components/ui/DatePicker";
+import { useCreateSaleMutation } from "@/redux/features/sale/SaleApi";
 
+type TSaleData = TProduct & {
+    confirmation?: boolean;
+};
 export const SellProduct = (params: any) => {
-    const { control, handleSubmit } = useForm<TProduct>({
+    const [createSale] = useCreateSaleMutation();
+    const { control, handleSubmit, watch } = useForm<TSaleData>({
         defaultValues: { branch: params.data.branch, price: params.data.price },
     });
 
-    const [updateProduct] = useUpdateProductMutation();
+    const quantity = watch("quantity");
+    const total = quantity * params.data.price;
+    const isConfirmed = watch("confirmation");
 
-    const onSubmit = (data: TProduct) => {
-        // const updateData = { data: data, id: params.data._id };
-        // tryCatch(
-        //     async () => await updateProduct(updateData),
-        //     "Product updated successfully",
-        //     "Updating product"
-        // );
-        // console.log(updateData, "updateData")
-        console.log("data", data);
+    const onSubmit = (data: TSaleData) => {
+        delete data.confirmation;
+        const saleData = {
+            ...data,
+            productId: params.data._id,
+            productName: params.data.name,
+        };
+        // console.log("data", saleData);
+        tryCatch(async () => await createSale(saleData), "Product sold successfully", "Sale Product in progress");
     };
 
     return (
@@ -42,8 +49,13 @@ export const SellProduct = (params: any) => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <h4 className="text-center text-lg pb-2">{params?.data?.name}</h4>
                     <div className="bg-background  flex flex-col gap-2">
-                        <FloatingInput id="buyerName" label="Buyer Name" control={control} />
-                        <DatePicker id="saleDate" label="Sale Date" control={control} />
+                        <FloatingInput id="buyerName" label="Buyer Name" required control={control} />
+                        <DatePicker
+                            rules={{ required: "Sale Date is required" }}
+                            id="saleDate"
+                            label="Sale Date"
+                            control={control}
+                        />
                         <FloatingInput
                             id="quantity"
                             label="Product Quantity"
@@ -53,40 +65,31 @@ export const SellProduct = (params: any) => {
                                 required: "Quantity is required",
                                 validate: (value: number) =>
                                     value <= params.data.quantity ||
-                                    `Quantity cannot exceed available amount (${params.data.quantity})`,
+                                    `Quantity cannot exceed available Product - ${params.data.quantity}`,
                             }}
                         />
-
-                        <FloatingInput disabled id="branch" label="Branch Name" control={control} />
                         <FloatingInput disabled id="price" label="Price" control={control} />
+                        <FloatingInput disabled id="branch" label="Branch Name" control={control} />
+                        {total > 0 && (
+                            <div className="text-lg text-primary ">
+                                <input
+                                    className="size-4 mr-2 "
+                                    type="checkbox"
+                                    {...control.register("confirmation")}
+                                />
+                                <label htmlFor="confirmation">Total {total} tk has been paid</label>
+                            </div>
+                        )}
                     </div>
-                    <Button type="submit">Sell Product</Button>
+            
 
                     <DialogClose asChild className="mt-3 mr-auto">
-                        ff
+                    <Button disabled={!isConfirmed} className="mt-2" type="submit">
+                        Sell Product
+                    </Button>
                     </DialogClose>
                 </form>
             </DialogContent>
         </Dialog>
-
-    //     <Dialog>
-    //     <DialogTrigger asChild>
-    //         <Button className="bg-primary/10 p-1 font-normal" variant="outline" size={"xsm"}>
-    //             Sell Product
-    //         </Button>
-    //     </DialogTrigger>
-    //     <DialogContent className="lg:min-w-fit py-2 ">
-    //         <form onSubmit={handleSubmit(onSubmit)}>
-    //             <div className="bg-background p-4">
-    //              hello
-    //             </div>
-
-    //             <DialogClose asChild className="mt-3 mr-auto">
-          
-    //                 <Button type="submit">Update</Button>
-    //             </DialogClose>
-    //         </form>
-    //     </DialogContent>
-    // </Dialog>
     );
 };
