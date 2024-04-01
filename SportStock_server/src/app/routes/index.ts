@@ -5,6 +5,7 @@ import { userRoutes } from "../modules/user/user.route";
 import { sportTypeRoutes } from "../modules/sportType/sportType.route";
 import { BrandRoutes } from "../modules/brand/brand.route";
 import { BranchRoutes } from "../modules/branch/branch.route";
+import { salesRoutes } from "../modules/sales/sales.route";
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use("/users", userRoutes);
 router.use("/sport-types", sportTypeRoutes);
 router.use("/brands", BrandRoutes);
 router.use("/branches", BranchRoutes);
+router.use("/sales", salesRoutes);
 
 export default router;
