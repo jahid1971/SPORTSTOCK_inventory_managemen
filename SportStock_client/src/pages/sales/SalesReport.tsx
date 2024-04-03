@@ -7,6 +7,7 @@ import SearchInput from "@/components/table/SearchInput";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { RxCross2 } from "react-icons/rx";
+import { MyPagination } from "@/components/others/Pagination";
 
 interface IRow {
     saleId: string;
@@ -19,12 +20,12 @@ interface IRow {
 }
 
 const SalesReport = () => {
-    const { data, isFetching } = useGetSalesDataQuery(undefined);
+    const [params, setParams] = useState<{ name: string; value: any }[]>([]);
+    const [page, setPage] = useState<number>(1);
 
-    const [params, setParams] = useState<string[]>([]);
+    const { data, isFetching } = useGetSalesDataQuery(params);
 
-
-    const salesData = data?.data?.map((sale: TSale) => {
+    const salesData = data?.data?.data?.map((sale: TSale) => {
         return {
             _id: sale._id,
             saleId: sale.saleId,
@@ -69,8 +70,8 @@ const SalesReport = () => {
             {/* filter and search options .......... */}
             <div className="mb-2 flex justify-between  flex-wrap gap gap-2">
                 <div className="flex gap-1">
-                    <SearchInput params={params} setParams={setParams} />
-                    {params.length > 0 && (
+                    <SearchInput params={params} setParams={setParams} setPage={setPage} />
+                    {params.filter((param) => param.name !== "page").length > 0 && (
                         <Button
                             className="text-primary pr-6 text-base"
                             variant={"outline"}
@@ -101,6 +102,19 @@ const SalesReport = () => {
             </div>
             {/* table..............table */}
             <DataTable rowData={salesData} columnDefs={colDefs} isFetching={isFetching} />
+            <div className="flex justify-between items-center">
+                <h3 className="text-base font-medium text-primary-400">
+                    Total Sales: {data?.data?.meta?.total}
+                </h3>
+                {data?.data?.meta?.totalPages > 1 && (
+                    <MyPagination
+                        metaData={data?.data?.meta}
+                        setPage={setPage}
+                        params={params}
+                        setParams={setParams}
+                    />
+                )}
+            </div>
         </div>
     );
 };

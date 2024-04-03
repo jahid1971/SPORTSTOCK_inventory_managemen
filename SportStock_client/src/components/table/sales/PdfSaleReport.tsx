@@ -71,7 +71,7 @@ const PdfSaleReport = (params: any) => {
                 </View>
                 <View style={styles.section}>
                     <Text style={styles.label}>Branch:</Text>
-                    <Text style={styles.value}>{params.data.branch}</Text>
+                    <Text style={styles.value}>{params.data.branch.branchName}</Text>
                 </View>
                 <View style={styles.section}>
                     <Text style={styles.label}>Sale Date:</Text>

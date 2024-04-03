@@ -12,8 +12,12 @@ const saleApi = baseApi.injectEndpoints({
         getSalesData: builder.query({
             query: queryApiBuilder("sales"),
             providesTags: ["sales"],
+        }),
+        getSalesHistory: builder.query({
+            query: queryApiBuilder("sales/sales-history"),
+            providesTags: ["sales"],
         })
     }),
 });
 
-export const { useCreateSaleMutation,useGetSalesDataQuery } = saleApi;
+export const { useCreateSaleMutation,useGetSalesDataQuery,useGetSalesHistoryQuery } = saleApi;

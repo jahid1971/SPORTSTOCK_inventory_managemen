@@ -28,10 +28,13 @@ const DataTable = ({
     };
 
     useEffect(() => {
-        if (isFetching) gridRef.current?.api?.showLoadingOverlay();
-        else if (!isFetching && !rowData?.length) gridRef.current!.api?.showNoRowsOverlay();
-        else gridRef.current?.api?.hideOverlay();
-    }, [isFetching, rowData?.length]);
+        setTimeout(() => {
+            if (isFetching) gridRef.current?.api?.showLoadingOverlay();
+            else if (!isFetching && !rowData?.length) gridRef.current!.api?.showNoRowsOverlay();
+            else gridRef.current?.api?.hideOverlay();
+        });
+    }, [gridRef, isFetching, rowData?.length]);
+
 
     return (
         <div className="ag-theme-quartz ">

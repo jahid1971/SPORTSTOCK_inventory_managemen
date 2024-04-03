@@ -28,13 +28,23 @@ export const SellProduct = (params: any) => {
 
     const onSubmit = (data: TSaleData) => {
         delete data.confirmation;
+
+        data.branch = {
+            _id: params.data.productData.branch._id,
+            branchName: params.data.productData.branch.branchName,
+        };
+
         const saleData = {
             ...data,
             productId: params.data._id,
             productName: params.data.name,
         };
-        // console.log("data", saleData);
-        tryCatch(async () => await createSale(saleData), "Product sold successfully", "Sale Product in progress");
+        console.log("data", saleData);
+        tryCatch(
+            async () => await createSale(saleData),
+            "Product sold successfully",
+            "Sale Product in progress"
+        );
     };
 
     return (
@@ -81,12 +91,11 @@ export const SellProduct = (params: any) => {
                             </div>
                         )}
                     </div>
-            
 
                     <DialogClose asChild className="mt-3 mr-auto">
-                    <Button disabled={!isConfirmed} className="mt-2" type="submit">
-                        Sell Product
-                    </Button>
+                        <Button disabled={!isConfirmed} className="mt-2" type="submit">
+                            Sell Product
+                        </Button>
                     </DialogClose>
                 </form>
             </DialogContent>
