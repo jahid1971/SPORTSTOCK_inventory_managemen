@@ -11,5 +11,6 @@ router.post(
     salesControllers.createSale
 );
 router.get("/", checkAuth(userRole.SUPER_ADMIN), salesControllers.getSales);
+router.get("/sales-history", checkAuth(userRole.SUPER_ADMIN), salesControllers.getSalesHistory);
 
 export const salesRoutes = router;

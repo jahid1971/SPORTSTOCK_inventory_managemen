@@ -49,6 +49,5 @@ const logIn = async (payload: { email: string; password: string }) => {
 };
 
 export const authServices = {
-    registerSeller,
     logIn,
 };

@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import { ISale } from "./sales.interface";
 
 const saleSchema = new Schema(
-    { 
+    {
         productName: { type: String, required: true, minlength: 1 },
         saleId: { type: String, required: true, minlength: 1 },
         productId: { type: Schema.Types.ObjectId, ref: "Products", required: true },
@@ -15,7 +15,10 @@ const saleSchema = new Schema(
         quantity: { type: Number, required: true, min: 1 },
         price: { type: Number, required: true, min: 0 },
         totalPrice: { type: Number, required: true },
-        branch: { type: String, required: true, minlength: 1 },
+        branch: {
+            _id: { type: Schema.Types.ObjectId, ref: "Branch", required: true, minlength: 1 },
+            branchName: { type: String, required: true, minlength: 1 },
+        },
         isDeleted: { type: Boolean, default: false },
     },
     { timestamps: true }

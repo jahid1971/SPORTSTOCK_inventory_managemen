@@ -8,10 +8,7 @@ import { authServices } from "./auth.service";
 //     return sendSuccessResponse(res, result, "User created successfully", 201);
 // });
 
-const registerSeller = catchAsynch(async (req: Request, res: Response) => {
-    const result = await authServices.registerSeller(req.body);
-    return sendSuccessResponse(res, result, "Request sent. Please wait for approval", 202);
-});
+
 
 const logIn = catchAsynch(async (req: Request, res: Response) => {
     const { accessToken, refreshToken, userObject } = await authServices.logIn(req.body);
@@ -28,6 +25,5 @@ const logIn = catchAsynch(async (req: Request, res: Response) => {
 });
 
 export const authControllers = {
-    registerSeller,
     logIn,
 };

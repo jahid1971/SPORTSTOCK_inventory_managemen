@@ -8,7 +8,7 @@ const saleValidationSchema = z.object({
   quantity: z.number().positive("Quantity must be a positive number"),
   pricePerUnit: z.number().positive("Price per unit must be a positive number"),
   totalPrice: z.number(),
-  branch: z.string().min(1, "Branch name is required"),
+  branch: z.object({ _id: z.string(), branchName: z.string() }),
   isDeleted: z.boolean().optional(),
 });
 

@@ -8,11 +8,17 @@ const createSale = catchAsynch(async (req, res) => {
 });
 
 const getSales = catchAsynch(async (req, res) => {
-    const result = await SaleServices.getSales();
+    const result = await SaleServices.getSales(req.query);
     return sendSuccessResponse(res, result, "Sales fetched successfully", 200);
+})
+
+const getSalesHistory = catchAsynch(async (req, res) => {
+    const result = await SaleServices.getSalesHistory(req.query);
+    return sendSuccessResponse(res, result, "Sales history fetched successfully", 200);
 })
 
 export const salesControllers = {
     createSale,
-    getSales
+    getSales,
+    getSalesHistory
 };

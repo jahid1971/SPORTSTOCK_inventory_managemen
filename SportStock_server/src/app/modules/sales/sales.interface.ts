@@ -11,6 +11,9 @@ export interface ISale {
     quantity: number;
     price: number;
     totalPrice: number;
-    branch: string;
+    branch: {
+        _id: string;
+        branchName: string;
+    };
     isDeleted?: boolean;
 }

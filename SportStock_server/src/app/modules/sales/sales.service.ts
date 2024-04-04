@@ -5,6 +5,8 @@ import { ISale } from "./sales.interface";
 import Sale from "./sales.model";
 import { IUser } from "../user/user.interface";
 import { generateSaleId } from "./sales.utls";
+import getAllItems from "../../utls/getAllItems";
+import { endOfWeek, format, startOfMonth, startOfWeek, startOfYear } from "date-fns";
 
 // Create a sale.............
 const createSale = async (payload: ISale, user: IUser) => {
@@ -59,12 +61,64 @@ const createSale = async (payload: ISale, user: IUser) => {
 };
 
 // get all sales.............
-const getSales = async () => {
-    const sales = await Sale.find({});
-    return sales;
+const getSales = async (query) => {
+    const searchableFields = ["saleId", "productName"];
+    const allSales = getAllItems(Sale, query, searchableFields);
+    return allSales;
+};
+
+// get sales history.............
+
+const getSalesHistory = async (query) => {
+
+    const sales = await Sale.find({}).sort({ saleDate: 1 });
+    if (!sales.length) {
+        return { labels: [], sales: [] }; 
+    }
+
+    const salesData = sales.reduce((acc, sale) => {
+        const saleDate = new Date(sale.saleDate);
+        let intervalStart, intervalEnd, intervalLabel;
+
+        switch (query.saleHistoryBy) {
+            case "daily":
+                intervalStart = format(saleDate, "dd-MMM");
+                intervalEnd = format(saleDate, "dd-MMM");
+                intervalLabel = intervalStart;
+                break;
+            case "weekly":
+                intervalStart = format(startOfWeek(saleDate), "dd-MMM"); // Default week start from Sunday by date-fns
+                intervalEnd = format(endOfWeek(saleDate), "dd-MMM");
+                intervalLabel = `${intervalStart} - ${intervalEnd}`;
+                break;
+            case "monthly":
+                intervalStart = format(startOfMonth(saleDate), "MMM");
+                intervalLabel = intervalStart;
+                break;
+            case "yearly":
+                intervalStart = format(startOfYear(saleDate), "yyyy");
+                intervalLabel = intervalStart;
+                break;
+            default:
+                throw new AppError(400, "Invalid saleHistoryBy parameter");
+        }
+
+        if (!acc[intervalLabel]) {
+            acc[intervalLabel] = 0;
+        }
+        acc[intervalLabel] += sale.totalPrice;
+
+        return acc;
+    }, {});
+
+    const labels = Object.keys(salesData);
+    const salesValues = Object.values(salesData);
+
+    return { labels, sales: salesValues };
 };
 
 export const SaleServices = {
     createSale,
     getSales,
+    getSalesHistory,
 };
