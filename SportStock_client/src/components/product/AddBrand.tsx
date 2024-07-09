@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { FloatingInput } from "../ui/InputFloatingLabel";
 import { Button } from "../ui/button";
 import { DialogClose } from "../ui/dialog";
-import { useAddBrandMutation, useCreateSportTypeMutation } from "@/redux/features/product/productApi";
+import { useAddBrandMutation} from "@/redux/features/product/productApi";
 import tryCatch from "@/utls/tryCatch";
 import { TSportType } from "@/types/product";
 

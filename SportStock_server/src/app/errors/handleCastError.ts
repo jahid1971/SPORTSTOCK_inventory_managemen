@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from "mongoose";
-import { ICastErrorResult, ICustomCastError } from "../interface/error";
-const handleCastError = (err: mongoose.Error.CastError):ICastErrorResult => {
-    console.log(err, "err");
-    const errorIssues:ICustomCastError[] = [
+
+const handleCastError = (err: mongoose.Error.CastError) => {
+    const errorIssues:any = [
         {
             stringValue: err.stringValue,
             valueType: "string",

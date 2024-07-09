@@ -1,12 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from "express";
 import catchAsynch from "../../utls/catchAsynch";
 import sendSuccessResponse from "../../utls/sendSuccessResponse";
 import { authServices } from "./auth.service";
-
-// const registration = catchAsynch(async (req: Request, res: Response) => {
-//     const result = await authServices.regisration(req.body);
-//     return sendSuccessResponse(res, result, "User created successfully", 201);
-// });
 
 
 
@@ -24,6 +20,13 @@ const logIn = catchAsynch(async (req: Request, res: Response) => {
     sendSuccessResponse(res, data, "User logged in successfully", 200);
 });
 
+const changePassword = catchAsynch(async (req: Request, res: Response) => {
+    const result = await authServices.changePassword((req as any).user._id, req.body);
+
+    return sendSuccessResponse(res, result, "Password changed successfully", 200);
+});
+
 export const authControllers = {
     logIn,
+    changePassword,
 };

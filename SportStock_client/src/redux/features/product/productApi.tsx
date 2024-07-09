@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "@/redux/api/baseApi";
 import { TQueryParam } from "@/types/global.types";
 import { createApiBuilder, queryApiBuilder, singleQueryApiBuilder, updateApiBuilder } from "@/utls/api";
@@ -66,6 +67,34 @@ const productApi = baseApi.injectEndpoints({
             query: queryApiBuilder("brands"),
             providesTags: ["brands"],
         }),
+
+        multiProductDelete: builder.mutation({
+            query: (data: any) => ({
+                url: "products/multi-delete/batch",
+                method: "PATCH",
+                body: data,
+            }),
+            invalidatesTags: ["products"],
+        }),
+
+        getDashboardMeta: builder.query({
+            query: (args) => {
+                const params = new URLSearchParams();
+
+                if (args) {
+                    args.forEach((item: TQueryParam) => {
+                        params.append(item.name, item.value as string);
+                    });
+                }
+
+                return {
+                    url: "products/meta",
+                    method: "GET",
+                    // params: params,
+                };
+            },
+            providesTags: ["products"],
+        }),
     }),
 });
 
@@ -79,4 +108,6 @@ export const {
     useDeleteProductMutation,
     useUpdateProductMutation,
     useGetSingleProductQuery,
+    useMultiProductDeleteMutation,
+    useGetDashboardMetaQuery
 } = productApi;

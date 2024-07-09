@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { toast } from "sonner";
 
 type ActionFunction = () => Promise<any>;
@@ -31,7 +32,7 @@ export const tryCatch: WithErrorHandlingFunction = async (
         else if (res.error) toast.error("Something went wrong", { id: toastId });
 
         return res;
-    } catch (err) {
+    } catch (err:any) {
         console.log(err, " in catch block");
         err?.data?.message || err?.data?.errorMessage
             ? toast.error(err?.data?.errorMessage || err?.data?.message, { id: toastId })

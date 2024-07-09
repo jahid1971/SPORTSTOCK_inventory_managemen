@@ -1,5 +1,6 @@
 import { RxDashboard } from "react-icons/rx";
 import { MdOutlineInventory2 } from "react-icons/md";
+import { GoDotFill } from "react-icons/go";
 
 
 export const sellerMenuItems = [
@@ -15,7 +16,24 @@ export const sellerMenuItems = [
             {
                 label: "Products",
                 path: "products",
-            },
+                icon: <GoDotFill />,
+            }
         ],
     },
+    // {
+    //     label: "Sales",
+    //     icon: <IoCartOutline />,
+    //     children: [
+    //         {
+    //             label: "Sales Report",
+    //             path: "sales-report",
+    //             icon: <GoDotFill />,
+    //         },
+    //         {
+    //             label: "Sales History",
+    //             path: "sales-history",
+    //             icon: <GoDotFill />,
+    //         },
+    //     ],
+    // },
 ];

@@ -6,15 +6,25 @@ import tryCatch from "@/utls/tryCatch";
 import { TSportType } from "@/types/product";
 import { useCreateBranchMutation } from "@/redux/features/admin/adminApi";
 
-const CreateBranch = () => {
+const CreateBranch = ({ isModalTrue }: { isModalTrue?: boolean }) => {
     const [createBranch] = useCreateBranchMutation();
     const {
         register,
         handleSubmit,
+        reset,
         formState: { isValid, errors },
     } = useForm();
+
     const onSubmit = async (data: Partial<TSportType>) => {
-        tryCatch(async () => await createBranch(data), "Branch Created Successfully", "Creating Branch");
+        tryCatch(
+            async () => {
+                const res = await createBranch(data);
+                reset();
+                return res;
+            },
+            "Branch Created Successfully",
+            "Creating Branch"
+        );
     };
     return (
         <div className="p-5">
@@ -38,11 +48,17 @@ const CreateBranch = () => {
                     error={errors.sportType}
                 />
 
-                <DialogClose disabled={!isValid} asChild className="mt-3 mr-auto">
-                    <Button size={"xsm"} type="submit">
+                {isModalTrue ? (
+                    <DialogClose disabled={!isValid} asChild className="mt-3 mr-auto">
+                        <Button size={"xsm"} type="submit">
+                            Create Branch
+                        </Button>
+                    </DialogClose>
+                ) : (
+                    <Button size={"xsm"} type="submit" className="w-28">
                         Create Branch
                     </Button>
-                </DialogClose>
+                )}
             </form>
         </div>
     );

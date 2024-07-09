@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TErrorIssue, TErrorResponse} from "../interface/error";
 
-const handleDuplicateError = (err: any): TErrorResponse => {
+
+const handleDuplicateError = (err: any): any => {
     //  using regex
 
     const match = err.message.match(/"([^"]*)"/);
-    console.log(err.message, "matchhh")
+
 
     const extractedMessage = match && match[1];
 
 
-    const errorIssues: TErrorIssue[] = [
+    const errorIssues: any = [
         {
             path: "",
             message: `${extractedMessage} is already exists`,
@@ -19,7 +19,7 @@ const handleDuplicateError = (err: any): TErrorResponse => {
     return {
         statusCode: 400,
         message: "Duplicate Entry",
-        errorMessage: errorIssues.map((value) => value.message).join(" "),
+        errorMessage: errorIssues.map((value:any) => value.message).join(" "),
         errorDetails: {
             issues: errorIssues,
             name: err.name,

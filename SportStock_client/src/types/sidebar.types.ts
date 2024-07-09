@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactNode } from "react";
 
 export type TSidebarItem = {
@@ -20,6 +21,6 @@ export type TUserMenuItems = {
 
 export type TSidebarItemsProps = {
     mobileMenuOpen?: boolean;
-    setMobileMenuOpen?: (open: boolean) => void;
-    desktopSidebarOpen: boolean;
+    setMobileMenuOpen?: any
+    desktopSidebarOpen?: boolean;
 };

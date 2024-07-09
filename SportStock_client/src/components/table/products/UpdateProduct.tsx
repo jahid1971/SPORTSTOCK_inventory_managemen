@@ -1,16 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm } from "react-hook-form";
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../../ui/dialog";
 import { Button } from "../../ui/button";
-import CustomSelect from "../../ui/CustomSelect";
-import { useUpdateUserStatusMutation } from "@/redux/features/shared/sharedApi";
+
 import tryCatch from "@/utls/tryCatch";
-import { statusOptions } from "@/constants/user";
 import ProductInfo from "@/components/form/ProductInfo";
 import ProductStock from "@/components/form/ProductStock";
-import { useGetSingleProductQuery, useUpdateProductMutation } from "@/redux/features/product/productApi";
+import { useUpdateProductMutation } from "@/redux/features/product/productApi";
 import { TProduct } from "@/types/product";
+import { CustomCellRendererProps } from "@ag-grid-community/react";
 
-export const UpdateProduct = (params: any) => {
+export const UpdateProduct = ({ params }: { params: CustomCellRendererProps }) => {
     const { control, handleSubmit } = useForm<TProduct>({
         defaultValues: { ...params?.data?.productData },
     });
@@ -25,31 +25,28 @@ export const UpdateProduct = (params: any) => {
             "Updating product"
         );
         // console.log(updateData, "updateData")
-       
     };
 
     return (
-        params.data.role !== "superAdmin" && (
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button className="bg-primary/10 p-1 font-normal" variant="outline" size={"xsm"}>
-                        Update
-                    </Button>
-                </DialogTrigger>
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button className="bg-primary/10 p-1 font-normal" variant="outline" size={"xsm"}>
+                    Update
+                </Button>
+            </DialogTrigger>
 
-                <DialogContent className="lg:min-w-fit py-2 ">
-                    <form onSubmit={handleSubmit(handleUpdtateProduct)}>
-                        <div className="bg-background p-4">
-                            <ProductInfo control={control} />
-                            <ProductStock control={control} />
-                        </div>
+            <DialogContent className="lg:min-w-fit py-2">
+                <form onSubmit={handleSubmit(handleUpdtateProduct)}>
+                    <div className="bg-background p-4">
+                        <ProductInfo control={control} />
+                        <ProductStock control={control} />
+                    </div>
 
-                        <DialogClose asChild className="mt-3 mr-auto">
-                            <Button type="submit">Update</Button>
-                        </DialogClose>
-                    </form>
-                </DialogContent>
-            </Dialog>
-        )
+                    <DialogClose asChild className="mt-3 mr-auto">
+                        <Button type="submit">Update</Button>
+                    </DialogClose>
+                </form>
+            </DialogContent>
+        </Dialog>
     );
 };

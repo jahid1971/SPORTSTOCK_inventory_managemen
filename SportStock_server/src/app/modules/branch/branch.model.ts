@@ -1,5 +1,4 @@
 import mongoose, { model } from "mongoose";
-import { IBrand } from "./brand.interface";
 import { IBranch } from "./branch.interface";
 
 const branchSchema = new mongoose.Schema(

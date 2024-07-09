@@ -1,14 +1,11 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import AppError from "../errors/AppError";
 
-const createToken = (
-    jwtPayload: JwtPayload,
-    secret: string,
-    options: {
-        expiresIn: string;
-    }
-) => {
-    return jwt.sign(jwtPayload, secret, options);
+const createToken = (jwtPayload: JwtPayload, secret: Secret, expireTime: string) => {
+    return jwt.sign(jwtPayload, secret, {
+        // algorithm: 'HS256',
+        expiresIn: expireTime,
+    });
 };
 
 const verifyToken = (token: string, secret: string) => {

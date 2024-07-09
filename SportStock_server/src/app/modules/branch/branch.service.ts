@@ -1,3 +1,5 @@
+import { userRole } from "../../constants/user";
+import { IUser } from "../user/user.interface";
 import { IBranch } from "./branch.interface";
 import { Branch } from "./branch.model";
 
@@ -8,8 +10,13 @@ const createBranch = async (payload: IBranch) => {
     return result;
 };
 
-const getAllBranches = async () => {
-    const result = await Branch.find({});
+const getAllBranches = async (user: IUser) => {
+    let result;
+
+    if (user?.role === userRole.BRANCH_MANAGER || user?.role === userRole.SELLER) {
+        result = await Branch.find({ _id: user.branch });
+    } else result = await Branch.find({});
+
     return result;
 };
 

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ZodError } from "zod";
-import { TErrorIssue, TErrorResponse } from "../interface/error";
 
-const handlerZodError = (err: ZodError): TErrorResponse => {
-   const errorIssues: TErrorIssue[] = err.issues.map((issue:any) => {
+const handlerZodError = (err: ZodError): any => {
+    const errorIssues: any = err.issues.map((issue: any) => {
         return {
             path: issue.path[issue.path.length - 1],
             message: issue.message,
@@ -14,14 +13,14 @@ const handlerZodError = (err: ZodError): TErrorResponse => {
     });
 
     return {
-      statusCode: 400,
-      message: "Validation Error",
-      errorMessage: errorIssues.map((value) => value.message).join(" "),
-      errorDetails: {
-          issues: errorIssues,
-          name: err.name,
-      },
-  };
+        statusCode: 400,
+        message: "Validation Error",
+        errorMessage: errorIssues.map((value: any) => value.message).join(" "),
+        errorDetails: {
+            issues: errorIssues,
+            name: err.name,
+        },
+    };
 };
 
 export default handlerZodError;

@@ -5,7 +5,8 @@ export interface IUser {
     id: string;
     fullName: string;
     email: string;
-    password?: string;
+    userPhoto?: string;
+    password: string;
     passwordChangedAt?: {
         getTime(): unknown;
         type: Date;

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BSONError } from "bson";
-import { TErrorIssue, TErrorResponse } from "../interface/error";
 
-const handleBSONError = (err: BSONError): TErrorResponse => {
-const errorIssues: TErrorIssue[] = [
+
+const handleBSONError = (err: BSONError) => {
+const errorIssues:any = [
    {
       path: '', // Access the err.message property instead of err.path
       message: err.message,

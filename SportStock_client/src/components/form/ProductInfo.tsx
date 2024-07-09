@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { FloatingInput } from "../ui/InputFloatingLabel";
-import { Control, Controller } from "react-hook-form";
+import {  Controller } from "react-hook-form";
 import { PiPlusCircleBold } from "react-icons/pi";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import CreateSportType from "../product/createSportType";
 import CustomSelect from "../ui/CustomSelect";
 import { useGetAllBrandNamesQuery, useGetAllSportTypesQuery } from "@/redux/features/product/productApi";
-import { TBrand, TProduct, TSportType } from "@/types/product";
+import { TBrand, TSportType } from "@/types/product";
 import AddBrand from "../product/AddBrand";
 import { productSizeOptions } from "@/constants/product";
 import { TextArea } from "../ui/TextArea";
@@ -43,7 +44,7 @@ const ProductInfo = ({ control }: { control: any }) => {
                 )}
             />
 
-            <FloatingInput id="price" label="Product Price" type="number" control={control} />
+            <FloatingInput id="price" label="Product Price" label_2="taka   " type="number" control={control} />
 
             <div>
                 <Dialog>
@@ -87,7 +88,7 @@ const ProductInfo = ({ control }: { control: any }) => {
             </div>
             <CustomSelect id="size" label="product Size" control={control} options={productSizeOptions} />
 
-            <FloatingInput id="colour" label="Colour" control={control} />
+            <FloatingInput id="color" label="color" control={control} />
 
             <CustomSelect
                 id="material"

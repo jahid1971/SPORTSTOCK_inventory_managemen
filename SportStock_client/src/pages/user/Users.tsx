@@ -1,11 +1,14 @@
-import { useState } from "react";
-import { AgGridReact } from "@ag-grid-community/react"; // React Grid Logic
 import "@ag-grid-community/styles/ag-grid.css"; // Core CSS
 import "@ag-grid-community/styles/ag-theme-quartz.css"; // Theme
 
 import { ColDef, ModuleRegistry } from "@ag-grid-community/core";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
-import { useGetUsersQuery } from "@/redux/features/shared/sharedApi";
+// import { UpdateButton } from "@/components/table/products/UpdateButton";
+// import { UserDeleteButton } from "@/components/table/users/UserDeleteButton";
+import { useGetAllUsersQuery } from "@/redux/api/userApi";
+import DataTable from "@/components/table/DataTable";
+import { TUser } from "@/types/global.types";
+import { UserDeleteButton } from "@/components/table/users/UserDeleteButton";
 import { UpdateButton } from "@/components/table/products/UpdateButton";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
@@ -18,9 +21,9 @@ interface IRow {
 }
 
 const Users = () => {
-    const { data } = useGetUsersQuery(undefined);
+    const { data, isFetching } = useGetAllUsersQuery(undefined);
 
-    const allUsers = data?.data?.map((user) => {
+    const allUsers = data?.data?.map((user:TUser) => {
         return {
             _id: user._id,
             id: user.id,
@@ -30,31 +33,24 @@ const Users = () => {
         };
     });
 
-    const [colDefs, setColDefs] = useState<ColDef<IRow>[]>([
+    const colDefs:ColDef<IRow>[]=[
         { field: "id" },
         { field: "fullName" },
         { field: "role" },
         { field: "status" },
         {
-            headerName: "Action",
+            headerName: "Update Status",
             cellRenderer: UpdateButton,
         },
-    ]);
-
-    const defaultColDef: ColDef = {
-        flex: 1,
-    };
-
+        {
+            headerName: "Delete",
+            cellRenderer: UserDeleteButton,
+        },
+    ];
+    
     return (
         <div className="ag-theme-quartz ">
-            {allUsers && (
-                <AgGridReact
-                    rowData={allUsers}
-                    columnDefs={colDefs}
-                    defaultColDef={defaultColDef}
-                    domLayout="autoHeight"
-                />
-            )}
+            <DataTable rowData={allUsers} columnDefs={colDefs} isFetching={isFetching} />
         </div>
     );
 };

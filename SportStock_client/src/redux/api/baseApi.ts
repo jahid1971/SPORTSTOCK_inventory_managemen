@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
     BaseQueryApi,
     BaseQueryFn,
@@ -8,10 +9,9 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../Store";
 import { logOut, setUser } from "../features/auth/authSlice";
-import { toast } from "sonner";
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/v1",
+    baseUrl: import.meta.env.VITE_BASE_URL as string,
     credentials: "include",
     prepareHeaders: (headers, { getState }) => {
         const token = (getState() as RootState).auth.token;
@@ -33,7 +33,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<FetchArgs, BaseQueryApi, Definition
     if (result.error?.status === 401) {
         console.log("sending refresh token");
 
-        const res = await fetch("http://localhost:5000/api/v1/auth/refresh-token", {
+        const res = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/refresh-token`, {
             method: "POST",
             credentials: "include",
         });
@@ -59,6 +59,6 @@ const baseQueryWithRefreshToken: BaseQueryFn<FetchArgs, BaseQueryApi, Definition
 export const baseApi = createApi({
     reducerPath: "baseApi",
     baseQuery: baseQueryWithRefreshToken,
-    tagTypes: ["userStatus", "sportType", "brands", "branches","products","sales"],
+    tagTypes: ["userStatus", "sportType", "brands", "branches", "products", "sales", "users"],
     endpoints: () => ({}),
 });

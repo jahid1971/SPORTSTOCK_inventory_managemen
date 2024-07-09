@@ -3,7 +3,10 @@ export type TSale = {
     saleId: string;
     saleDate?: string;
     totalPrice: number;
-    branch: string;
+    branch: {
+        _id: string;
+        branchName: string;
+    };
     quantity: number;
     buyerName: string;
     productName: string;

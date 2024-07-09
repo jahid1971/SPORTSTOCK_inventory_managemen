@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prefer-const */
 import { ErrorRequestHandler } from "express";
 import handleValidationError from "../errors/handleValidationError";
-import { ICastErrorResult, TErrorResponse } from "../interface/error";
+// import { ICastErrorResult, TErrorResponse } from "../interface/error";
 import mongoose from "mongoose";
-import config from "../config";
 import { ZodError } from "zod";
 import handlerZodError from "../errors/handleZodEror";
 import handleCastError from "../errors/handleCastError";
@@ -17,7 +17,7 @@ import { BSONError } from "bson";
 const globalErrorHandler: ErrorRequestHandler  = (err, req, res, next) => {
 
 
-    let errorResponse: TErrorResponse | ICastErrorResult = {
+    let errorResponse: any  = {
         statusCode: err.statusCode || 500,
         message: err.name || "Something went wrong",
         errorMessage: err.message || "Something went wrong",

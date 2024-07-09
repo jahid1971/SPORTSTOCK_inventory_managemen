@@ -10,7 +10,15 @@ router.post(
     checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER, userRole.SELLER),
     salesControllers.createSale
 );
-router.get("/", checkAuth(userRole.SUPER_ADMIN), salesControllers.getSales);
-router.get("/sales-history", checkAuth(userRole.SUPER_ADMIN), salesControllers.getSalesHistory);
+router.get(
+    "/",
+    checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER, userRole.SELLER),
+    salesControllers.getSales
+);
+router.get(
+    "/sales-history",
+    checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER),
+    salesControllers.getSalesHistory
+);
 
 export const salesRoutes = router;

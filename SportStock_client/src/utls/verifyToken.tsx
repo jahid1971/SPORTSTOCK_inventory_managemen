@@ -1,4 +1,16 @@
 import { jwtDecode } from "jwt-decode";
-export const verifyTYoken = (token: string) => {
+
+export const verifyToken = (token: string) => {
+  try {
     return jwtDecode(token);
+  } catch (err) {
+    console.error('Token decoding failed', err);
+    return null;
+  }
 };
+
+
+
+
+
+

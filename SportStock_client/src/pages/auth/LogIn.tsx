@@ -1,16 +1,16 @@
 import { FloatingInput } from "@/components/ui/InputFloatingLabel";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/redux/Hooks";
-import { useLogInMutation } from "@/redux/features/auth/authApi";
-import { TUser, setUser } from "@/redux/features/auth/authSlice";
-import { verifyTYoken } from "@/utls/verifyToken";
+import { useLogInMutation } from "@/redux/api/authApi";
+import {  setUser } from "@/redux/features/auth/authSlice";
+
 import { FieldValues, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useState } from "react";
 import tryCatch from "@/utls/tryCatch";
 import { jwtDecode } from "jwt-decode";
+import { TUser } from "@/types/global.types";
 
 const LogIn = () => {
     const navigate = useNavigate();
@@ -28,10 +28,12 @@ const LogIn = () => {
         handleSubmit,
         formState: { errors },
     } = useForm({
-        // defaultValues: {
-        //     id: "0002",
-        //     password: "admin456",
-        // },
+        defaultValues: {
+            // email: "user8@example.com",
+            // password: "user456",
+            email: "mrx@gmail.com",
+            password: "admin123",
+        },
     });
 
     const [logIn] = useLogInMutation();
@@ -39,18 +41,17 @@ const LogIn = () => {
     const onSubmit = async (data: FieldValues) => {
         tryCatch(
             async () => {
-
                 const res = await logIn(data).unwrap();
 
-                const user = jwtDecode(res.data.token) as TUser;
-
-                console.log(user);
+                const user = jwtDecode(res?.data?.token) as TUser;
 
                 dispatch(setUser({ user: user, token: res.data.token }));
-                // if (res.data.needsPasswordChange) {
-                //     navigate("/change-password");
-                // } else navigate(`/${user.role}`);
-                // return res;
+                console.log(user, "user");
+
+                if (res.data?.user?.needsPasswordChange) {
+                    navigate("/change-password");
+                } else navigate(`/dashboard`);
+
                 return res;
             },
             "Logged in successfully",

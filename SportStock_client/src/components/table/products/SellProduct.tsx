@@ -1,32 +1,34 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm } from "react-hook-form";
-import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../../ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "../../ui/dialog";
 import { Button } from "../../ui/button";
-import CustomSelect from "../../ui/CustomSelect";
-import { useUpdateUserStatusMutation } from "@/redux/features/shared/sharedApi";
 import tryCatch from "@/utls/tryCatch";
-import { statusOptions } from "@/constants/user";
-import ProductInfo from "@/components/form/ProductInfo";
-import ProductStock from "@/components/form/ProductStock";
-import { useGetSingleProductQuery, useUpdateProductMutation } from "@/redux/features/product/productApi";
 import { TProduct } from "@/types/product";
 import { FloatingInput } from "@/components/ui/InputFloatingLabel";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { useCreateSaleMutation } from "@/redux/features/sale/SaleApi";
+import { CustomCellRendererProps } from "@ag-grid-community/react";
+import { useState } from "react";
 
 type TSaleData = TProduct & {
     confirmation?: boolean;
 };
-export const SellProduct = (params: any) => {
+export const SellProduct = (params: CustomCellRendererProps) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const [createSale] = useCreateSaleMutation();
-    const { control, handleSubmit, watch } = useForm<TSaleData>({
+    const { control, handleSubmit, watch, formState } = useForm<TSaleData>({
+        mode: "onBlur",
         defaultValues: { branch: params.data.branch, price: params.data.price },
     });
 
     const quantity = watch("quantity");
     const total = quantity * params.data.price;
     const isConfirmed = watch("confirmation");
+    const { isValid } = formState;
 
     const onSubmit = (data: TSaleData) => {
+        if (!data.confirmation || !isValid) return;
         delete data.confirmation;
 
         data.branch = {
@@ -41,14 +43,18 @@ export const SellProduct = (params: any) => {
         };
         console.log("data", saleData);
         tryCatch(
-            async () => await createSale(saleData),
+            async () => {
+                const res = await createSale(saleData).unwrap();
+                setIsModalOpen(false);
+                return res;
+            },
             "Product sold successfully",
-            "Sale Product in progress"
+            "Sale Product is in progress"
         );
     };
 
     return (
-        <Dialog>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
                 <Button className="bg-primary/10 p-1 font-normal" variant="outline" size={"xsm"}>
                     Sell Product
@@ -61,10 +67,16 @@ export const SellProduct = (params: any) => {
                     <div className="bg-background  flex flex-col gap-2">
                         <FloatingInput id="buyerName" label="Buyer Name" required control={control} />
                         <DatePicker
-                            rules={{ required: "Sale Date is required" }}
                             id="saleDate"
                             label="Sale Date"
                             control={control}
+                            rules={{
+                                required: "Date is required",
+                                validate: (value: Date) => {
+                                    const currentDate = new Date();
+                                    if (value > currentDate) return "Sale Date can not be future";
+                                },
+                            }}
                         />
                         <FloatingInput
                             id="quantity"
@@ -92,11 +104,9 @@ export const SellProduct = (params: any) => {
                         )}
                     </div>
 
-                    <DialogClose asChild className="mt-3 mr-auto">
-                        <Button disabled={!isConfirmed} className="mt-2" type="submit">
-                            Sell Product
-                        </Button>
-                    </DialogClose>
+                    <Button disabled={!isConfirmed} className="mt-2" type="submit">
+                        Sell Product
+                    </Button>
                 </form>
             </DialogContent>
         </Dialog>

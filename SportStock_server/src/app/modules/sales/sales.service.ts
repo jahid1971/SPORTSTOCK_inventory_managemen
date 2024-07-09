@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from "mongoose";
 import AppError from "../../errors/AppError";
 import Product from "../product/product.model";
@@ -6,7 +7,8 @@ import Sale from "./sales.model";
 import { IUser } from "../user/user.interface";
 import { generateSaleId } from "./sales.utls";
 import getAllItems from "../../utls/getAllItems";
-import { endOfWeek, format, startOfMonth, startOfWeek, startOfYear } from "date-fns";
+import { endOfWeek, format, startOfWeek } from "date-fns";
+import { userRole } from "../../constants/user";
 
 // Create a sale.............
 const createSale = async (payload: ISale, user: IUser) => {
@@ -61,58 +63,155 @@ const createSale = async (payload: ISale, user: IUser) => {
 };
 
 // get all sales.............
-const getSales = async (query) => {
+const getSales = async (user: IUser, query: any) => {
+    if (user?.role === userRole.BRANCH_MANAGER || user?.role === userRole.SELLER) {
+        query["branch._id"] = user.branch;
+    }
+
     const searchableFields = ["saleId", "productName"];
     const allSales = getAllItems(Sale, query, searchableFields);
     return allSales;
 };
 
-// get sales history.............
+// // get sales history.............
 
-const getSalesHistory = async (query) => {
+// const getSalesHistory = async (query) => {
 
-    const sales = await Sale.find({}).sort({ saleDate: 1 });
-    if (!sales.length) {
-        return { labels: [], sales: [] }; 
+//     const sales = await Sale.find({}).sort({ saleDate: 1 });
+//     if (!sales.length) {
+//         return { labels: [], sales: [] };
+//     }
+
+//     const salesData = sales.reduce((acc, sale) => {
+//         const saleDate = new Date(sale.saleDate);
+//         let intervalStart, intervalEnd, intervalLabel;
+
+//         switch (query.saleHistoryBy) {
+//             case "daily":
+//                 intervalStart = format(saleDate, "dd-MMM");
+//                 intervalEnd = format(saleDate, "dd-MMM");
+//                 intervalLabel = intervalStart;
+//                 break;
+//             case "weekly":
+//                 intervalStart = format(startOfWeek(saleDate), "dd-MMM"); // Default week start from Sunday by date-fns
+//                 intervalEnd = format(endOfWeek(saleDate), "dd-MMM");
+//                 intervalLabel = `${intervalStart} - ${intervalEnd}`;
+//                 break;
+//             case "monthly":
+//                 intervalStart = format(startOfMonth(saleDate), "MMM");
+//                 intervalLabel = intervalStart;
+//                 break;
+//             case "yearly":
+//                 intervalStart = format(startOfYear(saleDate), "yyyy");
+//                 intervalLabel = intervalStart;
+//                 break;
+//             default:
+//                 throw new AppError(400, "Invalid saleHistoryBy parameter");
+//         }
+
+//         if (!acc[intervalLabel]) {
+//             acc[intervalLabel] = 0;
+//         }
+//         acc[intervalLabel] += sale.totalPrice;
+
+//         return acc;
+//     }, {});
+
+//     const labels = Object.keys(salesData);
+//     const salesValues = Object.values(salesData);
+
+//     return { labels, sales: salesValues };
+// };
+
+const getSalesHistory = async (user: IUser, query: any) => {
+    const filter: Record<string, any> = {};
+    // if (user?.role === userRole.BRANCH_MANAGER) filter["branch._id"] = user.branch;
+
+
+    if (user?.role === userRole.BRANCH_MANAGER && user.branch) {
+        filter["branch._id"] = new mongoose.Types.ObjectId(user.branch as string);
     }
 
-    const salesData = sales.reduce((acc, sale) => {
-        const saleDate = new Date(sale.saleDate);
-        let intervalStart, intervalEnd, intervalLabel;
+    let groupBy;
+    let dateFormat;
+    let timezone;
+    if (query?.timezone) timezone = query.timezone;
+    else timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-        switch (query.saleHistoryBy) {
-            case "daily":
-                intervalStart = format(saleDate, "dd-MMM");
-                intervalEnd = format(saleDate, "dd-MMM");
-                intervalLabel = intervalStart;
-                break;
-            case "weekly":
-                intervalStart = format(startOfWeek(saleDate), "dd-MMM"); // Default week start from Sunday by date-fns
-                intervalEnd = format(endOfWeek(saleDate), "dd-MMM");
-                intervalLabel = `${intervalStart} - ${intervalEnd}`;
-                break;
-            case "monthly":
-                intervalStart = format(startOfMonth(saleDate), "MMM");
-                intervalLabel = intervalStart;
-                break;
-            case "yearly":
-                intervalStart = format(startOfYear(saleDate), "yyyy");
-                intervalLabel = intervalStart;
-                break;
-            default:
-                throw new AppError(400, "Invalid saleHistoryBy parameter");
-        }
+    switch (query?.saleHistoryBy) {
+        case "daily":
+            groupBy = {
+                year: { $year: { date: "$saleDate", timezone: timezone } },
+                month: { $month: { date: "$saleDate", timezone: timezone } },
+                day: { $dayOfMonth: { date: "$saleDate", timezone: timezone } },
+            };
+            dateFormat = "%d-%b";
+            break;
+        case "weekly":
+            groupBy = {
+                year: { $year: { date: "$saleDate", timezone: timezone } },
+                week: { $week: { date: "$saleDate", timezone: timezone } },
+            };
+            dateFormat = "%d-%b";
+            break;
+        case "monthly":
+            groupBy = {
+                year: { $year: { date: "$saleDate", timezone: timezone } },
+                month: { $month: { date: "$saleDate", timezone: timezone } },
+            };
+            dateFormat = "%b";
+            break;
+        case "yearly":
+            groupBy = {
+                year: { $year: { date: "$saleDate", timezone: timezone } },
+            };
+            dateFormat = "%Y";
+            break;
+        default:
+            throw new AppError(400, "Invalid saleHistoryBy parameter");
+    }
 
-        if (!acc[intervalLabel]) {
-            acc[intervalLabel] = 0;
-        }
-        acc[intervalLabel] += sale.totalPrice;
+    const salesData = await Sale.aggregate([
+        {
+            $match: filter,
+        },
+        {
+            $group: {
+                _id: groupBy,
+                totalSales: { $sum: "$totalPrice" },
+                saleDate: { $first: "$saleDate" },
+            },
+        },
+        {
+            $sort: { saleDate: 1 },
+        },
+        {
+            $project: {
+                _id: 0,
+                totalSales: 1,
+                saleDate: 1,
+                label: {
+                    $dateToString: {
+                        format: dateFormat,
+                        date: "$saleDate",
+                        timezone: timezone,
+                    },
+                },
+            },
+        },
+    ]);
 
-        return acc;
-    }, {});
+    // Special handling for weekly labels
+    if (query.saleHistoryBy === "weekly") {
+        salesData.forEach((item) => {
+            const startOfWeekDate = startOfWeek(item.saleDate);
+            const endOfWeekDate = endOfWeek(item.saleDate);
+            item.label = `${format(startOfWeekDate, "dd-MMM")} - ${format(endOfWeekDate, "dd-MMM")}`;
+        });
+    }
 
-    const labels = Object.keys(salesData);
-    const salesValues = Object.values(salesData);
+    const labels = salesData.map((data) => data.label);
+    const salesValues = salesData.map((data) => data.totalSales);
 
     return { labels, sales: salesValues };
 };

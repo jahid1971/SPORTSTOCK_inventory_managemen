@@ -1,34 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ProductInfo from "@/components/form/ProductInfo";
 import ProductStock from "@/components/form/ProductStock";
-import { Text } from "@/components/ui/Text";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-    CAccordion,
-    CustomAccordion,
-} from "@/components/ui/accordion";
+import { CustomAccordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { defaultProduct } from "@/constants/defaultValues";
 import { useCreateProductMutation } from "@/redux/features/product/productApi";
 import { TProduct } from "@/types/product";
 import tryCatch from "@/utls/tryCatch";
 import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 
-const CreatreProduct = () => {
+const CreatreProduct = ({ dataForVariant }: { dataForVariant?: TProduct }) => {
     const { control, handleSubmit } = useForm<TProduct>({
-        defaultValues: { ...defaultProduct },
+        defaultValues: { ...dataForVariant },
     });
     const [creatreProduct] = useCreateProductMutation();
+    const navigate = useNavigate();
 
     const onSubmit = (data: TProduct) => {
+        delete data?._id;
         const formData = new FormData();
 
         formData.append("productData", JSON.stringify(data));
         formData.append("file", data?.image);
         tryCatch(
-            async () => await creatreProduct(formData),
+            async () => {
+                const res = await creatreProduct(formData);
+                if ((res as any)?.data?.success) navigate("/products");
+                return res;
+            },
             "Product Created Successfully",
             "Creating Product"
         );
@@ -38,10 +37,14 @@ const CreatreProduct = () => {
     return (
         <div className="flex flex-col">
             <div className="flex justify-between items-center  p-2">
-                <h5 className="text-lg font-semibold ">Create New Product</h5>
-                <Button variant={"base"} size={"xsm"}>
-                    Back to Product
-                </Button>
+                <h5 className="text-lg font-semibold ">
+                    {!dataForVariant ? "Create New Product" : "Create New Variant"}
+                </h5>
+                <Link to="/products">
+                    <Button variant={"base"} size={"xsm"}>
+                        Back to Product
+                    </Button>
+                </Link>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -59,7 +62,11 @@ const CreatreProduct = () => {
                     </CustomAccordion>
                 </div>
                 <div className="flex justify-end mt-3">
-                    <Button>Save Product</Button>
+                    {!dataForVariant ? (
+                        <Button>Create Product</Button>
+                    ) : (
+                        <Button type="submit">Create Variant</Button>
+                    )}
                 </div>
             </form>
         </div>

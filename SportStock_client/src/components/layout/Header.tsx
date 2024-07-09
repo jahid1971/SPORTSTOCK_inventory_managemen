@@ -1,15 +1,26 @@
-import { cn } from "@/lib/utils";
 // import { useAppDispatch } from "@/redux/Hooks";
 // import { logOut } from "@/redux/features/auth/authSlice";
 // import { TSidebarItemsProps } from "@/types/Sidebar.types";
 import { Button } from "@/components/ui/button";
-import { NavLink } from "react-router-dom";
+
 import { HiOutlineBars3 } from "react-icons/hi2";
 import { useAppDispatch } from "@/redux/Hooks";
 import { logOut } from "@/redux/features/auth/authSlice";
 import { TiArrowLeft } from "react-icons/ti";
 
-function Header({ setMobileMenuOpen, mobileMenuOpen, desktopSidebarOpen, setDesktopSidebarOpen }) {
+type THeaderProps = {
+    setMobileMenuOpen: (value: boolean) => void;
+    mobileMenuOpen: boolean;
+    desktopSidebarOpen: boolean;
+    setDesktopSidebarOpen: (value: boolean) => void;
+};
+
+function Header({
+    setMobileMenuOpen,
+    mobileMenuOpen,
+    desktopSidebarOpen,
+    setDesktopSidebarOpen,
+}: THeaderProps) {
     const dispatch = useAppDispatch();
 
     const handleSignOut = () => {

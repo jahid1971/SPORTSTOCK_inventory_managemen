@@ -8,7 +8,6 @@ import catchAsynch from "../utls/catchAsynch";
 import { jwtToken } from "../utls/jwtToken";
 import config from "../config";
 import httpStatus from "http-status";
-import { userRole } from "../constants/user";
 import { TUserRole } from "../modules/user/user.interface";
 
 const checkAuth = (...requiredRoles: Array<TUserRole>) => {
@@ -27,6 +26,7 @@ const checkAuth = (...requiredRoles: Array<TUserRole>) => {
         const user = await User.findById(id);
 
         if (!user) throw new AppError(404, "This user is not found !");
+
         if (user.isDeleted === true) throw new AppError(httpStatus.FORBIDDEN, "This user is deleted !");
         if (user.status === "blocked") throw new AppError(httpStatus.FORBIDDEN, "This user is blocked !");
         if (user.status === "pending") throw new AppError(httpStatus.FORBIDDEN, "User status is pending !");

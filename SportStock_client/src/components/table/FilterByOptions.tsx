@@ -1,15 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import { RiFilterLine } from "react-icons/ri";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 
 import {
     Command,
-    CommandEmpty,
     CommandGroup,
-    CommandInput,
     CommandItem,
     CommandList,
-    CommandSeparator,
 } from "@/components/ui/command";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -36,7 +34,7 @@ const FilterByOptions: React.FC<FilterByProps> = ({ title, filterItems, filterBy
     useEffect(() => {
         const currentSelectedValues = params.filter((param) => param.name === filterBy);
         const newSelectedValues = currentSelectedValues.map((param) => param.value);
-        setSelectedValues(newSelectedValues);
+        setSelectedValues(newSelectedValues as any);
     }, [params, filterBy]);
 
     const handleOnSelect = (filterItem: FilterItem) => {

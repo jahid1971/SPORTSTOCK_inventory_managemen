@@ -1,0 +1,1 @@
+*** express.js  e same same endpoint route holedynamic route serial e pore dite hobe router.get("product/meta") router.get("product/:id")

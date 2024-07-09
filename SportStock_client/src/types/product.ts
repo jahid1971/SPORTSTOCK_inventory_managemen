@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type TProduct = {
-    _id: string;
+    _id?: string;
     image: any;
     productName: string;
     price: number;
     sportType: string;
     brand: string;
     size: string;
-    colour: string;
+    color: string;
     material: string;
     branch: TBranch;
     quantity: number;

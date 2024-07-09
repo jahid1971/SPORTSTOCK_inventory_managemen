@@ -1,10 +1,16 @@
-import React, { useState } from "react";
-import ReactPaginate from "react-paginate";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-export const MyPagination = ({ metaData, setPage, params, setParams }) => {
+import ReactPaginate from "react-paginate";
+type TMyPaginationProps ={
+    metaData: { totalPages: number; page: number };
+    params: { name: string; value: any }[];
+    setParams: (params: { name: string; value: any }[]) => void;
+
+}
+export const MyPagination = ({ metaData, params, setParams }:TMyPaginationProps) => {
     const totalPages = Math.ceil(metaData?.totalPages);
 
-    const handlePageChange = (selected) => {
+    const handlePageChange = (selected:any) => {
         const updatedParams = params.filter((param) => param.name !== "page");
         updatedParams.push({ name: "page", value: selected.selected + 1 });
         setParams(updatedParams);

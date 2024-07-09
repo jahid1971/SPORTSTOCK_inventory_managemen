@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { ConditionType, IProduct, MaterialType } from "./product.interface";
+import { ConditionType, IProduct} from "./product.interface";
 
 const productSchema = new Schema(
     {
@@ -12,7 +12,7 @@ const productSchema = new Schema(
         brand: { type: String },
         material: { type: String },
         color: { type: String },
-        size: { type: String, enum: ["s", "m", "l", "xl", "xxl", "xxxl"] },
+        size: { type: String },
         condition: { type: String, enum: Object.values(ConditionType) },
         description: { type: String },
         isDeleted: { type: Boolean, default: false },

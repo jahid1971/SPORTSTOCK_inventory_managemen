@@ -1,9 +1,10 @@
 import { cn } from "@/lib/utils";
 import SidebarItems from "./SidebarItems";
-import { TSidebarItemsProps } from "@/types/Sidebar.types";
+
 import { NavLink } from "react-router-dom";
 import { Sheet,SheetContent } from "@/components/ui/sheet";
 import { MdOutlineSportsBaseball } from "react-icons/md";
+import { TSidebarItemsProps } from "@/types/sidebar.types";
 
 export default function Sidebar({
     mobileMenuOpen,

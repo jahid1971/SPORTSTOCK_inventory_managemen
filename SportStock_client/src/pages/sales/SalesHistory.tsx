@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState } from "react";
 import LineChart from "@/components/charts/LineChart";
 import { useGetSalesHistoryQuery } from "@/redux/features/sale/SaleApi";
 import { Spinner } from "@/components/ui/Spinner";
@@ -38,8 +39,8 @@ const SalesHistory = () => {
                 </div>
             </div>
             <div className="flex flex-col items-center gap-8">
-                {isFetching ? (
-                    <Spinner label="Please wait..." />
+                {isFetching || !salesData ? (
+                    <Spinner className="top-10" label="Please wait..." />
                 ) : (
                     <div className="w-full h-96 flex justify-center">
                         <LineChart

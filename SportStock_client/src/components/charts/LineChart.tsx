@@ -12,7 +12,13 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const LineChart = ({ labels, data, title }) => {
+type TLineChartProps = {
+    labels: string[];
+    data: number[];
+    title: string;
+};
+
+const LineChart = ({ labels, data, title }: TLineChartProps) => {
     const chartData = {
         labels: labels,
         datasets: [
@@ -22,7 +28,6 @@ const LineChart = ({ labels, data, title }) => {
                 fill: false,
                 backgroundColor: "rgb(251 113 133)",
                 borderColor: "rgb(251 113 133)",
-                
             },
         ],
     };
@@ -31,7 +36,7 @@ const LineChart = ({ labels, data, title }) => {
         responsive: true,
         plugins: {
             legend: {
-                position: "top",
+                position: "top" as const ,
             },
             title: {
                 display: true,

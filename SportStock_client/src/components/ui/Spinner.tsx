@@ -11,7 +11,7 @@ export interface ISpinner {
 
 export const Spinner = ({ size = 40, backdrop, label, className }: ISpinner) => {
     return (
-        <div className={cn("w-[95%] mx-auto  h-full   absolute flex items-center justify-center", className)}>
+        <div className={cn("w-[95%] mx-auto  h-[75%]   absolute flex items-center justify-center", className)}>
             {backdrop && (
                 <div className="absolute inset-0 backdrop-filter backdrop-blur-[2px] z-10 bg-opacity-50 "></div>
             )}

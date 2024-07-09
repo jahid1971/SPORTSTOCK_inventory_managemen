@@ -1,4 +1,10 @@
-const getAllItems = async (Model, query: Record<string, unknown>, searchableFields, excludeFields = []) => {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const getAllItems = async (
+    Model: any,
+    query: Record<string, unknown>,
+    searchableFields:string[],
+    excludeFields: string[] = []
+) => {
     const queryObject = { ...query };
 
     const excludeFieldsList = ["searchTerm", "page", "limit", "sortBy", "sortOrder", ...excludeFields];
@@ -16,7 +22,7 @@ const getAllItems = async (Model, query: Record<string, unknown>, searchableFiel
         }));
     }
 
-    console.log(queryObject, "queryObject");
+ 
 
     const result = await Model.find(queryObject)
         .skip((page - 1) * limit)

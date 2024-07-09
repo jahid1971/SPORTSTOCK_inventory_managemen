@@ -1,24 +1,32 @@
-import mongoose, { PipelineStage } from "mongoose";
-import { sendImageToCloudinary } from "../../utls/sendImageToCloudinary";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { userRole } from "./../../constants/user";
+
 import { IProduct } from "./product.interface";
 import Product from "./product.model";
 import getAllItems from "../../utls/getAllItems";
+import AppError from "../../errors/AppError";
+import { sendImageToCloudinary } from "../../utls/sendImageToCloudinary";
+import { IUser } from "../user/user.interface";
+import mongoose from "mongoose";
 
 const createProduct = async (file: any, payload: IProduct) => {
     const imageName = payload.productName;
     if (file) {
-        const productImage = await sendImageToCloudinary(imageName, file?.path);
+        const productImage = await sendImageToCloudinary(
+            imageName,
+            file?.buffer
+        );
 
-        payload.image = productImage?.secure_url as string;
+        payload.image = (productImage as any)?.secure_url;
     }
     payload.isDeleted = false;
 
     const result = await Product.create(payload);
-    console.log(payload, "payload");
+
     return result;
 };
 
-const getAllProducts = async (query: Record<string, unknown>) => {
+const getAllProducts = async (user: IUser, query: Record<string, unknown>) => {
     if (query?.minQuantity || query?.maxQuantity) {
         query.quantity = {
             $gte: Number(query?.minQuantity) || 0,
@@ -32,165 +40,98 @@ const getAllProducts = async (query: Record<string, unknown>) => {
         };
     }
 
+    if (
+        user.role === userRole.SELLER ||
+        user.role === userRole.BRANCH_MANAGER
+    ) {
+        const branch = user?.branch;
+        query.branch = branch;
+    }
+
     const allProducts = getAllItems(
         Product,
         query,
         ["productName", "description"],
         ["minPrice", "maxPrice", "minQuantity", "maxQuantity"]
     );
-    // const queryObject = { ...query };
-    // const excludeFields = [
-    //     "searchTerm",
-    //     "page",
-    //     "limit",
-    //     "sortBy",
-    //     "sortOrder",
-    //     "minPrice",
-    //     "maxPrice",
-    //     "minQuantity",
-    //     "maxQuantity",
-    // ];
-    // excludeFields.forEach((value) => delete queryObject[value]);
-
-    // // const searchTerm = (query.searchTerm as string) || "";
-    // const sortBy = (query?.sortBy as string) || "createdAt";
-    // const sortOrder = query?.sortOrder === "desc" ? -1 : 1;
-    // const page = Number(query?.page) || 1;
-    // const limit = Number(query?.limit) || 10;
-    // const searchableFields = ["productName", "description"];
-
-    // if (query?.minQuantity || query?.maxQuantity) {
-    //     queryObject.quantity = {
-    //         $gte: Number(query?.minQuantity) || 0,
-    //         $lte: Number(query?.maxQuantity) || Infinity,
-    //     };
-    // }
-    // if (query?.minPrice || query?.maxPrice) {
-    //     queryObject.price = {
-    //         $gte: Number(query?.minPrice) || 0,
-    //         $lte: Number(query?.maxPrice) || Infinity,
-    //     };
-    // }
-    // if (query.searchTerm && typeof query.searchTerm === "string" && query.searchTerm.trim() !== "") {
-    //     queryObject.$or = searchableFields.map((field) => ({
-    //         [field]: { $regex: query.searchTerm, $options: "i" },
-    //     }));
-    // }
-
-    // console.log(queryObject, "queryObject");
-
-    // const result = await Product.find(queryObject)
-    //     .skip((page - 1) * limit)
-    //     .limit(limit)
-    //     .sort({ [sortBy]: sortOrder })
-    //     .populate("branch", "_id branchName");
-
-    // const total = await Product.countDocuments(queryObject);
-    // const totalPages = Math.ceil(total / limit);
     return allProducts;
 };
 
-// const getAllProducts = async (query: Record<string, unknown>) => {
-//     const queryObject: Record<string, any> = { isDeleted:false, ...query };
-
-//     const excludeFields = [
-//         "searchTerm",
-//         "page",
-//         "limit",
-//         "sortBy",
-//         "sortOrder",
-//         "minPrice",
-//         "maxPrice",
-//         "minQuantity",
-//         "maxQuantity",
-//     ];
-
-//     excludeFields.forEach((value) => delete queryObject[value]);
-
-//     if (query?.minQuantity || query?.maxQuantity) {
-//         queryObject.quantity = {
-//             $gte: Number(query?.minQuantity) || 0,
-//             $lte: Number(query?.maxQuantity) || Infinity,
-//         };
-//     }
-//     if (query?.minPrice || query?.maxPrice) {
-//         queryObject.price = {
-//             $gte: Number(query?.minPrice) || 0,
-//             $lte: Number(query?.maxPrice) || Infinity,
-//         };
-//     }
-//     if (query?.branch) {
-//         if(Array.isArray(query.branch)) $in: query.branch;
-//         else queryObject.branch = query.branch;
-//     }
-
-//     const searchTerm = (query.searchTerm as string) || "";
-//     const sortBy = (query?.sortBy as string) || "createdAt";
-//     const sortOrder = query?.sortOrder === "desc" ? -1 : 1;
-//     let page = Number(query?.page) || 1;
-//     let limit = Number(query?.limit) || 10;
-//     let skip = (page - 1) * limit;
-//     const searchableFields = ["productName", "description"];
-//     const pipeline = [
-//         {
-//             $match: {
-//                 $or: searchableFields.map((field) => ({
-//                     [field]: { $regex: searchTerm, $options: "i" },
-//                 })),
-//                 ...queryObject,
-//             },
-//         },
-
-//         {
-//             $sort: { [sortBy]: sortOrder },
-//         },
-//         {
-//             $lookup: {
-//                 from: "branches",
-//                 localField: "branch",
-//                 foreignField: "_id",
-//                 as: "branch",
-//                 pipeline: [{ $project: { branchName: 1, _id: 1 } }],
-//             },
-//         },
-//         { $unwind: "$branch" },
-//         { $skip: skip },
-//         { $limit: limit },
-//     ];
-//     const countPipeline = [...pipeline, { $count: "total" }];
-//     const countResult = await Product.aggregate(countPipeline as PipelineStage[]);
-//     const total = countResult.length ? countResult[0].total : 0;
-//     const totalPages = Math.ceil(total / limit);
-
-//     // pipeline.push({
-//     //     $addFields: {
-//     //         meta: {
-//     //             page,
-//     //             limit,
-//     //             total: countResult.length ? countResult[0].total : 0,
-//     //         },
-//     //     },
-//     // });
-
-//     console.log(queryObject, "queryObject");
-//     const result = await Product.aggregate(pipeline);
-//     return { data: result, meta: { page, limit, total, totalPages } };
-// };
-
-const getSingleProduct = (id) => {
+const getSingleProduct = (id: string) => {
     const result = Product.findById(id);
     return result;
 };
 
 const updateProduct = (id: string, payload: Partial<IProduct>) => {
     delete payload._id;
-    console.log(payload, "payload", id, "id");
     const result = Product.findByIdAndUpdate(id, payload, { new: true });
     return result;
 };
+
 const deleteProduct = async (productId: string) => {
-    const result = Product.findByIdAndUpdate(productId, { isDeleted: true }, { new: true });
+    const result = await Product.findByIdAndUpdate(
+        productId,
+        { isDeleted: true },
+        { new: true }
+    );
+
+    if (!result) throw new AppError(404, "Update failed, product not found");
+
     return result;
+};
+
+const multiProductDelete = async (productIds: string[]) => {
+    const ids = productIds.map((id) => new mongoose.Types.ObjectId(id));
+    const result = await Product.updateMany(
+        { _id: { $in: ids } },
+        { isDeleted: true }
+    );
+    // const ids = productIds.map((id) => new mongoose.Types.ObjectId(id) );
+    // const result = await Product.updateMany({ _id: { $in: ids }, isDeleted: true });
+    return result;
+};
+
+const getDashboardMeta = async (user: IUser) => {
+    const totalProducts = await Product.countDocuments({ isDeleted: false });
+
+    const totalItems = await Product.aggregate([
+        {
+            $match: {
+                isDeleted: false,
+            },
+        },
+
+        {
+            $group: {
+                _id: null,
+                totalQuantity: { $sum: "$quantity" },
+                // totalPrice: { $sum: "$price" },
+                totalStockValue: {
+                    $sum: { $multiply: ["$quantity", "$price"] },
+                },
+            },
+        },
+        {
+            $project: {
+                _id: 0,
+                totalQuantity: 1,
+                totalStockValue: 1,
+            },
+        },
+    ]);
+
+    console.log("totalItems", totalItems);  
+
+    const totalQuantity = totalItems[0]?.totalQuantity || 0;
+    const totalStockValue = totalItems[0]?.totalStockValue || 0;
+
+    console.log( totalQuantity, totalStockValue);
+
+    return {
+        totalProducts,
+        totalQuantity,
+        totalStockValue,
+    };
 };
 
 export const productServices = {
@@ -199,4 +140,6 @@ export const productServices = {
     getSingleProduct,
     updateProduct,
     deleteProduct,
+    multiProductDelete,
+    getDashboardMeta,
 };

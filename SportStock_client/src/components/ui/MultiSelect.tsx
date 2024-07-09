@@ -87,7 +87,7 @@ export default function MultiSelect({ options }: { options: option[] }) {
                                                 e.preventDefault();
                                                 e.stopPropagation();
                                             }}
-                                            onSelect={(value) => {
+                                            onSelect={() => {
                                                 setInputValue("");
                                                 setSelected((prev) => [...prev, option]);
                                             }}

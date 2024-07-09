@@ -3,11 +3,12 @@ import { MdOutlineInventory2 } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { GoDotFill } from "react-icons/go";
 import { IoCartOutline } from "react-icons/io5";
+import { FaMapLocationDot } from "react-icons/fa6";
 
 export const adminMenuItems = [
     {
         label: "Dashboard",
-        path: "",
+        path: "dashboard",
         icon: <RxDashboard />,
     },
     {
@@ -22,6 +23,11 @@ export const adminMenuItems = [
             {
                 label: "Create Branch Manager",
                 path: "create-branch-manager",
+                icon: <GoDotFill />,
+            },
+            {
+                label: "Create Seller",
+                path: "create-seller",
                 icon: <GoDotFill />,
             },
         ],
@@ -54,6 +60,17 @@ export const adminMenuItems = [
             {
                 label: "Sales History",
                 path: "sales-history",
+                icon: <GoDotFill />,
+            },
+        ],
+    },
+    {
+        label: "Branch Management",
+        icon: <FaMapLocationDot />,
+        children: [
+            {
+                label: "Add Branch",
+                path: "add-branch",
                 icon: <GoDotFill />,
             },
         ],

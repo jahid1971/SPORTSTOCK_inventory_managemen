@@ -2,11 +2,12 @@ import { useForm } from "react-hook-form";
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../../ui/dialog";
 import { Button } from "../../ui/button";
 import CustomSelect from "../../ui/CustomSelect";
-import { useUpdateUserStatusMutation } from "@/redux/features/shared/sharedApi";
 import tryCatch from "@/utls/tryCatch";
 import { statusOptions } from "@/constants/user";
+import { useUpdateUserStatusMutation } from "@/redux/api/userApi";
+import { CustomCellRendererProps } from "@ag-grid-community/react";
 
-export const UpdateButton = (params: any) => {
+export const UpdateButton = (params: CustomCellRendererProps) => {
     const { control, handleSubmit } = useForm();
     const [updateUserStatus] = useUpdateUserStatusMutation();
 
@@ -22,7 +23,7 @@ export const UpdateButton = (params: any) => {
     };
 
     return (
-        params.data.role !== "superAdmin" && (
+    
             <Dialog>
                 <DialogTrigger asChild>
                     <Button className="bg-primary/10 p-1 font-normal" variant="outline" size={"xsm"}>
@@ -43,6 +44,6 @@ export const UpdateButton = (params: any) => {
                     </form>
                 </DialogContent>
             </Dialog>
-        )
+        
     );
 };

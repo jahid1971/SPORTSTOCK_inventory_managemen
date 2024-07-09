@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ColDef } from "@ag-grid-community/core";
 import DataTable from "@/components/table/DataTable";
 import { useGetSalesDataQuery } from "@/redux/features/sale/SaleApi";
 import { TSale } from "@/types/sale.types";
-import PdfSaleReport from "@/components/table/sales/PdfSaleReport";
 import SearchInput from "@/components/table/SearchInput";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { RxCross2 } from "react-icons/rx";
 import { MyPagination } from "@/components/others/Pagination";
+import DownLoadSaleReport from "@/components/table/sales/PrintSaleReport";
 
 interface IRow {
     saleId: string;
@@ -15,15 +16,21 @@ interface IRow {
     buyerName: string;
     totalPrice: number;
     quantity: number;
-    branch: string;
+    branch: {
+        _id: string;
+        branchName: string;
+    };
     saleDate: string;
 }
 
 const SalesReport = () => {
     const [params, setParams] = useState<{ name: string; value: any }[]>([]);
-    const [page, setPage] = useState<number>(1);
 
-    const { data, isFetching } = useGetSalesDataQuery(params);
+    const { data, isFetching } = useGetSalesDataQuery([
+        ...params,
+        { name: "sortBy", value: "saleDate" },
+        { name: "sortOrder", value: "desc" },
+    ]);
 
     const salesData = data?.data?.data?.map((sale: TSale) => {
         return {
@@ -32,7 +39,7 @@ const SalesReport = () => {
 
             productName: sale.productName,
             buyerName: sale.buyerName,
-            branch: sale.branch,
+            branch: sale?.branch?.branchName,
             saleDate: sale.saleDate,
             quantity: sale.quantity,
             totalPrice: sale.totalPrice,
@@ -53,14 +60,14 @@ const SalesReport = () => {
         { field: "branch" },
         {
             field: "saleDate",
-            cellRenderer: (params) => new Date(params.value).toLocaleDateString(),
+            cellRenderer: (params: any) => new Date(params.value).toLocaleDateString(),
             maxWidth: 100,
         },
         { field: "quantity", maxWidth: 100 },
         { field: "totalPrice", maxWidth: 100 },
         {
             headerName: "Download",
-            cellRenderer: PdfSaleReport,
+            cellRenderer: DownLoadSaleReport,
             maxWidth: 100,
         },
     ];
@@ -70,7 +77,7 @@ const SalesReport = () => {
             {/* filter and search options .......... */}
             <div className="mb-2 flex justify-between  flex-wrap gap gap-2">
                 <div className="flex gap-1">
-                    <SearchInput params={params} setParams={setParams} setPage={setPage} />
+                    <SearchInput params={params} setParams={setParams} />
                     {params.filter((param) => param.name !== "page").length > 0 && (
                         <Button
                             className="text-primary pr-6 text-base"
@@ -107,12 +114,7 @@ const SalesReport = () => {
                     Total Sales: {data?.data?.meta?.total}
                 </h3>
                 {data?.data?.meta?.totalPages > 1 && (
-                    <MyPagination
-                        metaData={data?.data?.meta}
-                        setPage={setPage}
-                        params={params}
-                        setParams={setParams}
-                    />
+                    <MyPagination metaData={data?.data?.meta} params={params} setParams={setParams} />
                 )}
             </div>
         </div>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -6,7 +7,14 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Controller } from "react-hook-form";
 
-export function DatePicker({ id, control, label, rules, ...props }) {
+type TDatePickerProps = {
+    id: string;
+    control: any;
+    label: string;
+    rules: any;
+};
+
+export function DatePicker({ id, control, label, rules }: TDatePickerProps) {
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
 
     return (

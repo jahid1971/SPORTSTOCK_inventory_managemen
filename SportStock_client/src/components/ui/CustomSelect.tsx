@@ -19,7 +19,7 @@ const CustomSelect: React.FC<TCustomSelectProps> = ({ id, label, options, contro
             defaultValue=""
             render={({ field, fieldState: { error } }) => (
                 <Select
-                    classname="flex flex-col"
+                    // className="flex flex-col"
                     disabled={disabled}
                     onValueChange={field.onChange}
                     value={field.value}>
