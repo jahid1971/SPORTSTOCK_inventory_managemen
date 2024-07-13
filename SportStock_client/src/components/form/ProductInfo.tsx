@@ -4,21 +4,22 @@ import { FloatingInput } from "../ui/InputFloatingLabel";
 import {  Controller } from "react-hook-form";
 import { PiPlusCircleBold } from "react-icons/pi";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import CreateSportType from "../product/createSportType";
+
 import CustomSelect from "../ui/CustomSelect";
-import { useGetAllBrandNamesQuery, useGetAllSportTypesQuery } from "@/redux/features/product/productApi";
-import { TBrand, TSportType } from "@/types/product";
+import { useGetAllBrandNamesQuery, useGetAllCategoriesQuery } from "@/redux/features/product/productApi";
+import { TBrand, TCategory } from "@/types/product";
 import AddBrand from "../product/AddBrand";
 import { productSizeOptions } from "@/constants/product";
 import { TextArea } from "../ui/TextArea";
+import CreateCategory from "../product/createCategory";
 
 const ProductInfo = ({ control }: { control: any }) => {
-    const { data: sportTypes, isFetching: isSportTypeFetching } = useGetAllSportTypesQuery(undefined);
+    const { data: categorys, isFetching: isCategoryFetching } = useGetAllCategoriesQuery(undefined);
     const { data: brandNames, isFetching: isBrandNameFetching } = useGetAllBrandNamesQuery(undefined);
 
-    const sportTypesOptions = sportTypes?.data?.map((sportType: TSportType) => ({
-        value: sportType._id,
-        label: sportType.sportType,
+    const categorysOptions = categorys?.data?.map((category: TCategory) => ({
+        value: category._id,
+        label: category?.category,
     }));
     const brandNamesOptions = brandNames?.data?.map((brand: TBrand) => ({
         value: brand._id,
@@ -55,15 +56,15 @@ const ProductInfo = ({ control }: { control: any }) => {
                         </div>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px]">
-                        <CreateSportType />
+                        <CreateCategory />
                     </DialogContent>
                 </Dialog>
                 <CustomSelect
-                    id="sportType"
-                    label="Sport Type"
+                    id="category"
+                    label="Category"
                     control={control}
-                    options={sportTypesOptions}
-                    disabled={isSportTypeFetching}
+                    options={categorysOptions}
+                    disabled={isCategoryFetching}
                 />
             </div>
             <div>

@@ -1,15 +1,16 @@
 import { Router } from "express";
-import { SportTypeController } from "./sportType.controller";
 import checkAuth from "../../middleWares/checkAuth";
 import { userRole } from "../../constants/user";
+import { CategoryController } from "./category.controller";
 
 const router = Router();
 
 router.post(
-    "/create-sport-type",
+    "/create-category",
     checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER),
-    SportTypeController.createSportType
+    CategoryController.createCategory
+    
 );
-router.get("/", SportTypeController.getAllSportTypes);
+router.get("/", CategoryController.getAllCategory);
 
-export const sportTypeRoutes = router;
+export const categoryRoutes = router;

@@ -5,7 +5,7 @@ const productValidationSchema = z.object({
     price: z.number().positive("Price must be a positive number"),
     quantity: z.number().int().positive("Quantity must be a positive integer"),
     branch: z.string().trim().min(1, "Branch name is required and must not be leeren"),
-    sportType: z.string().optional(),
+    category: z.string().optional(),
     brand: z.string().optional(),
     material: z.string().optional(),
     color: z.string().optional(),

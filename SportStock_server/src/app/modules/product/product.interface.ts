@@ -8,7 +8,7 @@ export interface IProduct {
     price: number;
     quantity: number;
     branch: string;
-    sportType?: Types.ObjectId;
+    category?: Types.ObjectId;
     brand?: string;
     material?: MaterialType;
     color?: string;
@@ -18,7 +18,7 @@ export interface IProduct {
     isDeleted?: boolean;
 }
 
-// export enum SportType {
+// export enum Category {
 //     CRICKET = "cricket",
 //     FOOTBALL = "football",
 //     SOCCER = "soccer",

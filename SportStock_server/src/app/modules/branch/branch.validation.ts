@@ -5,7 +5,7 @@ const CrteateBranchSchema = object({
         required_error: "Branch is required",
     })
         .trim()
-        .min(1, "Sport type must have at least 1 character"),
+        .min(1, "Branch must have at least 1 character"),
     location: string({
         required_error: "Location is required",
     })
@@ -16,7 +16,7 @@ const CrteateBranchSchema = object({
 
 const updateBranchSchema = CrteateBranchSchema.partial();
 
-export const SportTypeValidation = {
+export const BranchValidation = {
     CrteateBranchSchema,
     updateBranchSchema,
 };

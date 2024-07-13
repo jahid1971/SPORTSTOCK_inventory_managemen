@@ -1,7 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { RiFilterLine } from "react-icons/ri";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
 import { TQueryParam } from "@/types/global.types";
@@ -17,7 +21,12 @@ interface FilterByProps {
     setParams: (params: TQueryParam[]) => void;
 }
 
-const FilterByInput: React.FC<FilterByProps> = ({ title, filterBy, params, setParams }) => {
+const FilterByInput: React.FC<FilterByProps> = ({
+    title,
+    filterBy,
+    params,
+    setParams,
+}) => {
     const [inputValues, setInputValues] = useState<string[]>([]);
     const { register, handleSubmit, reset } = useForm();
     useEffect(() => {
@@ -31,7 +40,11 @@ const FilterByInput: React.FC<FilterByProps> = ({ title, filterBy, params, setPa
             {inputValues?.length > 0 && (
                 <div className="space-x-1 lg:flex">
                     {inputValues?.map((option, i) => (
-                        <Badge variant="secondary" key={i} className="px-1 font-normal rounded-sm">
+                        <Badge
+                            variant="secondary"
+                            key={i}
+                            className="px-1 font-normal rounded-sm"
+                        >
                             {option}
                         </Badge>
                     ))}
@@ -42,17 +55,31 @@ const FilterByInput: React.FC<FilterByProps> = ({ title, filterBy, params, setPa
 
     const handleFilter = (data: { [key: string]: string }) => {
         const updatedParams = params.filter(
-            (param) => param.name !== `min${filterBy}` && param.name !== `max${filterBy}`
+            (param) =>
+                param.name !== `min${filterBy}` &&
+                param.name !== `max${filterBy}`
         );
         setInputValues([]);
 
         if (data[`min${filterBy}`]) {
-            updatedParams.push({ name: `min${filterBy}`, value: data[`min${filterBy}`] });
-            setInputValues((prev) => [...prev, `Min-${filterBy}=${data[`min${filterBy}`]}`]);
+            updatedParams.push({
+                name: `min${filterBy}`,
+                value: data[`min${filterBy}`],
+            });
+            setInputValues((prev) => [
+                ...prev,
+                `Min-${filterBy}=${data[`min${filterBy}`]}`,
+            ]);
         }
         if (data[`max${filterBy}`]) {
-            updatedParams.push({ name: `max${filterBy}`, value: data[`max${filterBy}`] });
-            setInputValues((prev) => [...prev, `Max-${filterBy}=${data[`max${filterBy}`]}`]);
+            updatedParams.push({
+                name: `max${filterBy}`,
+                value: data[`max${filterBy}`],
+            });
+            setInputValues((prev) => [
+                ...prev,
+                `Max-${filterBy}=${data[`max${filterBy}`]}`,
+            ]);
         }
         setParams(updatedParams);
         reset();
@@ -64,12 +91,25 @@ const FilterByInput: React.FC<FilterByProps> = ({ title, filterBy, params, setPa
                 <PopoverTrigger asChild>{filterButton}</PopoverTrigger>
             </div>
             <PopoverContent className="w-[200px] p-0" align="start">
-                <form onSubmit={handleSubmit(handleFilter)} className="flex flex-col ">
-                    <Input {...register(`min${filterBy}`)} placeholder={`Min ${filterBy}`} />
-                    <Input {...register(`max${filterBy}`)} placeholder={`Max ${filterBy}`} />
+                <form
+                    onSubmit={handleSubmit(handleFilter)}
+                    className="flex flex-col "
+                >
+                    <Input
+                        {...register(`min${filterBy}`)}
+                        placeholder={`Min ${filterBy}`}
+                    />
+                    <Input
+                        {...register(`max${filterBy}`)}
+                        placeholder={`Max ${filterBy}`}
+                    />
 
                     <PopoverClose asChild>
-                        <Button type="submit" className="" variant={"secondary"}>
+                        <Button
+                            type="submit"
+                            className=""
+                            variant={"secondary"}
+                        >
                             <RiFilterLine className="w-4 h-4 mr-1" />
                             Filter
                         </Button>

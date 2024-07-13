@@ -20,7 +20,7 @@ const CreatreProduct = ({ dataForVariant }: { dataForVariant?: TProduct }) => {
         delete data?._id;
         const formData = new FormData();
 
-        formData.append("productData", JSON.stringify(data));
+        formData.append("data", JSON.stringify(data));
         formData.append("file", data?.image);
         tryCatch(
             async () => {

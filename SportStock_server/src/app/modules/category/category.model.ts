@@ -1,9 +1,9 @@
 import mongoose, { model } from "mongoose";
-import { ISportType } from "./sportType.interface";
+import { ICategory } from "./category.interface";
 
-const sportTypeSchema = new mongoose.Schema(
+const categorySchema = new mongoose.Schema(
     {
-        sportType: {
+        category: {
             type: String,
             required: true,
             unique: true,
@@ -23,10 +23,10 @@ const sportTypeSchema = new mongoose.Schema(
     }
 );
 
-sportTypeSchema.pre('find', function (next) {
+categorySchema.pre('find', function (next) {
     this.find({ isDeleted: { $ne: true } });
     next();
   });
 
-export const SportType = model<ISportType>("SportType", sportTypeSchema);
+export const Category = model<ICategory>("Category", categorySchema);
 

@@ -108,7 +108,7 @@ const SalesReport = () => {
                 </div> */}
             </div>
             {/* table..............table */}
-            <DataTable rowData={salesData} columnDefs={colDefs} isFetching={isFetching} />
+            <DataTable rowData={salesData} columnDefs={colDefs} isFetching={isFetching} searchField={false} />
             <div className="flex justify-between items-center">
                 <h3 className="text-base font-medium text-primary-400">
                     Total Sales: {data?.data?.meta?.total}

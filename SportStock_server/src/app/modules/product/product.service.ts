@@ -120,7 +120,7 @@ const getDashboardMeta = async (user: IUser) => {
         },
     ]);
 
-    console.log("totalItems", totalItems);  
+    console.log("totalItems", totalItems);
 
     const totalQuantity = totalItems[0]?.totalQuantity || 0;
     const totalStockValue = totalItems[0]?.totalStockValue || 0;
@@ -134,6 +134,33 @@ const getDashboardMeta = async (user: IUser) => {
     };
 };
 
+const stockAvailability = async () => {
+    const result = await Product.aggregate([
+        {
+            $match: {
+                isDeleted: false,
+            },
+        },
+        {
+            $group: {
+                _id: "$productName",
+                totalItems: { $sum: "$quantity" },
+            },
+        },
+
+        {
+            $project: {
+                _id: 0,
+                productName: "$_id",
+                totalItems: 1,
+            },
+        },
+    ]);
+ 
+
+    return result;
+}
+
 export const productServices = {
     createProduct,
     getAllProducts,
@@ -142,4 +169,5 @@ export const productServices = {
     deleteProduct,
     multiProductDelete,
     getDashboardMeta,
+    stockAvailability,
 };

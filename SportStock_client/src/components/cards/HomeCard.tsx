@@ -33,9 +33,9 @@ export function HomeCard({
                 {/* <div className="line-clamp-1 flex gap-2 font-medium">
                 +12.5% up this week <TrendingUpIcon className="size-4" />
                 </div> */}
-                <div className="text-muted-foreground line-clamp-1 flex gap-2 text-xs items-center  mt-1">
+                {/* <div className="text-muted-foreground line-clamp-1 flex gap-2 text-xs items-center  mt-1">
                     {subtext}
-                </div>
+                </div> */}
             </div>
         </div>
     );

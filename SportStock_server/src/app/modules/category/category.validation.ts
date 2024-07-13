@@ -1,6 +1,6 @@
 import { object, string, boolean } from "zod";
 
-const CrteateBrandSchema = object({
+const createCategorySchema = object({
     category: string({
         required_error: "Sport type is required",
     })
@@ -9,9 +9,9 @@ const CrteateBrandSchema = object({
     isDeleted: boolean().optional(),
 });
 
-const updateBrandSchema = CrteateBrandSchema.partial();
+const updateCategorySchema = createCategorySchema.partial(); // Allow partial updates
 
 export const CategoryValidation = {
-    CrteateBrandSchema,
-    updateBrandSchema,
+    createCategorySchema,
+    updateCategorySchema,
 };

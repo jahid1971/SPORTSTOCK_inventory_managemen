@@ -2,22 +2,23 @@ import { useForm } from "react-hook-form";
 import { FloatingInput } from "../ui/InputFloatingLabel";
 import { Button } from "../ui/button";
 import { DialogClose } from "../ui/dialog";
-import { useCreateSportTypeMutation } from "@/redux/features/product/productApi";
-import tryCatch from "@/utls/tryCatch";
-import { TSportType } from "@/types/product";
 
-const CreateSportType = () => {
-    const [createSportType] = useCreateSportTypeMutation();
+import tryCatch from "@/utls/tryCatch";
+import { TCategory } from "@/types/product";
+import { useCreateCategoryMutation } from "@/redux/features/product/productApi";
+
+const CreateCategory = () => {
+    const [createCategory] = useCreateCategoryMutation();
     const {
         register,
         handleSubmit,
         formState: { isValid, errors },
     } = useForm();
-    const onSubmit = async (data: Partial<TSportType>) => {
+    const onSubmit = async (data: Partial<TCategory>) => {
         tryCatch(
-            async () => await createSportType(data),
-            "Sport Type Created Successfully",
-            "Creating Sport Type"
+            async () => await createCategory(data),
+            "Category Created Successfully",
+            "Creating Category"
         );
     };
     return (
@@ -29,15 +30,15 @@ const CreateSportType = () => {
                     return handleSubmit(onSubmit)();
                 }}>
                 <FloatingInput
-                    id="sportType"
-                    label="Create SportType"
-                    {...register("sportType", { required: "Sport Type is required" })}
-                    error={errors.sportType}
+                    id="category"
+                    label="Create category"
+                    {...register("category", { required: "Category is required" })}
+                    error={errors.category}
                 />
 
                 <DialogClose disabled={!isValid} asChild className="mt-3 mr-auto">
                     <Button size={"xsm"} type="submit">
-                        Create Sport Type
+                        Create Category
                     </Button>
                 </DialogClose>
             </form>
@@ -45,4 +46,4 @@ const CreateSportType = () => {
     );
 };
 
-export default CreateSportType;
+export default CreateCategory;

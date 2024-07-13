@@ -2,7 +2,7 @@ export const defaultProduct = {
     // image: "https://example.com/product-image.jpg",
     productName: "Shoe",
     price: 30,
-    sportType: "663ddeb4a9da3f422a318386",
+    category: "663ddeb4a9da3f422a318386",
     brand: "663de5caa9da3f422a3183a4",
     size: "m",
     color: "black",

@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "@/redux/api/baseApi";
 import { TQueryParam } from "@/types/global.types";
-import { createApiBuilder, queryApiBuilder, singleQueryApiBuilder, updateApiBuilder } from "@/utls/api";
+import {
+    createApiBuilder,
+    queryApiBuilder,
+    singleQueryApiBuilder,
+    updateApiBuilder,
+} from "@/utls/api";
 
 const productApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -30,16 +35,17 @@ const productApi = baseApi.injectEndpoints({
             invalidatesTags: ["products"],
         }),
 
-        createSportType: builder.mutation({
+        createCategory: builder.mutation({
             query: (data) => ({
-                url: "sport-types/create-sport-type",
+                url: "categories/create-category",
                 method: "POST",
                 body: data,
             }),
-            invalidatesTags: ["sportType"],
+            invalidatesTags: ["category"],
         }),
 
-        getAllSportTypes: builder.query({
+
+        getAllCategories: builder.query({
             query: (args) => {
                 const params = new URLSearchParams();
 
@@ -50,12 +56,12 @@ const productApi = baseApi.injectEndpoints({
                 }
 
                 return {
-                    url: "/sport-types",
+                    url: "/categories",
                     method: "GET",
                     params: params,
                 };
             },
-            providesTags: ["sportType"],
+            providesTags: ["category"],
         }),
 
         addBrand: builder.mutation({
@@ -95,19 +101,38 @@ const productApi = baseApi.injectEndpoints({
             },
             providesTags: ["products"],
         }),
+
+        getStockAvailability: builder.query({
+            query: (args) => {
+                const params = new URLSearchParams();
+
+                if (args) {
+                    args.forEach((item: TQueryParam) => {
+                        params.append(item.name, item.value as string);
+                    });
+                }
+
+                return {
+                    url: "/products/stock-availability",
+                    method: "GET",
+                    params: params,
+                };
+            },
+        }),
     }),
 });
 
 export const {
     useCreateProductMutation,
     useGetProductsQuery,
-    useCreateSportTypeMutation,
-    useGetAllSportTypesQuery,
-    useAddBrandMutation,
+    useCreateCategoryMutation,
+    useGetAllCategoriesQuery,
     useGetAllBrandNamesQuery,
     useDeleteProductMutation,
     useUpdateProductMutation,
     useGetSingleProductQuery,
     useMultiProductDeleteMutation,
-    useGetDashboardMetaQuery
+    useGetDashboardMetaQuery,
+    useAddBrandMutation,
+    useGetStockAvailabilityQuery,
 } = productApi;

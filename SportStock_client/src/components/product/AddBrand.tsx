@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { DialogClose } from "../ui/dialog";
 import { useAddBrandMutation} from "@/redux/features/product/productApi";
 import tryCatch from "@/utls/tryCatch";
-import { TSportType } from "@/types/product";
+import { TCategory } from "@/types/product";
 
 const AddBrand = () => {
     const [addBrand] = useAddBrandMutation();
@@ -14,7 +14,7 @@ const AddBrand = () => {
         formState: { isValid, errors },
     } = useForm();
 
-    const onSubmit = async (data: Partial<TSportType>) => {
+    const onSubmit = async (data: Partial<TCategory>) => {
         tryCatch(async () => await addBrand(data), "Brand Creation successfull", "Creating Brand");
     };
     return (

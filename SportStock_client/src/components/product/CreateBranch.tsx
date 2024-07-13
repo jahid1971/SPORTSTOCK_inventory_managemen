@@ -3,7 +3,7 @@ import { FloatingInput } from "../ui/InputFloatingLabel";
 import { Button } from "../ui/button";
 import { DialogClose } from "../ui/dialog";
 import tryCatch from "@/utls/tryCatch";
-import { TSportType } from "@/types/product";
+import { TCategory } from "@/types/product";
 import { useCreateBranchMutation } from "@/redux/features/admin/adminApi";
 
 const CreateBranch = ({ isModalTrue }: { isModalTrue?: boolean }) => {
@@ -15,7 +15,7 @@ const CreateBranch = ({ isModalTrue }: { isModalTrue?: boolean }) => {
         formState: { isValid, errors },
     } = useForm();
 
-    const onSubmit = async (data: Partial<TSportType>) => {
+    const onSubmit = async (data: Partial<TCategory>) => {
         tryCatch(
             async () => {
                 const res = await createBranch(data);
@@ -42,10 +42,10 @@ const CreateBranch = ({ isModalTrue }: { isModalTrue?: boolean }) => {
                     error={errors.branchName}
                 />
                 <FloatingInput
-                    id="branchLocation"
+                    id="location"
                     label="Branch Location"
-                    {...register("branchLocation", { required: "Branch Location is required" })}
-                    error={errors.sportType}
+                    {...register("location", { required: "Branch Location is required" })}
+                    error={errors.category}
                 />
 
                 {isModalTrue ? (

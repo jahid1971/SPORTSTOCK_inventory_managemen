@@ -4,7 +4,7 @@ export type TProduct = {
     image: any;
     productName: string;
     price: number;
-    sportType: string;
+    category: string;
     brand: string;
     size: string;
     color: string;
@@ -19,9 +19,9 @@ export type TBranch = {
     branchName: string;
 };
 
-export type TSportType = {
+export type TCategory = {
     _id: string;
-    sportType: string;
+    category: string;
     status: "active" | "inactive";
     createdAt?: string;
     isDeleted?: boolean;

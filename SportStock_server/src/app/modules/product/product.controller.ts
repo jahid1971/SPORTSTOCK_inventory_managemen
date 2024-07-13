@@ -40,6 +40,11 @@ const getDashboardMeta = catchAsynch(async (req, res) => {
     const result = await productServices.getDashboardMeta(req?.user);
     return sendSuccessResponse(res, result, "Dashboard meta fetched successfully", 200);
 });
+
+const stockAvailability = catchAsynch(async (req, res) => {
+    const result = await productServices.stockAvailability();
+    return sendSuccessResponse(res, result, "Stock availability fetched successfully", 200);
+});
 export const productControllers = {
     createProduct,
     getAllProducts,
@@ -48,4 +53,6 @@ export const productControllers = {
     deleteProduct,
     multiProductDelete,
     getDashboardMeta,
+    stockAvailability,
+    
 };

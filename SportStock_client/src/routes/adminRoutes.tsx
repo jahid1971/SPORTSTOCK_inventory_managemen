@@ -1,5 +1,7 @@
 import Home from "@/pages/Home";
 import AddBranch from "@/pages/branch/AddBranch";
+import Branches from "@/pages/branch/Branches";
+import Categories from "@/pages/categories/Categories";
 import NotFound from "@/pages/others/NotFound";
 import CreateVariant from "@/pages/products/CreateVariant";
 import CreatreProduct from "@/pages/products/CreatreProduct";
@@ -17,13 +19,21 @@ export const AdminRoutes = () => {
             <Route path="dashboard" element={<Home />} />
             <Route path="users" element={<Users />} />
             <Route path="create-product" element={<CreatreProduct />} />
-            <Route path="create-variant/:productId" element={<CreateVariant />} />
+            <Route
+                path="create-variant/:productId"
+                element={<CreateVariant />}
+            />
             <Route path="products" element={<Products />} />
-            <Route path="add-branch" element={<AddBranch/>} />
+            <Route path="add-branch" element={<AddBranch />} />
             <Route path="sales-report" element={<SalesReport />} />
             <Route path="sales-history" element={<SalesHistory />} />
-            <Route path="create-branch-manager" element={<CreateBranchManager />} />
+            <Route
+                path="create-branch-manager"
+                element={<CreateBranchManager />}
+            />
             <Route path="create-seller" element={<CreateSeller />} />
+            <Route path="categories" element={<Categories />} />
+            <Route path="branches" element={<Branches />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     );

@@ -42,6 +42,11 @@ export const adminMenuItems = [
                 icon: <GoDotFill />,
             },
             {
+                label: "Categories",
+                path: "categories",
+                icon: <GoDotFill />,
+            },
+            {
                 label: "Create Product",
                 path: "create-product",
                 icon: <GoDotFill />,
@@ -68,6 +73,11 @@ export const adminMenuItems = [
         label: "Branch Management",
         icon: <FaMapLocationDot />,
         children: [
+            {
+                label: "Branches",
+                path: "branches",
+                icon: <GoDotFill />,
+            },
             {
                 label: "Add Branch",
                 path: "add-branch",

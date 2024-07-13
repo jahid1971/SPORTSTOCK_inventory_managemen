@@ -3,6 +3,7 @@ import { productControllers } from "./product.controller";
 import { upload } from "../../utls/sendImageToCloudinary";
 import checkAuth from "../../middleWares/checkAuth";
 import { userRole } from "../../constants/user";
+import { handleImageUpload } from "../../middleWares/handleImageUpload";
 
 const router = Router();
 
@@ -10,10 +11,11 @@ router.post(
     "/create-product",
     checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER),
     // upload?.single("file"),
-    (req, res, next) => {
-        req.body = JSON.parse(req.body.productData);
-        next();
-    },
+    handleImageUpload,
+    // (req, res, next) => {
+    //     req.body = JSON.parse(req.body.productData);
+    //     next();
+    // },
     productControllers.createProduct
 );
 router.get(
@@ -25,6 +27,11 @@ router.get(
     "/meta",
     checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER),
     productControllers.getDashboardMeta
+);
+router.get(
+    "/stock-availability",
+    checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER, userRole.SELLER),
+    productControllers.stockAvailability
 );
 router.get("/:id", productControllers.getSingleProduct);
 router.put(
@@ -42,6 +49,5 @@ router.patch(
     checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER),
     productControllers.multiProductDelete
 );
-
 
 export const productRoutes = router;

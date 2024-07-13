@@ -5,7 +5,7 @@ import catchAsynch from "../../utls/catchAsynch";
 import { BranchServices } from "./branch.service";
 
 const createBranch = catchAsynch(async (req: any, res: Response) => {
-    const result = await BranchServices.createBranch(req.user);
+    const result = await BranchServices.createBranch(req.body);
     return sendSuccessResponse(res, result, "Branch Created Successfully", 201);
 });
 const getAllBranches = catchAsynch(async (req: Request, res: Response) => {

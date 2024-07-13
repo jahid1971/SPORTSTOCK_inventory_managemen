@@ -216,8 +216,12 @@ const getSalesHistory = async (user: IUser, query: any) => {
     return { labels, sales: salesValues };
 };
 
+
+
+
 export const SaleServices = {
     createSale,
     getSales,
     getSalesHistory,
+
 };

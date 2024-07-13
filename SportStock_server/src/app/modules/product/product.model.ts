@@ -1,14 +1,18 @@
 import { Schema, model } from "mongoose";
-import { ConditionType, IProduct} from "./product.interface";
+import { ConditionType, IProduct } from "./product.interface";
 
 const productSchema = new Schema(
     {
         productName: { type: String, required: true },
         image: { type: String },
         price: { type: Number, required: true },
-        quantity: { type: Number, min: 1, required: true },//min: 1  for positive value
+        quantity: { type: Number, min: 1, required: true }, //min: 1  for positive value
         branch: { type: Schema.Types.ObjectId, ref: "Branch", required: true },
-        sportType: { type: Schema.Types.ObjectId, ref: "SportType", required: true },
+        category: {
+            type: Schema.Types.ObjectId,
+            ref: "Category",
+            required: true,
+        },
         brand: { type: String },
         material: { type: String },
         color: { type: String },
