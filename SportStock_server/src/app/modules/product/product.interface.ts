@@ -1,21 +1,28 @@
 import { Types } from "mongoose";
 
 /* eslint-disable no-unused-vars */
+
+export interface IVariant {
+    _id?: Types.ObjectId;
+    size?: string;
+    color?: string;
+    material?: string;
+    condition?: string;
+}
+
 export interface IProduct {
     _id?: Types.ObjectId;
     productName: string;
+    category: Types.ObjectId;
+    price?: number;
+    productCode: string;
     image?: string;
-    price: number;
-    quantity: number;
-    branch: string;
-    category?: Types.ObjectId;
     brand?: string;
-    material?: MaterialType;
-    color?: string;
-    size?: "s" | "m" | "l" | "xl" | "xxl" | "xxxl";
-    condition?: ConditionType;
     description?: string;
+    variants?: IVariant[];
     isDeleted?: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 // export enum Category {
@@ -32,16 +39,16 @@ export interface IProduct {
 //     HIKING = "hiking",
 // }
 
-export enum MaterialType {
-    LEATHER = "leather",
-    SYNTHETIC = "synthetic",
-    FABRIC = "fabric",
-    PLASTIC = "Plastic",
-    METAL = "metal",
-    WOOD = "wood",
-}
+// export enum MaterialType {
+//     LEATHER = "leather",
+//     SYNTHETIC = "synthetic",
+//     FABRIC = "fabric",
+//     PLASTIC = "Plastic",
+//     METAL = "metal",
+//     WOOD = "wood",
+// }
 
-export enum ConditionType {
-    NEW = "new",
-    USED = "used",
-}
+// export enum ConditionType {
+//     NEW = "new",
+//     USED = "used",
+// }

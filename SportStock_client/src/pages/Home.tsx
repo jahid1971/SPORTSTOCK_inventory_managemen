@@ -28,13 +28,13 @@ const Home = () => {
         <div>
             <div className="flex justify-between gap-4">
                 <HomeCard
-                    title="Total Products (Unique)"
+                    title="Total Products"
                     value={metaData?.totalProducts}
                     icon={<ShoppingBag size={30} />}
                     subtext={`${metaData?.addedProducts} products added this week`}
                 />
                 <HomeCard
-                    title="Total Quantity"
+                    title="Total Stock Items"
                     icon={<ShoppingCart size={30} />}
                     subtext={`${metaData?.addedQuantity} item added this week`}
                     value={metaData?.totalQuantity}

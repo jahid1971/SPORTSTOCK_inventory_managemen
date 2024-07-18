@@ -19,10 +19,12 @@ const MainLayout = () => {
                         desktopSidebarOpen={desktopSidebarOpen}
                         setDesktopSidebarOpen={setDesktopSidebarOpen}
                         mobileMenuOpen={mobileMenuOpen}
-                        setMobileMenuOpen={setMobileMenuOpen}></Header>
-                    <main className="container bg-slate-100 flex-1 overflow-y-auto overflow-x-hidden py-5 bg-secondary/10 ">
+                        setMobileMenuOpen={setMobileMenuOpen}
+                    ></Header>
+                    <main className=" relative px-5   md:container  bg-slate-100 flex-1 overflow-y-auto overflow-x-hidden py-5 bg-secondary/10 ">
                         <Outlet />
                     </main>
+                    {/* bg-[#F4F7FE] */}
                 </div>
             </div>
         </>

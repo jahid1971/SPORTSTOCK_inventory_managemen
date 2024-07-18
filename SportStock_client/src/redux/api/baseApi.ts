@@ -22,21 +22,24 @@ const baseQuery = fetchBaseQuery({
     },
 });
 
-const baseQueryWithRefreshToken: BaseQueryFn<FetchArgs, BaseQueryApi, DefinitionType> = async (
-    args,
-    api,
-    extraOptions
-): Promise<any> => {
+const baseQueryWithRefreshToken: BaseQueryFn<
+    FetchArgs,
+    BaseQueryApi,
+    DefinitionType
+> = async (args, api, extraOptions): Promise<any> => {
     let result = await baseQuery(args, api, extraOptions);
     console.log(result, "result baseQuery");
 
     if (result.error?.status === 401) {
         console.log("sending refresh token");
 
-        const res = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/refresh-token`, {
-            method: "POST",
-            credentials: "include",
-        });
+        const res = await fetch(
+            `${import.meta.env.VITE_BASE_URL}/auth/refresh-token`,
+            {
+                method: "POST",
+                credentials: "include",
+            }
+        );
         const data = await res.json();
         console.log(data, "refresh token response");
 
@@ -59,6 +62,16 @@ const baseQueryWithRefreshToken: BaseQueryFn<FetchArgs, BaseQueryApi, Definition
 export const baseApi = createApi({
     reducerPath: "baseApi",
     baseQuery: baseQueryWithRefreshToken,
-    tagTypes: ["userStatus", "category", "brands", "branches", "products", "sales", "users"],
+    tagTypes: [
+        "userStatus",
+        "category",
+        "brands",
+        "branches",
+        "products",
+        "sales",
+        "users",
+        "stocks",
+        "stockHistory"
+    ],
     endpoints: () => ({}),
 });

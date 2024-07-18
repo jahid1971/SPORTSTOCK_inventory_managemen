@@ -4,7 +4,7 @@ import sendSuccessResponse from "../../utls/sendSuccessResponse";
 import { productServices } from "./product.service";
 
 const createProduct = catchAsynch(async (req, res) => {
-    const result = await productServices.createProduct(req.file, req.body);
+    const result = await productServices.createProduct(req.file, req.body.data);
     return sendSuccessResponse(res, result, "Product added successfully", 201);
 });
 const getAllProducts = catchAsynch(async (req, res) => {

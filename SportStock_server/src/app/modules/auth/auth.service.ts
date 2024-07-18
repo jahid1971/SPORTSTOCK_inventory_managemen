@@ -11,7 +11,9 @@ import config from "../../config";
 // logIn......................logIn
 
 const logIn = async (payload: { email: string; password: string }) => {
-    const user = await User.findOne({ email: payload.email }).select("+password");
+    const user = await User.findOne({ email: payload.email }).select(
+        "+password"
+    );
 
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, "User not found");
@@ -20,7 +22,10 @@ const logIn = async (payload: { email: string; password: string }) => {
     const plainPassword = payload.password;
     const hashedPassword = user.password;
 
-    const isPasswordMatched = await passwordHash.comparePassword(plainPassword, hashedPassword);
+    const isPasswordMatched = await passwordHash.comparePassword(
+        plainPassword,
+        hashedPassword
+    );
 
     if (!isPasswordMatched) throw new AppError(404, "Invalid password");
 
@@ -44,22 +49,35 @@ const logIn = async (payload: { email: string; password: string }) => {
     );
 
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-    const { password, createdAt, updatedAt, ...userObject } = (user as any).toObject();
+    const { password, createdAt, updatedAt, ...userObject } = (
+        user as any
+    ).toObject();
 
     return { accessToken, refreshToken, userObject };
 };
 
 // changePassword......................changePassword
-const changePassword = async (id: string, payload: { oldPassword: string; newPassword: string }) => {
+const changePassword = async (
+    id: string,
+    payload: { oldPassword: string; newPassword: string }
+) => {
     const user = await User.findById(id).select("+password");
 
     if (!user) throw new AppError(404, "User not found");
 
-    const isPasswordMatched = await passwordHash.comparePassword(payload.oldPassword, user?.password);
-    if (!isPasswordMatched) throw new AppError(404, "Old Password Is Incorrect");
+    const isPasswordMatched = await passwordHash.comparePassword(
+        payload.oldPassword,
+        user?.password
+    );
+    if (!isPasswordMatched)
+        throw new AppError(404, "Old Password Is Incorrect");
 
-    const isOldAdnNewPasswordSame = await passwordHash.comparePassword(payload.newPassword, user?.password);
-    if (isOldAdnNewPasswordSame) throw new AppError(404, "New password can't be same as old password");
+    const isOldAdnNewPasswordSame = await passwordHash.comparePassword(
+        payload.newPassword,
+        user?.password
+    );
+    if (isOldAdnNewPasswordSame)
+        throw new AppError(404, "New password can't be same as old password");
 
     const hashedPassword = await passwordHash.hashPassword(payload.newPassword);
 
@@ -71,7 +89,36 @@ const changePassword = async (id: string, payload: { oldPassword: string; newPas
     return result;
 };
 
+const refresh = async (refreshToken: string) => {
+    const verifiedToken = jwtToken.verifyToken(
+        refreshToken,
+        process.env.JWT_REFRESH_SECRET as string
+    );
+
+    if (!verifiedToken.id) throw new AppError(403, "invalid refresh token");
+
+    const user = await User.findById(verifiedToken.id);
+
+    const jwtPayload = {
+        id: user?._id,
+        role: user?.role,
+        email: user?.email,
+        iat: Math.floor(Date.now() / 1000),
+    };
+
+    const newAccessToken = jwtToken.createToken(
+        jwtPayload,
+        process.env.JWT_ACCESS_SECRET as string,
+        process.env.JWT_ACCESS_EXPIRES_IN as string
+    );
+
+    return {
+        accessToken: newAccessToken,
+    };
+};
+
 export const authServices = {
     logIn,
     changePassword,
+    refresh,
 };

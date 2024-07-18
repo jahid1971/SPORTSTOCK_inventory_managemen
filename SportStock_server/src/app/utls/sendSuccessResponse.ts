@@ -29,9 +29,11 @@ const sendSuccessResponse = <T>(
         data: data,
         metaData: metaData,
     };
-    console.log("success response");
+    console.log(message, "success response");
 
-    return status !== 200 ? res.status(status).json(responseData) : res.status(200).json(responseData);
+    return status !== 200
+        ? res.status(status).json(responseData)
+        : res.status(200).json(responseData);
 };
 
 export default sendSuccessResponse;

@@ -7,7 +7,7 @@ import SearchInput from "@/components/table/SearchInput";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { RxCross2 } from "react-icons/rx";
-import { MyPagination } from "@/components/others/Pagination";
+import { CustomPagination } from "@/components/others/Pagination";
 import DownLoadSaleReport from "@/components/table/sales/PrintSaleReport";
 
 interface IRow {
@@ -113,9 +113,9 @@ const SalesReport = () => {
                 <h3 className="text-base font-medium text-primary-400">
                     Total Sales: {data?.data?.meta?.total}
                 </h3>
-                {data?.data?.meta?.totalPages > 1 && (
-                    <MyPagination metaData={data?.data?.meta} params={params} setParams={setParams} />
-                )}
+                {/* {data?.data?.meta?.totalPages > 1 && (
+                    <CustomPagination metaData={data?.data?.meta} params={params} setParams={setParams} />
+                )} */}
             </div>
         </div>
     );

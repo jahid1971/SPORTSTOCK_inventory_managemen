@@ -4,6 +4,7 @@ import { FaUser } from "react-icons/fa";
 import { GoDotFill } from "react-icons/go";
 import { IoCartOutline } from "react-icons/io5";
 import { FaMapLocationDot } from "react-icons/fa6";
+import { ClipboardMinus, Package, Warehouse } from "lucide-react";
 
 export const adminMenuItems = [
     {
@@ -37,18 +38,71 @@ export const adminMenuItems = [
         icon: <MdOutlineInventory2 />,
         children: [
             {
-                label: "Products",
-                path: "products",
+                label: "Stock Manage",
+                icon: <Warehouse size={15} />,
+                children: [
+                    {
+                        label: "Stock List",
+                        path: "stock-list",
+                        icon: <GoDotFill />,
+                    },
+                    {
+                        label: "Add Stock",
+                        path: "add-stock",
+                        icon: <GoDotFill />,
+                    },
+                    {
+                        label: "Adjust Stock",
+                        path: "adjust-stock",
+                        icon: <GoDotFill />,
+                    },
+                    {
+                        label: "Stock Transfer",
+                        path: "stock-transfer",
+                        icon: <GoDotFill />,
+                    },
+                ],
+            },
+            {
+                label: "Product Manage",
+                icon: <Package size={15} />,
+                children: [
+                    {
+                        label: "Products",
+                        path: "products",
+                        icon: <GoDotFill />,
+                    },
+                    {
+                        label: "Categories",
+                        path: "categories",
+                        icon: <GoDotFill />,
+                    },
+                    {
+                        label: "Create Product",
+                        path: "create-product",
+                        icon: <GoDotFill />,
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        label: "History",
+        icon: <ClipboardMinus size={15} />,
+        children: [
+            {
+                label: "Add History",
+                path: "add-history",
                 icon: <GoDotFill />,
             },
             {
-                label: "Categories",
-                path: "categories",
+                label: "Adjust History",
+                path: "adjust-history",
                 icon: <GoDotFill />,
             },
             {
-                label: "Create Product",
-                path: "create-product",
+                label: "Transfer History",
+                path: "transfer-history",
                 icon: <GoDotFill />,
             },
         ],

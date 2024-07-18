@@ -10,12 +10,9 @@ const router = Router();
 router.post(
     "/create-product",
     checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER),
-    // upload?.single("file"),
+
     handleImageUpload,
-    // (req, res, next) => {
-    //     req.body = JSON.parse(req.body.productData);
-    //     next();
-    // },
+
     productControllers.createProduct
 );
 router.get(

@@ -8,18 +8,32 @@ import AppError from "../../errors/AppError";
 import { sendImageToCloudinary } from "../../utls/sendImageToCloudinary";
 import { IUser } from "../user/user.interface";
 import mongoose from "mongoose";
+import sharp from "sharp";
+import { generateProductCode } from "../../utls/utls.global";
 
 const createProduct = async (file: any, payload: IProduct) => {
     const imageName = payload.productName;
     if (file) {
+        const optimizedBuffer = await sharp(file.buffer)
+            .resize({ width: 240 })
+            .webp({ quality: 60 })
+            .toBuffer();
+
         const productImage = await sendImageToCloudinary(
             imageName,
-            file?.buffer
+            optimizedBuffer
         );
 
         payload.image = (productImage as any)?.secure_url;
     }
     payload.isDeleted = false;
+
+    if (!payload.productCode) {
+        const productCode = generateProductCode();
+        payload.productCode = productCode;
+    }
+
+    console.log("payload_______________________-", payload);
 
     const result = await Product.create(payload);
 
@@ -48,12 +62,24 @@ const getAllProducts = async (user: IUser, query: Record<string, unknown>) => {
         query.branch = branch;
     }
 
-    const allProducts = getAllItems(
-        Product,
-        query,
-        ["productName", "description"],
-        ["minPrice", "maxPrice", "minQuantity", "maxQuantity"]
-    );
+    const allProducts = await getAllItems<IProduct>(Product, query, {
+        searchableFields: ["productName", "description"],
+        filterableFields: [
+            "status",
+            "branch",
+            "price",
+            "branch",
+            "quantity",
+            "branch",
+            "condition",
+        ],
+        // populate: {
+        //     path: "branch",
+        //     select: "_id branchName",
+        // },
+    });
+
+
     return allProducts;
 };
 
@@ -125,7 +151,7 @@ const getDashboardMeta = async (user: IUser) => {
     const totalQuantity = totalItems[0]?.totalQuantity || 0;
     const totalStockValue = totalItems[0]?.totalStockValue || 0;
 
-    console.log( totalQuantity, totalStockValue);
+    console.log(totalQuantity, totalStockValue);
 
     return {
         totalProducts,
@@ -156,10 +182,9 @@ const stockAvailability = async () => {
             },
         },
     ]);
- 
 
     return result;
-}
+};
 
 export const productServices = {
     createProduct,

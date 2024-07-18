@@ -1,26 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
+import React, { useState } from "react";
 import { FloatingInput } from "../ui/InputFloatingLabel";
-import {  Controller } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { PiPlusCircleBold } from "react-icons/pi";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 
 import CustomSelect from "../ui/CustomSelect";
-import { useGetAllBrandNamesQuery, useGetAllCategoriesQuery } from "@/redux/features/product/productApi";
-import { TBrand, TCategory } from "@/types/product";
+import { useGetAllBrandNamesQuery } from "@/redux/features/product/productApi";
+import { TBrand } from "@/types/product";
 import AddBrand from "../product/AddBrand";
 import { productSizeOptions } from "@/constants/product";
 import { TextArea } from "../ui/TextArea";
-import CreateCategory from "../product/createCategory";
+import FileUploader from "../ui/FileUploader";
 
 const ProductInfo = ({ control }: { control: any }) => {
-    const { data: categorys, isFetching: isCategoryFetching } = useGetAllCategoriesQuery(undefined);
-    const { data: brandNames, isFetching: isBrandNameFetching } = useGetAllBrandNamesQuery(undefined);
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+    const { data: brandNames, isFetching: isBrandNameFetching } =
+        useGetAllBrandNamesQuery(undefined);
 
-    const categorysOptions = categorys?.data?.map((category: TCategory) => ({
-        value: category._id,
-        label: category?.category,
-    }));
     const brandNamesOptions = brandNames?.data?.map((brand: TBrand) => ({
         value: brand._id,
         label: brand.brandName,
@@ -28,45 +25,10 @@ const ProductInfo = ({ control }: { control: any }) => {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2  gap-4 items-end w-full">
-            <FloatingInput id="productName" label="Product Name" control={control} />
-
-            <Controller
-                name="image"
-                control={control}
-                render={({ field: { onChange, value, ...field } }) => (
-                    <FloatingInput
-                        id="image"
-                        label="Product image"
-                        type="file"
-                        value={value?.fileName}
-                        {...field}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.files?.[0])}
-                    />
-                )}
-            />
-
-            <FloatingInput id="price" label="Product Price" label_2="taka   " type="number" control={control} />
-
-            <div>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <div className="flex items-center gap-1 justify-end  font-medium cursor-pointer">
-                            <PiPlusCircleBold />
-                            Add New
-                        </div>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                        <CreateCategory />
-                    </DialogContent>
-                </Dialog>
-                <CustomSelect
-                    id="category"
-                    label="Category"
-                    control={control}
-                    options={categorysOptions}
-                    disabled={isCategoryFetching}
-                />
+            <div className="md:col-span-2">
+                <FileUploader control={control} id="image" />
             </div>
+
             <div>
                 <Dialog>
                     <DialogTrigger asChild>
@@ -87,7 +49,12 @@ const ProductInfo = ({ control }: { control: any }) => {
                     disabled={isBrandNameFetching}
                 />
             </div>
-            <CustomSelect id="size" label="product Size" control={control} options={productSizeOptions} />
+            <CustomSelect
+                id="size"
+                label="product Size"
+                control={control}
+                options={productSizeOptions}
+            />
 
             <FloatingInput id="color" label="color" control={control} />
 
@@ -104,16 +71,16 @@ const ProductInfo = ({ control }: { control: any }) => {
                     { value: "wood", label: "Wood" },
                 ]}
             />
-            <CustomSelect
-                id="condition"
-                label="Condition"
-                control={control}
-                options={[
-                    { value: "new", label: "New" },
-                    { value: "used", label: "Used" },
-                ]}
-            />
-            <TextArea id="description" label="Description" rows={3} control={control} />
+
+
+            <div className="md:col-span-2">
+                <TextArea
+                    id="description"
+                    label="Description"
+                    rows={3}
+                    control={control}
+                />
+            </div>
         </div>
     );
 };

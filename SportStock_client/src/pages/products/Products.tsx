@@ -17,7 +17,6 @@ import { TBranch, TQueryParam, TUserRole } from "@/types/global.types";
 import { RxCross2 } from "react-icons/rx";
 import FilterByOptions from "@/components/table/FilterByOptions";
 import FilterByInput from "@/components/table/FilterByInput";
-import SearchInput from "@/components/table/SearchInput";
 import { SellProduct } from "@/components/table/products/SellProduct";
 import DataTable from "@/components/table/DataTable";
 
@@ -31,6 +30,13 @@ import { ICellRendererParams } from "@ag-grid-community/core";
 import DeleteButton from "@/components/table/products/DeleteButton";
 import { NavLink } from "react-router-dom";
 import { PiPlusBold } from "react-icons/pi";
+import { EllipsisVertical, Pencil } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface IRow {
     _id: string;
@@ -45,11 +51,15 @@ interface IRow {
 const Products = () => {
     const [params, setParams] = useState<TQueryParam[]>([]);
     const [modalOpen, setModalOpen] = useState(false);
+    const [productToUpdate, setProductToUpdate] = useState<IRow | null>(null);
+
     const user = useCurrentUser();
     const role: any = user?.role;
     const selectedRowsRef = useRef<IRow[]>([]);
 
     const { data, isFetching } = useGetProductsQuery(params);
+
+    console.log(data, "products data");
     const [multiDelete] = useMultiProductDeleteMutation();
 
     const { data: branches, isLoading: isBranchesLoading } =
@@ -59,10 +69,11 @@ const Products = () => {
     const { data: brands, isFetching: isBrandFetching } =
         useGetAllBrandNamesQuery(undefined);
 
-    const branchOptions = branches?.data?.map((branch: TBranch) => ({
+    const branchOptions = branches?.data?.data?.map((branch: TBranch) => ({
         label: branch.branchName,
         value: branch._id,
     }));
+
     const categoryOptions = category?.data?.map((category: TCategory) => ({
         label: category.category,
         value: category._id,
@@ -74,6 +85,8 @@ const Products = () => {
     }));
     // const sizeOptions = productSizeOptions.filter((size) => size.label !== "Not Applicable");
 
+    console.log(data, "products --------------------");
+
     const products = data?.data?.map((product: TProduct) => {
         return {
             _id: product._id,
@@ -82,10 +95,23 @@ const Products = () => {
             name: product.productName,
             price: product.price,
             quantity: product.quantity,
-            branch: product.branch.branchName,
             productData: product,
         };
     });
+
+    const handleDelete = (id: string) => {
+        let selectedIds: string[] = [];
+        if (id) {
+            selectedIds = [id];
+        } else {
+            selectedIds = selectedRowsRef.current.map((row: IRow) => row._id);
+        }
+        tryCatch(
+            async () => await multiDelete(selectedIds),
+            "Products Deleted",
+            "Deleting Products"
+        );
+    };
 
     const [allColumnDefs] = useState([
         {
@@ -115,22 +141,7 @@ const Products = () => {
             field: "price",
             maxWidth: role !== userRole.SELLER ? 100 : undefined,
         },
-        {
-            field: "quantity",
-            maxWidth: role !== userRole.SELLER ? 100 : undefined,
-        },
-        { field: "branch" },
-        {
-            headerName: "Update",
-            cellRenderer: (params: ICellRendererParams<IRow>) =>
-                user?.role !== userRole.SELLER && (
-                    <UpdateProduct params={params} />
-                ),
-        },
-        {
-            headerName: "Sell",
-            cellRenderer: SellProduct,
-        },
+        
         {
             headerName: "Create variant",
             cellRenderer: (params: ICellRendererParams<IRow>) => (
@@ -144,6 +155,48 @@ const Products = () => {
                     </Button>
                 </NavLink>
             ),
+        },
+        {
+            headerName: "Action",
+            cellStyle: { display: "flex", alignItems: "center" },
+            cellRenderer: (params: ICellRendererParams<IRow>) =>
+                user?.role !== userRole.SELLER && (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger>
+                            <EllipsisVertical className="cursor-pointer" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    setTimeout(() => {
+                                        setProductToUpdate(params?.data);
+                                    }, 100)
+                                }
+                            >
+                                <Button
+                                    className=" p-1 font-normal w-full"
+                                    variant="outline_primary"
+                                    size={"xsm"}
+                                >
+                                    <Pencil className="mr-2" />
+                                    Update
+                                </Button>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <DeleteButton
+                                    classNames="w-full"
+                                    handleTrigger={() => setModalOpen(true)}
+                                    setOpen={setModalOpen}
+                                    open={modalOpen}
+                                    handleDelete={() =>
+                                        handleDelete(params?.data?._id)
+                                    }
+                                    variant={"outline_primary"}
+                                />
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                ),
         },
         // {
         //     headerName: "Delete",
@@ -176,20 +229,10 @@ const Products = () => {
         setModalOpen(true);
     };
 
-    const handleMultiDelete = () => {
-        const selectedIds = selectedRowsRef.current.map((item) => item?._id);
-        console.log(selectedIds, selectedRowsRef.current, "selectedIds");
-        tryCatch(
-            async () => await multiDelete(selectedIds),
-            "Products Deleted",
-            "Deleting Products"
-        );
-    };
-
     const createButton = (
         <NavLink to="/create-product">
-            <Button>
-                <PiPlusBold className="mr-1" /> Create Product
+            <Button size={"xsm"}>
+                <PiPlusBold className="mr-1" /> Add Product
             </Button>
         </NavLink>
     );
@@ -224,13 +267,7 @@ const Products = () => {
                     filterItems={brandOptions}
                 />
             )}
-            {/* <FilterByOptions
-            title="Size"
-            filterBy="size"
-            params={params}
-            setParams={setParams}
-            filterItems={sizeOptions}
-        /> */}
+
             <FilterByOptions
                 title="Condition"
                 filterBy="condition"
@@ -256,11 +293,20 @@ const Products = () => {
         </div>
     );
 
+    const checkedRowsActionBtn = (
+        <DeleteButton
+            handleTrigger={handleDeleteTrigger}
+            setOpen={setModalOpen}
+            open={modalOpen}
+            handleMultiDelete={handleDelete}
+        />
+    );
+
     return (
         <div className="">
             {/* filter and search options .......... */}
 
-            <div className="">
+            {/* <div className="">
                 {params.length > 0 && (
                     <Button
                         className="text-primary border border-primary pr-6 px-10 text-base h-9 mb-2 "
@@ -270,7 +316,7 @@ const Products = () => {
                         <RxCross2 className="size-5 mr-1 pt-0.5 " /> Reset
                     </Button>
                 )}
-            </div>
+            </div> */}
 
             {/* table..............table */}
 
@@ -284,13 +330,11 @@ const Products = () => {
                 filterable={true}
                 filters={filters}
                 createButton={createButton}
+                checkedRowsActionBtn={checkedRowsActionBtn}
             />
-
-            <DeleteButton
-                handleTrigger={handleDeleteTrigger}
-                setOpen={setModalOpen}
-                open={modalOpen}
-                handleMultiDelete={handleMultiDelete}
+            <UpdateProduct
+                productToUpdate={productToUpdate}
+                setProductToUpdate={setProductToUpdate}
             />
         </div>
     );

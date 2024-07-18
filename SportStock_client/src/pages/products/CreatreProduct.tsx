@@ -37,28 +37,32 @@ const CreatreProduct = ({ dataForVariant }: { dataForVariant?: TProduct }) => {
     return (
         <div className="flex flex-col">
             <div className="flex justify-between items-center  p-2">
-                <h5 className="text-lg font-semibold ">
-                    {!dataForVariant ? "Create New Product" : "Create New Variant"}
+                <h5 className="text-lg font-semibold text-primary ">
+                    {!dataForVariant
+                        ? "Create New Product"
+                        : "Create New Variant"}
                 </h5>
                 <Link to="/products">
-                    <Button variant={"base"} size={"xsm"}>
+                    <Button  size={"xsm"}>
                         Back to Product
                     </Button>
                 </Link>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="bg-background p-4">
+                <div className=" p-4">
                     <CustomAccordion
-                        accordionTrigger={" Product Information"}
-                        triggerClassName="border-b border-b-primary w-full pb-1 text-lg">
-                        <ProductInfo control={control} />
+                        accordionTrigger={"Stock Information*"}
+                        triggerClassName="border-b border-b-primary w-full pb-1 text-lg"
+                    >
+                        <ProductStock control={control} />
                     </CustomAccordion>
                     <CustomAccordion
                         className="mt-8"
-                        accordionTrigger={" Product Stocking"}
-                        triggerClassName="border-b border-b-primary w-full pb-1 text-lg">
-                        <ProductStock control={control} />
+                        accordionTrigger={"Other Information"}
+                        triggerClassName="border-b border-b-primary w-full pb-1 text-lg"
+                    >
+                        <ProductInfo control={control} />
                     </CustomAccordion>
                 </div>
                 <div className="flex justify-end mt-3">

@@ -5,6 +5,7 @@ import { DialogClose } from "../ui/dialog";
 import tryCatch from "@/utls/tryCatch";
 import { TCategory } from "@/types/product";
 import { useCreateBranchMutation } from "@/redux/features/admin/adminApi";
+import { useNavigate } from "react-router-dom";
 
 const CreateBranch = ({ isModalTrue }: { isModalTrue?: boolean }) => {
     const [createBranch] = useCreateBranchMutation();
@@ -14,6 +15,7 @@ const CreateBranch = ({ isModalTrue }: { isModalTrue?: boolean }) => {
         reset,
         formState: { isValid, errors },
     } = useForm();
+    const navigate = useNavigate();
 
     const onSubmit = async (data: Partial<TCategory>) => {
         tryCatch(
@@ -23,7 +25,8 @@ const CreateBranch = ({ isModalTrue }: { isModalTrue?: boolean }) => {
                 return res;
             },
             "Branch Created Successfully",
-            "Creating Branch"
+            "Creating Branch",
+            () => navigate("/branches")
         );
     };
     return (
@@ -34,22 +37,31 @@ const CreateBranch = ({ isModalTrue }: { isModalTrue?: boolean }) => {
                     e.preventDefault();
                     e.stopPropagation();
                     return handleSubmit(onSubmit)();
-                }}>
+                }}
+            >
                 <FloatingInput
                     id="branchName"
                     label="Branch Name"
-                    {...register("branchName", { required: "Branch Name is required" })}
+                    {...register("branchName", {
+                        required: "Branch Name is required",
+                    })}
                     error={errors.branchName}
                 />
                 <FloatingInput
                     id="location"
                     label="Branch Location"
-                    {...register("location", { required: "Branch Location is required" })}
+                    {...register("location", {
+                        required: "Branch Location is required",
+                    })}
                     error={errors.category}
                 />
 
                 {isModalTrue ? (
-                    <DialogClose disabled={!isValid} asChild className="mt-3 mr-auto">
+                    <DialogClose
+                        disabled={!isValid}
+                        asChild
+                        className="mt-3 mr-auto"
+                    >
                         <Button size={"xsm"} type="submit">
                             Create Branch
                         </Button>

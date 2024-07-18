@@ -7,6 +7,8 @@ import { BrandRoutes } from "../modules/brand/brand.route";
 import { BranchRoutes } from "../modules/branch/branch.route";
 import { salesRoutes } from "../modules/sales/sales.route";
 import { categoryRoutes } from "../modules/category/category.route";
+import { StockRoutes } from "../modules/stock/stock.route";
+import { StockHistoryRoutes } from "../modules/stockHistory/history.route";
 
 const router = Router();
 
@@ -16,6 +18,8 @@ router.use("/users", userRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/brands", BrandRoutes);
 router.use("/branches", BranchRoutes);
+router.use("/stocks", StockRoutes);
+router.use("/history", StockHistoryRoutes);
 router.use("/sales", salesRoutes);
 
 export default router;

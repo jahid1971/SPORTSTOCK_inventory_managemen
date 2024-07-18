@@ -18,6 +18,14 @@ export const updateApiBuilder = (url: string, method = "PATCH") => {
     });
 };
 
+// api builder for delete
+export const deleteApiBuilder = (url: string) => {
+    return (args: { id?: string }) => ({
+        url: `${url}/${args?.id}`,
+        method: "DELETE",
+    });
+};
+
 // api builder for query
 import { TQueryParam } from "@/types/global.types";
 

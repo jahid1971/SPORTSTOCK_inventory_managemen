@@ -31,22 +31,16 @@ function Header({
         <div className=" w-full  shadow-sm  ">
             <nav className="flex h-14 items-center justify-between  ">
                 <div className="flex gap-2 items-center">
-                    {/* <Button
-                        asChild
-                        size={"icon"}
-                        variant={"ghost"}
-                        className="md:hidden hover:bg-primary-400"
-                        onClick={() => setOpen && setOpen(!open)}>
-                        <HiOutlineBars3 className="h-5 w-5 " />
-                    </Button> */}
-                    <div className="block md:hidden">
+                    <div className="block md:hidden pl-5">
                         <HiOutlineBars3
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                             className="h-5 w-5 cursor-pointer md:hidden "
                         />
                     </div>
                     <TiArrowLeft
-                        onClick={() => setDesktopSidebarOpen(!desktopSidebarOpen)}
+                        onClick={() =>
+                            setDesktopSidebarOpen(!desktopSidebarOpen)
+                        }
                         className={`hidden md:block cursor-pointer ${
                             !desktopSidebarOpen ? "rotate-180" : ""
                         }`}
@@ -54,7 +48,11 @@ function Header({
                     />
                 </div>
 
-                <Button onClick={handleSignOut} variant={"ghost"} className="text-base">
+                <Button
+                    onClick={handleSignOut}
+                    variant={"ghost"}
+                    className="text-base mr-5"
+                >
                     Sign out
                 </Button>
             </nav>

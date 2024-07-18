@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import router from "./app/routes";
 import globalErrorHandler from "./app/middleWares/globalErrorHandler";
 import notFound from "./app/middleWares/notFound";
@@ -7,6 +8,8 @@ import notFound from "./app/middleWares/notFound";
 const app: Application = express();
 
 app.use(express.json());
+
+app.use(cookieParser());
 
 app.use(cors({ origin: ["https://sport-stock.netlify.app", "http://localhost:5173"], credentials: true }));
 

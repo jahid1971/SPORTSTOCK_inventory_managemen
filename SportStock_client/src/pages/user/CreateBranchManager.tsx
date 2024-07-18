@@ -15,15 +15,21 @@ import { useCreateBranchManagerMutation } from "@/redux/api/userApi";
 
 const CreateBranchManager = () => {
     const [createBranchManager] = useCreateBranchManagerMutation();
-    const { data: branchNames, isFetching: isBranchNameFetching } = useGetAllBranchesQuery(undefined);
-    const branchNamesOptions = branchNames?.data?.map((branch: TBranch) => ({
-        value: branch._id,
-        label: branch.branchName,
-    }));
+    const { data: branchNames, isFetching: isBranchNameFetching } =
+        useGetAllBranchesQuery(undefined);
+    const branchNamesOptions = branchNames?.data?.data?.map(
+        (branch: TBranch) => ({
+            value: branch._id,
+            label: branch.branchName,
+        })
+    );
     const [isPasswordVisible, setIsPasswordVisible] = useState(true);
 
     const viewIcon = (
-        <button type="button" onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
+        <button
+            type="button"
+            onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+        >
             {isPasswordVisible ? <IoEyeOutline /> : <IoEyeOffOutline />}
         </button>
     );
@@ -60,8 +66,13 @@ const CreateBranchManager = () => {
     };
     return (
         <div className=" w-11/12 md:w-6/12 mx-auto flex  flex-col  justify-center  gap-4 mt-16 px-6 py-8 bg-white">
-            <h3 className="text-primary-400 text-2xl font-semibold">Create Barnch Manager</h3>
-            <form className=" space-y-2 w-full" onSubmit={handleSubmit(onSubmit)}>
+            <h3 className="text-primary-400 text-2xl font-semibold">
+                Create Barnch Manager
+            </h3>
+            <form
+                className=" space-y-2 w-full"
+                onSubmit={handleSubmit(onSubmit)}
+            >
                 <FloatingInput
                     id="fullName"
                     type="text"
@@ -86,9 +97,9 @@ const CreateBranchManager = () => {
                             type="file"
                             value={(value as any)?.fileName}
                             {...field}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                onChange(e.target.files?.[0])
-                            }
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => onChange(e.target.files?.[0])}
                         />
                     )}
                 />

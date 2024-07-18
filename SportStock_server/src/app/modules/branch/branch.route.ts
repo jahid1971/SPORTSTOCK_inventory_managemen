@@ -19,4 +19,16 @@ router.get(
     BranchController.getAllBranches
 );
 
+router.patch(
+    "/update-branch-status/:branchId",
+    checkAuth(userRole.SUPER_ADMIN),
+    BranchController.updateBranchStatus
+);
+
+router.delete(
+    "/delete-branch/:id",
+    checkAuth(userRole.SUPER_ADMIN),
+    BranchController.deleteBranch
+);
+
 export const BranchRoutes = router;

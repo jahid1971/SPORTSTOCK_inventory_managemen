@@ -23,7 +23,10 @@ const checkAuth = (...requiredRoles: Array<TUserRole>) => {
         
 
         // checking if the user is exist
+
         const user = await User.findById(id);
+
+  
 
         if (!user) throw new AppError(404, "This user is not found !");
 

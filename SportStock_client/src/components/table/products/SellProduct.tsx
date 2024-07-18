@@ -56,16 +56,27 @@ export const SellProduct = (params: CustomCellRendererProps) => {
     return (
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
-                <Button className="bg-primary/10 p-1 font-normal" variant="outline" size={"xsm"}>
+                <Button
+                    className="bg-primary/10 p-1 font-normal"
+                    variant="outline"
+                    size={"xsm"}
+                >
                     Sell Product
                 </Button>
             </DialogTrigger>
 
             <DialogContent className="w-full p-5 ">
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <h4 className="text-center text-lg pb-2">{params?.data?.name}</h4>
+                    <h4 className="text-center text-lg pb-2">
+                        {params?.data?.name}
+                    </h4>
                     <div className="bg-background  flex flex-col gap-2">
-                        <FloatingInput id="buyerName" label="Buyer Name" required control={control} />
+                        <FloatingInput
+                            id="buyerName"
+                            label="Buyer Name"
+                            required
+                            control={control}
+                        />
                         <DatePicker
                             id="saleDate"
                             label="Sale Date"
@@ -74,7 +85,8 @@ export const SellProduct = (params: CustomCellRendererProps) => {
                                 required: "Date is required",
                                 validate: (value: Date) => {
                                     const currentDate = new Date();
-                                    if (value > currentDate) return "Sale Date can not be future";
+                                    if (value > currentDate)
+                                        return "Sale Date can not be future";
                                 },
                             }}
                         />
@@ -90,8 +102,18 @@ export const SellProduct = (params: CustomCellRendererProps) => {
                                     `Quantity cannot exceed available Product - ${params.data.quantity}`,
                             }}
                         />
-                        <FloatingInput disabled id="price" label="Price" control={control} />
-                        <FloatingInput disabled id="branch" label="Branch Name" control={control} />
+                        <FloatingInput
+                            disabled
+                            id="price"
+                            label="Price"
+                            control={control}
+                        />
+                        <FloatingInput
+                            disabled
+                            id="branch"
+                            label="Branch Name"
+                            control={control}
+                        />
                         {total > 0 && (
                             <div className="text-lg text-primary ">
                                 <input
@@ -99,12 +121,18 @@ export const SellProduct = (params: CustomCellRendererProps) => {
                                     type="checkbox"
                                     {...control.register("confirmation")}
                                 />
-                                <label htmlFor="confirmation">Total {total} tk has been paid</label>
+                                <label htmlFor="confirmation">
+                                    Total {total} tk has been paid
+                                </label>
                             </div>
                         )}
                     </div>
 
-                    <Button disabled={!isConfirmed} className="mt-2" type="submit">
+                    <Button
+                        disabled={!isConfirmed}
+                        className="mt-2"
+                        type="submit"
+                    >
                         Sell Product
                     </Button>
                 </form>
