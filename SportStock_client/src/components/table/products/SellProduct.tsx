@@ -6,7 +6,7 @@ import tryCatch from "@/utls/tryCatch";
 import { TProduct } from "@/types/product";
 import { FloatingInput } from "@/components/ui/InputFloatingLabel";
 import { DatePicker } from "@/components/ui/DatePicker";
-import { useCreateSaleMutation } from "@/redux/features/sale/SaleApi";
+import { useCreateSaleMutation } from "@/redux/api/SaleApi";
 import { CustomCellRendererProps } from "@ag-grid-community/react";
 import { useState } from "react";
 

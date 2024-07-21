@@ -10,7 +10,8 @@
         --card-foreground: 240 10% 3.9%;
         --popover: 0 0% 100%;
         --popover-foreground: 240 10% 3.9%;
-        --primary: 346.8 77.2% 49.8%;
+        --primary: #f43f5e;
+        /* --primary: 346.8 77.2% 49.8%; */
         --primary-foreground: 355.7 100% 97.3%;
         --secondary: 240 4.8% 95.9%;
         --secondary-foreground: 240 5.9% 10%;
@@ -33,7 +34,8 @@
         --card-foreground: 0 0% 95%;
         --popover: 0 0% 9%;
         --popover-foreground: 0 0% 95%;
-        --primary: 346.8 77.2% 49.8%;
+        --primary: #f43f5e;
+        /* --primary: 346.8 77.2% 49.8%; */
         --primary-foreground: 355.7 100% 97.3%;
         --secondary: 240 3.7% 15.9%;
         --secondary-foreground: 0 0% 98%;
@@ -73,30 +75,27 @@
   }
 } */
 
-
-
-
 @layer utilities {
     .scrollbar::-webkit-scrollbar {
-      width: 12px;
-      height: 8px;
+        width: 12px;
+        height: 8px;
     }
-  
+
     .scrollbar::-webkit-scrollbar-track {
-      border-radius: 100vh;
-      background: #fdf7f7;
+        border-radius: 100vh;
+        background: #fdf7f7;
     }
-  
+
     .scrollbar::-webkit-scrollbar-thumb {
-      background: #d5d4d4;
-      border-radius: 100vh;
-      border: 3px solid #f6f7ed;
+        background: #d5d4d4;
+        border-radius: 100vh;
+        border: 3px solid #f6f7ed;
     }
-  
+
     .scrollbar::-webkit-scrollbar-thumb:hover {
-      background: #ebaaa2;
+        background: #ebaaa2;
     }
-  }
-  body {
+}
+body {
     @apply scrollbar;
 }

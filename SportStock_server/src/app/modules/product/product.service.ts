@@ -47,6 +47,7 @@ const getAllProducts = async (user: IUser, query: Record<string, unknown>) => {
             $lte: Number(query?.maxQuantity) || Infinity,
         };
     }
+    
     if (query?.minPrice || query?.maxPrice) {
         query.price = {
             $gte: Number(query?.minPrice) || 0,

@@ -16,16 +16,23 @@ type TDatePickerProps = {
     control: any;
     label: string;
     rules: any;
+    defaultValue?: Date | null;
 };
 
-export function DatePicker({ id, control, label, rules }: TDatePickerProps) {
+export function DatePicker({
+    id,
+    control,
+    label,
+    rules,
+    defaultValue,
+}: TDatePickerProps) {
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
 
     return (
         <Controller
             name={id}
             control={control}
-            defaultValue={new Date()}
+            defaultValue={defaultValue || ""}
             rules={rules}
             render={({ field, fieldState: { error } }) => (
                 <div>
@@ -63,7 +70,7 @@ export function DatePicker({ id, control, label, rules }: TDatePickerProps) {
                             </button>
                         </PopoverTrigger>
 
-                        <PopoverContent className="w-auto p-0 z-50 overflow-y-auto">
+                        <PopoverContent className="w-auto p-0 z-50 overflow-y-auto" >
                             <Calendar
                                 mode="single"
                                 selected={field.value}

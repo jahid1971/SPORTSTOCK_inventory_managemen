@@ -3,7 +3,7 @@ import ProductInfo from "@/components/form/ProductInfo";
 import ProductStock from "@/components/form/ProductStock";
 import { CustomAccordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { useCreateProductMutation } from "@/redux/features/product/productApi";
+import { useCreateProductMutation } from "@/redux/api/productApi";
 import { TProduct } from "@/types/product";
 import tryCatch from "@/utls/tryCatch";
 import { useForm } from "react-hook-form";

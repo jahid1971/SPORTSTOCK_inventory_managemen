@@ -5,7 +5,7 @@ import { DialogClose } from "../ui/dialog";
 
 import tryCatch from "@/utls/tryCatch";
 import { TCategory } from "@/types/product";
-import { useCreateCategoryMutation } from "@/redux/features/product/productApi";
+import { useCreateCategoryMutation } from "@/redux/api/productApi";
 
 const CreateCategory = () => {
     const [createCategory] = useCreateCategoryMutation();

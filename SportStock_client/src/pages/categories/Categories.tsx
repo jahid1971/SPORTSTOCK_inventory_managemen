@@ -2,8 +2,9 @@ import CreateCategory from "@/components/product/createCategory";
 import DataTable from "@/components/table/DataTable";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { useGetAllCategoriesQuery } from "@/redux/features/product/productApi";
+import { useGetAllCategoriesQuery } from "@/redux/api/productApi";
 import { TQueryParam } from "@/types/global.types";
+import { tableSerial } from "@/utls/utls";
 import { useState } from "react";
 import { PiPlusBold, PiPlusCircleBold } from "react-icons/pi";
 
@@ -13,7 +14,8 @@ const Categories = () => {
     const categories = data?.data;
     console.log("categories", categories);
 
-    const categoryData = categories?.map((category) => ({
+    const categoryData = categories?.map((category, i) => ({
+        sl: tableSerial(params, i),
         id: category._id,
         category: category.category,
         status: category.status,
@@ -27,7 +29,7 @@ const Categories = () => {
     const createButton = (
         <Dialog>
             <DialogTrigger asChild>
-                <Button>
+                <Button size={"xsm"}>
                     <div className="flex items-center gap-1">
                         <PiPlusBold />
                         Create Category
@@ -45,12 +47,11 @@ const Categories = () => {
                 rowData={categoryData}
                 columnDefs={columnDefs}
                 isFetching={isFetching}
-                // handleSelectedRows={handleSelectedRows}
                 params={params}
                 setParams={setParams}
-                filterable={true}
-                // filters={filters}
                 createButton={createButton}
+                serial={true}
+                searchField={false}
             />
         </div>
     );

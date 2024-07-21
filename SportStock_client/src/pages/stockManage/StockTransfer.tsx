@@ -7,14 +7,14 @@ import CustomSelect from "@/components/ui/CustomSelect";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useGetAllBranchesQuery } from "@/redux/features/admin/adminApi";
-import { useGetProductsQuery } from "@/redux/features/product/productApi";
+import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
+import { useGetProductsQuery } from "@/redux/api/productApi";
 import {
     useAddStockMutation,
     useAdjustStockMutation,
     useGetAllStocksQuery,
     useTransferStockMutation,
-} from "@/redux/features/stock/stockApi";
+} from "@/redux/api/stockApi";
 import { useCurrentUser } from "@/redux/Hooks";
 import { TBranch } from "@/types/global.types";
 import tryCatch from "@/utls/tryCatch";
@@ -100,13 +100,13 @@ const StockTransfer = () => {
     const onSubmit = (data: any) => {
         const payload = {
             madeBy: user?.id,
-            reason: "transfer",
+            reason: "transferred",
             ...data,
         };
-      
+
         tryCatch(
             async () => await transferStock(payload),
-            "Stock transfered successfully",
+            "Stock transferred successfully",
             "Transfering Stock",
             () => {
                 const prevValues = watch();
@@ -137,6 +137,7 @@ const StockTransfer = () => {
                             rules={{
                                 required: "Date is required",
                             }}
+                            defaultValue={new Date()}
                         />
                     </div>
                     <CustomSelect
@@ -164,8 +165,12 @@ const StockTransfer = () => {
                             id="toBranch"
                             label="To Branch"
                             control={control}
-                            options={branchNamesOptions}
-                            disabled={isBranchNameFetching}
+                            options={branchNamesOptions?.filter(
+                                (branch) => branch.value !== selectedFromBranch
+                            )}
+                            disabled={
+                                isBranchNameFetching || !selectedFromBranch
+                            }
                             required
                         />
                     </div>

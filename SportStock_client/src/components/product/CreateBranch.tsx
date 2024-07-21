@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { DialogClose } from "../ui/dialog";
 import tryCatch from "@/utls/tryCatch";
 import { TCategory } from "@/types/product";
-import { useCreateBranchMutation } from "@/redux/features/admin/adminApi";
+import { useCreateBranchMutation } from "@/redux/api/adminApi";
 import { useNavigate } from "react-router-dom";
 
 const CreateBranch = ({ isModalTrue }: { isModalTrue?: boolean }) => {

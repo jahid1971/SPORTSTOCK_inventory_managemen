@@ -6,7 +6,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGetAllStocksQuery } from "@/redux/features/stock/stockApi";
+import { useGetAllStocksQuery } from "@/redux/api/stockApi";
 import { IStock } from "@/types/stock.types";
 import { dateFormatter } from "@/utls/utls";
 import { ColDef, ICellRendererParams } from "@ag-grid-community/core";

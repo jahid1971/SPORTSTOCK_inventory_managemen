@@ -3,12 +3,12 @@ import CustomSelect from "../ui/CustomSelect";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { PiPlusCircleBold } from "react-icons/pi";
 import CreateBranch from "../product/CreateBranch";
-import { useGetAllBranchesQuery } from "@/redux/features/admin/adminApi";
+import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { TBranch } from "@/types/global.types";
 import { FloatingInput } from "../ui/InputFloatingLabel";
 import { useCurrentUser } from "@/redux/Hooks";
 import { userRole } from "@/constants/user";
-import { useGetAllCategoriesQuery } from "@/redux/features/product/productApi";
+import { useGetAllCategoriesQuery } from "@/redux/api/productApi";
 import CreateCategory from "../product/createCategory";
 import FileUploader from "../ui/FileUploader";
 

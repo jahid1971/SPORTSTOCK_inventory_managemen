@@ -11,7 +11,7 @@ import { Button } from "../../ui/button";
 import tryCatch from "@/utls/tryCatch";
 import ProductInfo from "@/components/form/ProductInfo";
 import ProductStock from "@/components/form/ProductStock";
-import { useUpdateProductMutation } from "@/redux/features/product/productApi";
+import { useUpdateProductMutation } from "@/redux/api/productApi";
 import { TProduct } from "@/types/product";
 import { CustomCellRendererProps } from "@ag-grid-community/react";
 import { Pencil } from "lucide-react";

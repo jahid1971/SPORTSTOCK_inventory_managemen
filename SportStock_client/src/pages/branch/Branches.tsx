@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
     useDeleteBranchMutation,
     useGetAllBranchesQuery,
-} from "@/redux/features/admin/adminApi";
+} from "@/redux/api/adminApi";
 import { TQueryParam } from "@/types/global.types";
 import tryCatch from "@/utls/tryCatch";
 import { Trash2 } from "lucide-react";

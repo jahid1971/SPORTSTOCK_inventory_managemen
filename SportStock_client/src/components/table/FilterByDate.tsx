@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { RiFilterLine } from "react-icons/ri";
-
 import {
     Popover,
     PopoverContent,
@@ -9,10 +8,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
 import { TQueryParam } from "@/types/global.types";
-
-import { Input } from "../ui/input";
-import { useForm } from "react-hook-form";
 import { PopoverClose } from "@radix-ui/react-popover";
+import { useForm } from "react-hook-form";
+import { DatePicker } from "@/components/ui/DatePicker";
 
 interface FilterByProps {
     title: string;
@@ -21,24 +19,25 @@ interface FilterByProps {
     setParams: (params: TQueryParam[]) => void;
 }
 
-// const capitalizeFirstLetter = (str: string) => {
-//     return str.charAt(0).toUpperCase() + str.slice(1);
-// }
-
-const FilterByInput: React.FC<FilterByProps> = ({
+const FilterByDate: React.FC<FilterByProps> = ({
     title,
     filterBy,
     params,
     setParams,
 }) => {
     const [inputValues, setInputValues] = useState<string[]>([]);
-    const { register, handleSubmit, reset } = useForm();
+    const { control, handleSubmit, reset } = useForm();
+
     useEffect(() => {
         if (params.length < 1) setInputValues([]);
     }, [params]);
 
     const filterButton = (
-        <Button variant="outline_primary" className=" border-dashed" size={"xsm"} >
+        <Button
+            variant="outline_primary"
+            className="border-dashed"
+            size={"xsm"}
+        >
             <RiFilterLine className="w-4 h-4 mr-1" />
             <span className="pr-0.5">{title}</span>
 
@@ -60,32 +59,38 @@ const FilterByInput: React.FC<FilterByProps> = ({
 
     filterBy = filterBy.charAt(0).toUpperCase() + filterBy.slice(1);
 
-    const handleFilter = (data: { [key: string]: string }) => {
+    const handleFilter = (data: { [key: string]: Date }) => {
         const updatedParams = params.filter(
             (param) =>
-                param.name !== `min${filterBy}` &&
-                param.name !== `max${filterBy}`
+                param.name !== `start${filterBy}` &&
+                param.name !== `end${filterBy}`
         );
         setInputValues([]);
 
-        if (data[`min${filterBy}`]) {
+        if (data[`start${filterBy}`]) {
+            const startDate = new Date(data[`start${filterBy}`]);
+            startDate.setHours(0, 0, 0, 0); 
+            
             updatedParams.push({
-                name: `min${filterBy}`,
-                value: data[`min${filterBy}`],
+                name: `start${filterBy}`,
+                value: startDate.toISOString(),
             });
             setInputValues((prev) => [
                 ...prev,
-                `Min-${filterBy}=${data[`min${filterBy}`]}`,
+                `Start Date=${startDate.toLocaleDateString()}`,
             ]);
         }
-        if (data[`max${filterBy}`]) {
+        if (data[`end${filterBy}`]) {
+            const endDate = new Date(data[`end${filterBy}`]);
+            endDate.setHours(23, 59, 59, 999); 
+
             updatedParams.push({
-                name: `max${filterBy}`,
-                value: data[`max${filterBy}`],
+                name: `end${filterBy}`,
+                value: endDate.toISOString(),
             });
             setInputValues((prev) => [
                 ...prev,
-                `Max-${filterBy}=${data[`max${filterBy}`]}`,
+                `End Date=${endDate.toLocaleDateString()}`,
             ]);
         }
         setParams(updatedParams);
@@ -97,26 +102,26 @@ const FilterByInput: React.FC<FilterByProps> = ({
             <div className="flex items-center">
                 <PopoverTrigger asChild>{filterButton}</PopoverTrigger>
             </div>
-            <PopoverContent className="w-[200px] p-0" align="start">
+            <PopoverContent className="w-[250px] p-0" align="start">
                 <form
                     onSubmit={handleSubmit(handleFilter)}
-                    className="flex flex-col "
+                    className="flex flex-col gap-2 p-4"
                 >
-                    <Input
-                        {...register(`min${filterBy}`)}
-                        placeholder={`Min ${filterBy}`}
+                    <DatePicker
+                        id={`start${filterBy}`}
+                        label={`Start Date`}
+                        control={control}
+                        rules={{ required: false }}
                     />
-                    <Input
-                        {...register(`max${filterBy}`)}
-                        placeholder={`Max ${filterBy}`}
+                    <DatePicker
+                        id={`end${filterBy}`}
+                        label={`End Date`}
+                        control={control}
+                        rules={{ required: false }}
                     />
 
                     <PopoverClose asChild>
-                        <Button
-                            type="submit"
-                            className=""
-                           size={"xsm"}
-                        >
+                        <Button type="submit" size={"xsm"}>
                             <RiFilterLine className="w-4 h-4 mr-1" />
                             Filter
                         </Button>
@@ -127,4 +132,4 @@ const FilterByInput: React.FC<FilterByProps> = ({
     );
 };
 
-export default FilterByInput;
+export default FilterByDate;

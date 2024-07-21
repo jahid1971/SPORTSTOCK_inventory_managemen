@@ -7,13 +7,13 @@ import CustomSelect from "@/components/ui/CustomSelect";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useGetAllBranchesQuery } from "@/redux/features/admin/adminApi";
-import { useGetProductsQuery } from "@/redux/features/product/productApi";
+import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
+import { useGetProductsQuery } from "@/redux/api/productApi";
 import {
     useAddStockMutation,
     useAdjustStockMutation,
     useGetAllStocksQuery,
-} from "@/redux/features/stock/stockApi";
+} from "@/redux/api/stockApi";
 import { useCurrentUser } from "@/redux/Hooks";
 import { TBranch } from "@/types/global.types";
 import tryCatch from "@/utls/tryCatch";
@@ -148,6 +148,7 @@ const AdjustStock = () => {
                                     return "Sale Date can not be future";
                             },
                         }}
+                        defaultValue={new Date()}
                     />
                     <div className="w-full">
                         <Dialog>

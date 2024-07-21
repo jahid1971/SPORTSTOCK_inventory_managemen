@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import Custom_Form from "@/components/form/Custom_Form";
 import CustomSelect from "@/components/ui/CustomSelect";
-import { useUpdateBranchStatusMutation } from "@/redux/features/admin/adminApi";
+import { useUpdateBranchStatusMutation } from "@/redux/api/adminApi";
 import tryCatch from "@/utls/tryCatch";
 import { CustomCellRendererProps } from "@ag-grid-community/react";
 import { FieldValues } from "react-hook-form";

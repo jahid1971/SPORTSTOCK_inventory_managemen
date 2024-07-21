@@ -1,15 +1,10 @@
 import { baseApi } from "@/redux/api/baseApi";
 import { createApiBuilder } from "@/utls/api";
+import { tagTypes } from "../redux.constants";
 
 const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // registerSeller: builder.mutation({
-        //     query: (data) => ({
-        //         url: "auth/register-seller",
-        //         method: "POST",
-        //         body: data,
-        //     }),
-        // }),
+
         logIn: builder.mutation({
             query: (userInfo) => ({
                 url: "/auth/login",
@@ -18,9 +13,9 @@ const authApi = baseApi.injectEndpoints({
             }),
         }),
 
-        changePassword: builder.mutation({
-            query: createApiBuilder("/auth/change-password"),
-        }),
+        changePassword: createApiBuilder(builder, "/auth/change-password", [
+            tagTypes.users,
+        ]),
     }),
 });
 

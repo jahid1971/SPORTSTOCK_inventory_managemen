@@ -1,5 +1,3 @@
-import { IMeta, TQuery } from "@/types/common";
-
 export function debounce<T extends (...args: any[]) => void>(
     callback: T,
     delay: number
@@ -30,5 +28,17 @@ export function tableSerial(params: any[], index: number) {
     const page = pageParam ? parseInt(pageParam.value, 10) : 1;
     const limit = limitParam ? parseInt(limitParam.value, 10) : 5;
 
-    return (page - 1) * limit + index + 1 + ".";
+    return (page - 1) * limit + index + 1 + "";
 }
+
+export const replaceWithNewValue = (
+    array: any[],
+    queryProperty: string,
+    value: any
+) => {
+    const filteredArray = array.filter(
+        (item) => item["name"] !== queryProperty
+    );
+
+    return [...filteredArray, { name: queryProperty, value }];
+};

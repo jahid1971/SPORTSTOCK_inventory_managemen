@@ -32,19 +32,29 @@ export type TMeta = {
     totalPage: number;
 };
 
-export type TResponse<T> = {
-    data?: T;
-    error?: TError;
-    meta?: TMeta;
-    success: boolean;
-    message: string;
-};
+// export type TResponse<T> = {
+//     data?: T;
+//     error?: TError;
+//     meta?: TMeta;
+//     success: boolean;
+//     message: string;
+// };
 export type TResponseRedux<T> = TResponse<T> & BaseQueryApi;
 
 export type TQueryParam = {
     name: string;
     value: boolean | React.Key;
 };
+
+// export type TQuery<T = Record<string, unknown>> = {
+//     searchTerm?: string;
+//     sortBy?: string;
+//     sortOrder?: string;
+//     page?: number;
+//     limit?: number;
+//     [key: string]: any;
+// } & Partial<T>;
+
 export type TBranch = {
     _id: string;
     branchName: string;
@@ -52,6 +62,22 @@ export type TBranch = {
     status?: string;
     createdAt?: string;
     isDeleted?: boolean;
+};
+
+export interface IMeta {
+    page: number;
+    limit: number;
+    total: number;
+    totalPage: number;
+}
+
+export type TResponse<T> = {
+    statuscode?: number;
+    data: T;
+    error?: any;
+    meta?: IMeta;
+    success?: boolean;
+    message?: string;
 };
 
 // export type TFieldValues = Record<string, any>;

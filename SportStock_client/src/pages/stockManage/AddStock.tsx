@@ -5,12 +5,12 @@ import CustomInput from "@/components/ui/CustomInput";
 import CustomSelect from "@/components/ui/CustomSelect";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { useGetAllBranchesQuery } from "@/redux/features/admin/adminApi";
-import { useGetProductsQuery } from "@/redux/features/product/productApi";
+import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
+import { useGetProductsQuery } from "@/redux/api/productApi";
 import {
     useAddStockMutation,
     useGetAllStocksQuery,
-} from "@/redux/features/stock/stockApi";
+} from "@/redux/api/stockApi";
 import { useCurrentUser } from "@/redux/Hooks";
 import { TBranch } from "@/types/global.types";
 import tryCatch from "@/utls/tryCatch";
@@ -63,7 +63,11 @@ const AddStock = () => {
 
     const [addStock] = useAddStockMutation();
 
-    const { data, isSuccess, isFetching:isStockFetching } = useGetAllStocksQuery(
+    const {
+        data,
+        isSuccess,
+        isFetching: isStockFetching,
+    } = useGetAllStocksQuery(
         [
             { name: "branchId", value: selectedBranchId },
             { name: "productId", value: productId },
@@ -79,7 +83,7 @@ const AddStock = () => {
 
     const onSubmit = (data: any) => {
         const payload = {
-            reason: "add",
+            reason: "added",
             madeBy: user?.id,
             ...data,
         };
@@ -121,6 +125,7 @@ const AddStock = () => {
                                     return "Sale Date can not be future";
                             },
                         }}
+                        defaultValue={new Date()}
                     />
                     <div className="w-full">
                         <Dialog>

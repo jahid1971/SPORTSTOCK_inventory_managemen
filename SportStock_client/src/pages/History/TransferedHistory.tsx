@@ -3,10 +3,15 @@ import FilterByDate from "@/components/table/FilterByDate";
 import FilterByInput from "@/components/table/FilterByInput";
 import FilterByOptions from "@/components/table/FilterByOptions";
 import { Button } from "@/components/ui/button";
-import { defaultParams, defaultQuery } from "@/constants/global.constant";
+
+import { defaultParams } from "@/constants/global.constant";
 import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { useGetAllCategoriesQuery } from "@/redux/api/productApi";
-import { useGetStockHistoryQuery } from "@/redux/api/stockApi";
+import {
+    useGetAdjustStockHistoryQuery,
+    useGetTransferStockHistoryQuery,
+} from "@/redux/api/stockApi";
+
 import { TCategory } from "@/types/product";
 import { IStockHistory } from "@/types/stock.types";
 import { tableSerial } from "@/utls/utls";
@@ -15,13 +20,11 @@ import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-const AddStockHistory = () => {
+const TransferedHistory = () => {
     const [params, setParams] = useState<any[]>(defaultParams);
 
-    const { data, isFetching: historyFetching } = useGetStockHistoryQuery([
-        { name: "reason", value: "added" },
-        ...params,
-    ]);
+    const { data, isFetching: historyFetching } =
+        useGetTransferStockHistoryQuery(undefined);
 
     const { data: branchData } = useGetAllBranchesQuery(undefined);
 
@@ -39,7 +42,7 @@ const AddStockHistory = () => {
         })
     );
 
-    const historyData = data?.data?.data?.map((item, index) => ({
+    const transferData = data?.data?.data?.map((item, index) => ({
         ...item,
         sl: tableSerial(params, index),
     }));
@@ -52,45 +55,37 @@ const AddStockHistory = () => {
         {
             headerName: "Category",
             field: "categoryId.category",
-        },
-        {
-            headerName: "Product Code",
-            field: "productId.productCode",
             maxWidth: 150,
         },
+
         {
-            headerName: "Branch Name",
+            headerName: "From Branch",
             field: "branchId.branchName",
             maxWidth: 150,
         },
         {
-            headerName: "Added Quantity",
-            field: "quantityChanged",
+            headerName: "To Branch",
+            field: "transferToStock.branchName",
             maxWidth: 150,
         },
         {
-            headerName: "Added By",
+            headerName: "Quantity",
+            field: "quantityChanged",
+            maxWidth: 100,
+        },
+        {
+            headerName: "By",
             field: "madeBy.fullName",
-            maxWidth: 150,
+            maxWidth: 100,
         },
         {
             headerName: "Date",
             field: "createdAt",
             valueFormatter: (params) =>
                 new Date(params?.value).toLocaleDateString(),
-            maxWidth: 150,
+            maxWidth: 100,
         },
     ];
-
-    const addButton = (
-        <NavLink to="/add-stock">
-            <Button size={"xsm"}>
-                {" "}
-                <PlusIcon size={15} className="mr-2" />
-                Add Stock
-            </Button>
-        </NavLink>
-    );
 
     const filters = [
         <FilterByOptions
@@ -117,19 +112,30 @@ const AddStockHistory = () => {
         />,
 
         <FilterByDate
-            filterBy=""
+            filterBy="date"
             params={params}
             setParams={setParams}
             title="Date"
         />,
     ];
 
+    const transferButton = (
+        <NavLink to="/stock-transfer">
+            <Button size={"xsm"}>
+                {" "}
+                <PlusIcon size={15} className="mr-2" />
+                Transfer Stock
+            </Button>
+        </NavLink>
+    );
+
+    console.log("transferData", transferData);
     return (
         <div>
             <DataTable
-                createButton={addButton}
-                title="ADDED STOCK HISTORY"
-                rowData={historyData}
+                title="TRANSFER STOCK HISTORY"
+                createButton={transferButton}
+                rowData={transferData}
                 columnDefs={columnDefs}
                 isFetching={historyFetching}
                 params={params}
@@ -142,4 +148,4 @@ const AddStockHistory = () => {
     );
 };
 
-export default AddStockHistory;
+export default TransferedHistory;

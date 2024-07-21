@@ -3,7 +3,7 @@ import { FloatingInput } from "@/components/ui/InputFloatingLabel";
 import { Button } from "@/components/ui/button";
 import { Controller, FieldValues, useForm } from "react-hook-form";
 import tryCatch from "@/utls/tryCatch";
-import { useGetAllBranchesQuery } from "@/redux/features/admin/adminApi";
+import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { TBranch, TUser } from "@/types/global.types";
 import CustomSelect from "@/components/ui/CustomSelect";
 import { useCreateSellerMutation } from "@/redux/api/userApi";

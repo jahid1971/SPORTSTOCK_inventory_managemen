@@ -1,37 +1,57 @@
 import { baseApi } from "@/redux/api/baseApi";
-import { createApiBuilder, queryApiBuilder, updateApiBuilder } from "@/utls/api";
+import {
+    createApiBuilder,
+    deleteApiBuilder,
+    queryApiBuilder,
+    updateApiBuilder,
+} from "@/utls/api";
+import { tagTypes } from "../redux.constants";
 
 const userApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         // create branch manager..........................................create branch manager
-        createBranchManager: builder.mutation({
-            query: createApiBuilder("users/create-branch-manager"),
-            invalidatesTags: ["users"],
-        }),
+        // createBranchManager: builder.mutation({
+        //     query: createApiBuilder("users/create-branch-manager"),
+        //     invalidatesTags: ["users"],
+        // }),
 
-        // create seller..........................................create seller
-        createSeller: builder.mutation({
-            query: createApiBuilder("users/create-seller"),
-            invalidatesTags: ["users"],
-        }),
+        createBranchManager: createApiBuilder(
+            builder,
+            "users/create-branch-manager",
+            [tagTypes.users]
+        ),
+
+        createSeller: createApiBuilder(builder, "users/create-seller", [
+            tagTypes.users,
+        ]),
 
         //  delete user..........................................delete user
-        deleteUser: builder.mutation({
-            query: updateApiBuilder("users/delete-user"),
-            invalidatesTags: ["users"],
-        }),
+        // deleteUser: builder.mutation({
+        //     query: updateApiBuilder("users/delete-user"),
+        //     invalidatesTags: ["users"],
+        // }),
+
+        deleteUser: deleteApiBuilder(builder, "users/delete-user", [
+            tagTypes.users,
+        ]),
 
         //  get all users..........................................get all users
-        getAllUsers: builder.query({
-            query: queryApiBuilder("users"),
-            providesTags: ["users"],
-        }),
+        // getAllUsers: builder.query({
+        //     query: queryApiBuilder("users"),
+        //     providesTags: ["users"],
+        // }),
+
+        getAllUsers: queryApiBuilder(builder, "users", [tagTypes.users]),
 
         // update user status...................................update User Status
-        updateUserStatus: builder.mutation({
-            query: updateApiBuilder("users/update-status"),
-            invalidatesTags: ["users"],
-        }),
+        // updateUserStatus: builder.mutation({
+        //     query: updateApiBuilder("users/update-status"),
+        //     invalidatesTags: ["users"],
+        // }),
+
+        updateUserStatus: updateApiBuilder(builder, "users/update-status", [
+            tagTypes.users,
+        ]),
     }),
 });
 

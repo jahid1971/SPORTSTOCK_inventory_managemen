@@ -1,25 +1,38 @@
 /* Remove borders */
 .noBorders :global(.ag-root-wrapper),
 .noBorders :global(.ag-cell) {
-  border: none !important;
+    border: none !important;
 }
 
 /* Custom header background color */
 .noBorders :global(.ag-header-row .ag-header-cell) {
-  background-color: oklch(93.6% 0.032 17.717) !important;
+    background-color: oklch(93.6% 0.032 17.717) !important;
 }
 
 /* Vertically center all cell content for Quartz theme */
 :global(.ag-theme-quartz .ag-cell) {
-  display: flex;
-  align-items: center;
-  padding-top: 0;
-  padding-bottom: 0;
+    display: flex;
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 /* Vertically center inner content too */
 :global(.ag-theme-quartz .ag-cell-wrapper) {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
+:global(.ag-theme-quartz .ag-header-cell.sl-header .ag-header-cell-label) {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.even-row {
+    background-color: oklch(96.8% 0.007 247.896);
+}
+
+.odd-row {
+    background-color: #ffffff;
+}

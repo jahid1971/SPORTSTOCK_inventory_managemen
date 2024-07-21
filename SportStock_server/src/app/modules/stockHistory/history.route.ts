@@ -11,4 +11,22 @@ router.get(
     StockHistoryController.getAllStockHistory
 );
 
+router.get(
+    "/adjusted",
+    checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER, userRole.SELLER),
+    StockHistoryController.getALlAdjustedStockHistory
+);
+
+router.get(
+    "/transferred",
+    checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER, userRole.SELLER),
+    StockHistoryController.getALlTransferredStockHistory
+);
+
+router.get(
+    "/line-chart",
+    checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER, userRole.SELLER),
+    StockHistoryController.getLineChartData
+);
+
 export const StockHistoryRoutes = router; 

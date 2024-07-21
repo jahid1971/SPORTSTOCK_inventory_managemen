@@ -1,50 +1,80 @@
-
-
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
-
-// const chartData = [
-//   { month: "January", desktop: 186, mobile: 80 },
-//   { month: "February", desktop: 305, mobile: 200 },
-//   { month: "March", desktop: 237, mobile: 120 },
-//   { month: "April", desktop: 73, mobile: 190 },
-//   { month: "May", desktop: 209, mobile: 130 },
-//   { month: "June", desktop: 214, mobile: 140 },
-// ]
+    ChartConfig,
+    ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
+    ChartTooltip,
+    ChartTooltipContent,
+} from "@/components/ui/chart";
+import { primary } from "@/constants/colors";
+import { useGetStocksBarChartQuery } from "@/redux/api/stockApi";
 
 const chartConfig = {
-  totalItems: {
-    label: "Total Items",
-    color: "#2563eb",
-  },
-//   mobile: {
-//     label: "Mobile",
-//     color: "#60a5fa",
-//   },
-} satisfies ChartConfig
+    totalQuantity: {
+        label: "Total Quantity: ",
+        color: primary[500],
+    },
+    totalPrice: {
+        label: "Total Price: ",
+        color: primary[200],
+    },
+} satisfies ChartConfig;
 
-export function Barchart({chartData}: { chartData: any }) {
-  return (
-    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <BarChart accessibilityLayer data={chartData}>
-        <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="productName"
-          tickLine={false}
-          tickMargin={10}
-          axisLine={false}
-          tickFormatter={(value) => value.slice(0, 3)}
-        />
-        <ChartTooltip content={<ChartTooltipContent />} />
-        <Bar dataKey="totalItems" fill="var(--color-totalItems)" radius={4} />
-        {/* <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} /> */}
-      </BarChart>
-    </ChartContainer>
-  )
+export function Barchart() {
+    const { data, isLoading } = useGetStocksBarChartQuery(undefined);
+    if (isLoading) return <div>Loading...</div>;
+    
+    const barChartData = data?.data?.map((item) => ({
+        ...item,
+
+        totalPrice: item.totalPrice / 1000,
+    }));
+
+    console.log("data", data);
+    return (
+        <div className="w-full ">
+            <h5 className="text-slate-600 text-xl font-semibold text-center">
+                Stocks Per Branch
+            </h5>
+            <ChartContainer
+                config={chartConfig}
+                className="min-h-[350px] w-full"
+            >
+                <BarChart accessibilityLayer data={barChartData}>
+                    <CartesianGrid vertical={false} />
+                    <XAxis
+                        dataKey="branchName"
+                        tickLine={false}
+                        tickMargin={10}
+                        axisLine={false}
+                        tickFormatter={(value) => value.slice(0, 3)}
+                    />
+                    <ChartTooltip
+                        content={
+                            <ChartTooltipContent
+                                customValue={(value, name) =>
+                                    String(name) === "totalPrice"
+                                        ? `${value}K`
+                                        : value
+                                }
+                            />
+                        }
+                    />
+                    <ChartLegend content={<ChartLegendContent />} />
+                    <Bar
+                        dataKey="totalQuantity"
+                        fill="var(--color-totalQuantity)"
+                        radius={4}
+                    />
+                    <Bar
+                        dataKey="totalPrice"
+                        fill="var(--color-totalPrice)"
+                        radius={4}
+                    />
+                </BarChart>
+            </ChartContainer>
+        </div>
+    );
 }

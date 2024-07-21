@@ -74,7 +74,7 @@ const FilterByOptions: React.FC<FilterByProps> = ({
     const selectedValuesLength = selectedValues.length;
 
     const filterButton = (
-        <Button variant="outline" className=" border-dashed" size={"xsm"}>
+        <Button variant="outline_primary" className=" border-dashed" size={"xsm"}>
             <RiFilterLine className="w-4 h-4 mr-1" />
             <span className="pr-0.5">{title}</span>
             {selectedValuesLength > 0 &&

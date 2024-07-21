@@ -2,26 +2,23 @@ import DataTable from "@/components/table/DataTable";
 import FilterByDate from "@/components/table/FilterByDate";
 import FilterByInput from "@/components/table/FilterByInput";
 import FilterByOptions from "@/components/table/FilterByOptions";
-import { Button } from "@/components/ui/button";
-import { defaultParams, defaultQuery } from "@/constants/global.constant";
+
+import { defaultParams } from "@/constants/global.constant";
 import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { useGetAllCategoriesQuery } from "@/redux/api/productApi";
-import { useGetStockHistoryQuery } from "@/redux/api/stockApi";
+import { useGetAdjustStockHistoryQuery } from "@/redux/api/stockApi";
+
 import { TCategory } from "@/types/product";
 import { IStockHistory } from "@/types/stock.types";
 import { tableSerial } from "@/utls/utls";
 import { ColDef } from "@ag-grid-community/core";
-import { PlusIcon } from "lucide-react";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
 
-const AddStockHistory = () => {
+const AdjustHistory = () => {
     const [params, setParams] = useState<any[]>(defaultParams);
 
-    const { data, isFetching: historyFetching } = useGetStockHistoryQuery([
-        { name: "reason", value: "added" },
-        ...params,
-    ]);
+    const { data, isFetching: historyFetching } =
+        useGetAdjustStockHistoryQuery(undefined);
 
     const { data: branchData } = useGetAllBranchesQuery(undefined);
 
@@ -52,45 +49,36 @@ const AddStockHistory = () => {
         {
             headerName: "Category",
             field: "categoryId.category",
+            maxWidth: 150,
         },
         {
-            headerName: "Product Code",
+            headerName: "Sku",
             field: "productId.productCode",
-            maxWidth: 150,
+            maxWidth: 100,
         },
         {
             headerName: "Branch Name",
             field: "branchId.branchName",
-            maxWidth: 150,
+            maxWidth: 100,
         },
         {
-            headerName: "Added Quantity",
+            headerName: "Quantity",
             field: "quantityChanged",
-            maxWidth: 150,
+            maxWidth: 100,
         },
         {
-            headerName: "Added By",
+            headerName: "Adjusted By",
             field: "madeBy.fullName",
             maxWidth: 150,
         },
         {
             headerName: "Date",
-            field: "createdAt",
+            field: "date",
             valueFormatter: (params) =>
                 new Date(params?.value).toLocaleDateString(),
-            maxWidth: 150,
+            maxWidth: 100,
         },
     ];
-
-    const addButton = (
-        <NavLink to="/add-stock">
-            <Button size={"xsm"}>
-                {" "}
-                <PlusIcon size={15} className="mr-2" />
-                Add Stock
-            </Button>
-        </NavLink>
-    );
 
     const filters = [
         <FilterByOptions
@@ -117,7 +105,7 @@ const AddStockHistory = () => {
         />,
 
         <FilterByDate
-            filterBy=""
+            filterBy="date"
             params={params}
             setParams={setParams}
             title="Date"
@@ -127,8 +115,7 @@ const AddStockHistory = () => {
     return (
         <div>
             <DataTable
-                createButton={addButton}
-                title="ADDED STOCK HISTORY"
+                title="ADJUSTED STOCK HISTORY"
                 rowData={historyData}
                 columnDefs={columnDefs}
                 isFetching={historyFetching}
@@ -142,4 +129,4 @@ const AddStockHistory = () => {
     );
 };
 
-export default AddStockHistory;
+export default AdjustHistory;

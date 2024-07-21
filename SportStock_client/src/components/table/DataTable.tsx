@@ -20,6 +20,11 @@ import { RiFilterLine } from "react-icons/ri";
 import { X } from "lucide-react";
 import styles from "./table.module.css";
 import { CustomPagination } from "../others/Pagination";
+import {
+    removeAndAddItems,
+    replaceWithNewValue,
+    tableSerial,
+} from "@/utls/utls";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -37,6 +42,7 @@ const DataTable = ({
     checkedRowsActionBtn,
     title,
     metaData,
+    serial = true,
 }: {
     rowData: any[];
     columnDefs: ColDef[];
@@ -51,6 +57,7 @@ const DataTable = ({
     checkedRowsActionBtn?: React.ReactNode;
     title: string;
     metaData?: any;
+    serial: boolean;
 }) => {
     const gridRef = useRef<AgGridReact>(null);
     const [showFilters, setShowFilters] = useState(false);
@@ -62,7 +69,23 @@ const DataTable = ({
         };
     }, []);
 
-    console.log(params, "params");
+    if (serial) {
+        columnDefs = [
+            {
+                headerName: "SL",
+                headerClass: "sl-header",
+                field: "sl",
+                maxWidth: 60,
+                cellStyle: {
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                },
+                sortable: false,
+            },
+            ...columnDefs,
+        ];
+    }
 
     useEffect(() => {
         setTimeout(() => {
@@ -105,6 +128,40 @@ const DataTable = ({
         setGridApi(params.api);
     }, []);
 
+    const onSortChanged = useCallback(() => {
+        if (!gridRef.current?.api || !setParams) return;
+
+        const sortModel = gridRef.current.api
+            .getColumnState()
+            .filter((col: any) => col.sort)
+            .map((col: any) => ({
+                colId: col.colId,
+                sort: col.sort,
+            }));
+
+        if (sortModel.length > 0) {
+            const { colId, sort } = sortModel[0];
+
+            console.log("sortModel", sortModel);
+
+            setParams((prevParams: any) => {
+                const filteredArray = prevParams.filter(
+                    (item) =>
+                        item.name !== "sortBy" &&
+                        item.name !== "sortOrder" &&
+                        item.name !== "page"
+                );
+
+                return [
+                    ...filteredArray,
+                    { name: "sortBy", value: colId },
+                    { name: "sortOrder", value: sort },
+                    { name: "page", value: 1 },
+                ];
+            });
+        }
+    }, [setParams]);
+
     return (
         <div>
             {(title || createButton) && (
@@ -118,7 +175,7 @@ const DataTable = ({
 
             <div
                 className={`flex items-center  gap-2 flex-wrap ${
-                    (title || createButton) && `mt-10`
+                    (title || createButton) && `mt-12`
                 }`}
             >
                 {searchField && (
@@ -136,7 +193,7 @@ const DataTable = ({
                     </Button>
                 )}
                 <span
-                    className={` transform transition-transform duration-300 ease-in-out ${
+                    className={` transform transition-transform duration-300 ease-in-out flex gap-2  ${
                         showFilters
                             ? "translate-x-0"
                             : "absolute left-0 -translate-x-full"
@@ -144,7 +201,10 @@ const DataTable = ({
                 >
                     {filters}
                 </span>
-                {params?.length > 0 && (
+                {params?.filter(
+                    (p: { name: string }) =>
+                        p.name !== "page" && p.name !== "limit"
+                )?.length > 0 && (
                     <Button
                         size={"xsm"}
                         variant={"outline"}
@@ -180,6 +240,13 @@ const DataTable = ({
                     rowSelection={"multiple"}
                     suppressRowClickSelection={true}
                     onGridReady={onGridReady}
+                    onSortChanged={onSortChanged}
+                    getRowClass={(params) => {
+                        return params.node?.rowIndex !== null &&
+                            params.node?.rowIndex % 2 === 0
+                            ? styles["even-row"]
+                            : styles["odd-row"];
+                    }}
                 />
             </div>
 

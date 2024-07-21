@@ -6,13 +6,13 @@ import {
     useGetAllCategoriesQuery,
     useGetProductsQuery,
     useMultiProductDeleteMutation,
-} from "@/redux/features/product/productApi";
+} from "@/redux/api/productApi";
 import { TBrand, TProduct, TCategory } from "@/types/product";
 
 import { UpdateProduct } from "@/components/table/products/UpdateProduct";
 import { Button } from "@/components/ui/button";
 
-import { useGetAllBranchesQuery } from "@/redux/features/admin/adminApi";
+import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { TBranch, TQueryParam, TUserRole } from "@/types/global.types";
 import { RxCross2 } from "react-icons/rx";
 import FilterByOptions from "@/components/table/FilterByOptions";
@@ -284,6 +284,7 @@ const Products = () => {
                 params={params}
                 setParams={setParams}
             />
+            
             <FilterByInput
                 filterBy="Quantity"
                 title="Quantity"

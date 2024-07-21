@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import tryCatch from "@/utls/tryCatch";
-import { useGetAllBranchesQuery } from "@/redux/features/admin/adminApi";
+import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { TBranch, TUser } from "@/types/global.types";
 import CustomSelect from "@/components/ui/CustomSelect";
 import createUserValidate from "@/schemas/registrationValidation";

@@ -15,7 +15,7 @@ const StockHistorySchema = new Schema<IStockHistory>(
         },
         transferToStock: {
             type: Schema.Types.ObjectId,
-            ref: "Stock",
+            ref: "Branch",
         },
         productId: {
             type: Schema.Types.ObjectId,
@@ -29,7 +29,7 @@ const StockHistorySchema = new Schema<IStockHistory>(
             ref: "User",
             required: true,
         },
-        date: { type: Date, default: Date.now, required: true },
+        date: { type: Date, required: true },
     },
     { timestamps: true }
 );

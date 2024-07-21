@@ -61,7 +61,39 @@ export const generateBranchManagerId = async () => {
 //     return currentProductCode;
 // };
 export function generateProductCode() {
-    const timestamp = Date.now().toString(36).slice(-6)
+    const timestamp = Date.now().toString(36).slice(-6);
     const random = Math.random().toString(36).substring(2, 6).toUpperCase();
     return `pro-${timestamp}-${random}`;
 }
+
+import mongoose from "mongoose";
+
+/**
+ * Normalize a field in the query to MongoDB ObjectId(s), modifying the query in-place.
+ * Supports string or array of strings.
+ */
+export const normalizeObjectIdField = (
+    query: Record<string, any>,
+    originalField: string,
+    options?: { nested?: boolean; targetField?: string }
+) => {
+    const value = query[originalField];
+    if (!value) return;
+
+    const target =
+        options?.targetField ||
+        (options?.nested ? `${originalField}._id` : originalField);
+
+    if (Array.isArray(value)) {
+        query[target] = value
+            .filter((id) => mongoose.Types.ObjectId.isValid(id))
+            .map((id) => new mongoose.Types.ObjectId(id));
+    } else if (
+        typeof value === "string" &&
+        mongoose.Types.ObjectId.isValid(value)
+    ) {
+        query[target] = new mongoose.Types.ObjectId(value);
+    }
+
+    delete query[originalField];
+};

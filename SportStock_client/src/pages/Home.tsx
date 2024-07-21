@@ -1,10 +1,13 @@
 import { HomeCard } from "@/components/cards/HomeCard";
 import { Barchart } from "@/components/charts/BarChart";
+
+import { PieCrtCategory } from "@/components/charts/PieChart";
+import { StocksLineChart } from "@/components/charts/StocksLineChart";
 import { userRole } from "@/constants/user";
 import {
     useGetDashboardMetaQuery,
     useGetStockAvailabilityQuery,
-} from "@/redux/features/product/productApi";
+} from "@/redux/api/productApi";
 import { useCurrentUser } from "@/redux/Hooks";
 import {
     DollarSign,
@@ -17,37 +20,46 @@ const Home = () => {
     const user = useCurrentUser();
 
     const { data } = useGetDashboardMetaQuery(undefined);
-    const { data: stockAvailability } = useGetStockAvailabilityQuery(undefined);
-    const metaData = data?.data;
-    const stockData = stockAvailability?.data;
 
-    console.log("stockData", stockData);
+    const metaData = data?.data;
+
+
 
     return (
-        // <div className="h-full w-full flex justify-center items-center ">
-        <div>
+
+        <div className="bg-white p-4">
             <div className="flex justify-between gap-4">
                 <HomeCard
                     title="Total Products"
                     value={metaData?.totalProducts}
                     icon={<ShoppingBag size={30} />}
-                    subtext={`${metaData?.addedProducts} products added this week`}
+                    // subtext={`${metaData?.totalProducts} products added this week`}
                 />
                 <HomeCard
                     title="Total Stock Items"
                     icon={<ShoppingCart size={30} />}
-                    subtext={`${metaData?.addedQuantity} item added this week`}
-                    value={metaData?.totalQuantity}
+                    // subtext={`${metaData?.totalStocks} item added this week`}
+                    value={metaData?.totalStocks}
                 />
                 <HomeCard
                     title="Total Stock value"
                     icon={<DollarSign size={30} />}
-                    subtext={`$${metaData?.addedStockValue}  stock value added this week`}
+                    // subtext={`$${metaData?.totalStockValue}  stock value added this week`}
                     value={metaData?.totalStockValue}
                 />
             </div>
+
+            <div className="flex justify-between gap-4 mt-14">
+                <div className="w-7/12">
+                    <Barchart />
+                </div>
+                <div className="w-5/12">
+                    <PieCrtCategory />
+                </div>
+            </div>
+
             <div>
-                <Barchart chartData={stockData} />
+                <StocksLineChart />
             </div>
         </div>
     );

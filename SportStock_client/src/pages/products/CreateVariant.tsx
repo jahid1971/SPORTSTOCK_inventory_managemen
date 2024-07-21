@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import CreatreProduct from "./CreatreProduct";
-import { useGetSingleProductQuery } from "@/redux/features/product/productApi";
+import { useGetSingleProductQuery } from "@/redux/api/productApi";
 import { Spinner } from "@/components/ui/Spinner";
 
 const CreateVariant = () => {

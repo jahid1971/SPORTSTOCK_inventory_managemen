@@ -9,6 +9,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../Store";
 import { logOut, setUser } from "../features/auth/authSlice";
+import { tagTypes } from "../redux.constants";
 
 const baseQuery = fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASE_URL as string,
@@ -62,16 +63,6 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 export const baseApi = createApi({
     reducerPath: "baseApi",
     baseQuery: baseQueryWithRefreshToken,
-    tagTypes: [
-        "userStatus",
-        "category",
-        "brands",
-        "branches",
-        "products",
-        "sales",
-        "users",
-        "stocks",
-        "stockHistory"
-    ],
+    tagTypes: Object.values(tagTypes),
     endpoints: () => ({}),
 });

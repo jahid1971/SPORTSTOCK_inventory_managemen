@@ -1,5 +1,7 @@
-
 import AddStockHistory from "@/pages/History/AddHistory";
+import AdjustHistory from "@/pages/History/AdjustHistory";
+import TransferedHistory from "@/pages/History/TransferedHistory";
+
 import Home from "@/pages/Home";
 import AddBranch from "@/pages/branch/AddBranch";
 import Branches from "@/pages/branch/Branches";
@@ -8,8 +10,6 @@ import NotFound from "@/pages/others/NotFound";
 import CreateVariant from "@/pages/products/CreateVariant";
 import CreatreProduct from "@/pages/products/CreatreProduct";
 import Products from "@/pages/products/Products";
-import SalesHistory from "@/pages/sales/SalesHistory";
-import SalesReport from "@/pages/sales/SalesReport";
 import AddStock from "@/pages/stockManage/AddStock";
 import AdjustStock from "@/pages/stockManage/AdjustStock";
 import StockList from "@/pages/stockManage/StockList";
@@ -39,9 +39,11 @@ export const AdminRoutes = () => {
             <Route path="add-branch" element={<AddBranch />} />
 
             <Route path="add-history" element={<AddStockHistory />} />
+            <Route path="adjust-history" element={<AdjustHistory />} />
+            <Route path="transfer-history" element={<TransferedHistory />} />
 
-            <Route path="sales-report" element={<SalesReport />} />
-            <Route path="sales-history" element={<SalesHistory />} />
+            {/* <Route path="sales-report" element={<SalesReport />} />
+            <Route path="sales-history" element={<SalesHistory />} /> */}
             <Route
                 path="create-branch-manager"
                 element={<CreateBranchManager />}

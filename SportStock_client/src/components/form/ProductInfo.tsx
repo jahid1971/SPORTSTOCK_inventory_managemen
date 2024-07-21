@@ -6,7 +6,7 @@ import { PiPlusCircleBold } from "react-icons/pi";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 
 import CustomSelect from "../ui/CustomSelect";
-import { useGetAllBrandNamesQuery } from "@/redux/features/product/productApi";
+import { useGetAllBrandNamesQuery } from "@/redux/api/productApi";
 import { TBrand } from "@/types/product";
 import AddBrand from "../product/AddBrand";
 import { productSizeOptions } from "@/constants/product";

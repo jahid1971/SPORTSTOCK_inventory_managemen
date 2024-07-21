@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { FloatingInput } from "../ui/InputFloatingLabel";
 import { Button } from "../ui/button";
 import { DialogClose } from "../ui/dialog";
-import { useAddBrandMutation} from "@/redux/features/product/productApi";
+import { useAddBrandMutation} from "@/redux/api/productApi";
 import tryCatch from "@/utls/tryCatch";
 import { TCategory } from "@/types/product";
 

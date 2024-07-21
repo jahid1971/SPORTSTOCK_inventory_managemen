@@ -10,10 +10,10 @@ export function HomeCard({
     title: string;
     value: number;
     icon: React.ReactNode;
-    subtext: string;
+    subtext?: string;
 }) {
     return (
-        <div className="@container/card w-full rounded-xl border bg-card text-card-foreground bg-gradient-to-t from-primary-200 to-card dark:bg-card shadow-lg p-4">
+        <div className="@container/card w-full rounded-xl border bg-card text-card-foreground bg-gradient-to-t from-primary-300 to-card dark:bg-card shadow-lg p-4">
             <div className="flex flex-col space-y-1.5  relative">
                 <div className="flex justify-between items-center">
                     <p className="text-sm font-medium text-muted-foreground">
@@ -23,7 +23,7 @@ export function HomeCard({
 
                 <div className="flex justify-between items-center ">
                     {" "}
-                    <h3 className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
+                    <h3 className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums text-slate-600">
                         {value}
                     </h3>
                     <div className="opacity-10 mr-4">{icon}</div>
