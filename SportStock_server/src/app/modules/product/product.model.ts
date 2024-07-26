@@ -43,7 +43,7 @@ const productSchema = new Schema(
         price: { type: Number, required: true },
         productCode: { type: String, required: true, unique: true },
         image: { type: String },
-        brand: { type: String },
+        brand: { type: Schema.Types.ObjectId, ref: "Brand", required: true },
         description: { type: String },
         variants: [VariantSchema],
         isDeleted: { type: Boolean, default: false },

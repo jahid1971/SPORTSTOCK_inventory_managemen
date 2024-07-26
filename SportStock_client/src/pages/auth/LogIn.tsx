@@ -1,8 +1,10 @@
+
+
 import { FloatingInput } from "@/components/ui/InputFloatingLabel";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/redux/Hooks";
-import { useLogInMutation } from "@/redux/api/authApi";
-import {  setUser } from "@/redux/features/auth/authSlice";
+// import { useLogInMutation } from "@/redux/api/authApi";
+import { setUser } from "@/redux/features/auth/authSlice";
 
 import { FieldValues, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +13,7 @@ import { useState } from "react";
 import tryCatch from "@/utls/tryCatch";
 import { jwtDecode } from "jwt-decode";
 import { TUser } from "@/types/global.types";
+import { useLogInMutation } from "@/redux/api/authApi";
 
 const LogIn = () => {
     const navigate = useNavigate();
@@ -18,7 +21,11 @@ const LogIn = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const viewIcon = (
-        <button type="button" onClick={() => setIsPasswordVisible(!isPasswordVisible)}>
+        <button
+            type="button"
+            onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+            className="focus:outline-none"
+        >
             {isPasswordVisible ? <IoEyeOutline /> : <IoEyeOffOutline />}
         </button>
     );
@@ -29,8 +36,6 @@ const LogIn = () => {
         formState: { errors },
     } = useForm({
         defaultValues: {
-            // email: "user8@example.com",
-            // password: "user456",
             email: "mrx@gmail.com",
             password: "admin123",
         },
@@ -41,16 +46,19 @@ const LogIn = () => {
     const onSubmit = async (data: FieldValues) => {
         tryCatch(
             async () => {
-                const res = await logIn(data).unwrap();
+                const res: any = await logIn(data).unwrap();
 
-                const user = jwtDecode(res?.data?.token) as TUser;
-
-                dispatch(setUser({ user: user, token: res.data.token }));
-                console.log(user, "user");
-
+                dispatch(
+                    setUser({ user: res?.data?.user, token: res?.data?.token })
+                );
+                console.log(res?.data, " res?.data");
                 if (res.data?.user?.needsPasswordChange) {
                     navigate("/change-password");
-                } else navigate(`/dashboard`);
+                } else if (res?.data?.user) {
+                    setTimeout(() => {
+                        navigate("/dashboard");
+                    }, 100);
+                }
 
                 return res;
             },
@@ -59,27 +67,65 @@ const LogIn = () => {
         );
     };
     return (
-        <div className="h-screen w-11/12 md:w-4/12 mx-auto flex  flex-col  justify-center  gap-2">
-            <h3 className="text-primary-500 text-2xl font-semibold">LOG IN</h3>
-            <form className=" space-y-2 w-full" onSubmit={handleSubmit(onSubmit)}>
-                <FloatingInput
-                    id="email"
-                    type="email"
-                    label="Email"
-                    {...register("email", { required: "Email is required" })}
-                    error={errors.email}
-                />
-                <FloatingInput
-                    id="password"
-                    type={isPasswordVisible ? "text" : "password"}
-                    label="Password"
-                    label_2={viewIcon}
-                    {...register("password", { required: "Password is required" })}
-                    error={errors.password}
-                />
-
-                <Button type="submit">Log in</Button>
-            </form>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-primary-50 dark:from-gray-900 dark:to-gray-800">
+            <div className="w-full max-w-md p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-xl flex flex-col gap-6 border border-primary-100 dark:border-gray-800">
+                <div className="flex flex-col items-center gap-2">
+                    <h3 className="text-primary-600 dark:text-primary-400 text-3xl font-bold tracking-tight">
+                        Log In
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">
+                        Welcome back! Please enter your credentials.
+                    </p>
+                </div>
+                <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+                    <FloatingInput
+                        id="email"
+                        type="email"
+                        label="Email"
+                        {...register("email", {
+                            required: "Email is required",
+                        })}
+                        error={errors.email}
+                        className="bg-primary-50 dark:bg-gray-800"
+                    />
+                    <FloatingInput
+                        id="password"
+                        type={isPasswordVisible ? "text" : "password"}
+                        label="Password"
+                        label_2={viewIcon}
+                        {...register("password", {
+                            required: "Password is required",
+                        })}
+                        error={errors.password}
+                        className="bg-primary-50 dark:bg-gray-800"
+                    />
+                    <div className="flex justify-end">
+                        <a
+                            href="#"
+                            className="text-xs text-primary-500 hover:underline"
+                        >
+                            Forgot password?
+                        </a>
+                    </div>
+                    <Button
+                        type="submit"
+                        className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 rounded-lg shadow transition-colors"
+                    >
+                        Log in
+                    </Button>
+                </form>
+                <div className=" text-center">
+                    <p className="text-sm text-gray-500">
+                        Don't have an account?{" "}
+                        <a
+                            href="/register"
+                            className="text-primary hover:underline"
+                        >
+                            Sign up
+                        </a>
+                    </p>
+                </div>
+            </div>
         </div>
     );
 };

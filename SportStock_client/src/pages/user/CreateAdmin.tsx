@@ -1,29 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FloatingInput } from "@/components/ui/InputFloatingLabel";
 import { Button } from "@/components/ui/button";
-
-import { Controller, FieldValues, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import { FieldValues, useForm } from "react-hook-form";
 import tryCatch from "@/utls/tryCatch";
-import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
-import { TBranch, TUser } from "@/types/global.types";
-import CustomSelect from "@/components/ui/CustomSelect";
-import createUserValidate from "@/schemas/registrationValidation";
-import { useCreateBranchManagerMutation } from "@/redux/api/userApi";
+
+import {  TUser } from "@/types/global.types";
+
+import {
+    useCreateAdminMutation,
+
+} from "@/redux/api/userApi";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import { useState } from "react";
 import FileUploader from "@/components/ui/FileUploader";
 
-const CreateBranchManager = () => {
-    const [createBranchManager] = useCreateBranchManagerMutation();
-    const { data: branchNames, isFetching: isBranchNameFetching } =
-        useGetAllBranchesQuery(undefined);
-    const branchNamesOptions = branchNames?.data?.data?.map(
-        (branch: TBranch) => ({
-            value: branch._id,
-            label: branch.branchName,
-        })
-    );
+const CreateAdmin = () => {
+    const [createAdmin] = useCreateAdminMutation();
+
+
     const [isPasswordVisible, setIsPasswordVisible] = useState(true);
 
     const viewIcon = (
@@ -35,7 +29,6 @@ const CreateBranchManager = () => {
         </button>
     );
 
-    // useForm hook.....
     const {
         handleSubmit,
         register,
@@ -43,11 +36,10 @@ const CreateBranchManager = () => {
         formState: { errors },
         reset,
         watch,
-        // reset,
-    } = useForm<TUser & { fullName: string }>({
-        resolver: zodResolver(createUserValidate),
+    } = useForm<TUser>({
+        // resolver: zodResolver(createUserValidate),
         defaultValues: {
-            password: "bm456",
+            password: "admin456",
         },
     });
 
@@ -58,19 +50,18 @@ const CreateBranchManager = () => {
         formData.append("file", data?.userPhoto);
         tryCatch(
             async () => {
-                const res = await createBranchManager(formData);
+                const res = await createAdmin(formData);
+                if ((res as any)?.data?.success) reset();
                 return res;
             },
-            "Branch Manager Created",
-            "Branch Manager Creating",
-            () => reset()
+            "Admin Created",
+            "Admin is Creating"
         );
     };
-
     return (
-        <div className=" w-11/12 md:w-8/12 mx-auto flex  flex-col  justify-center  gap-4 mt-5 px-8 py-8 bg-white">
+        <div className=" w-11/12 md:w-8/12 mx-auto flex  flex-col  justify-center  gap-4 mt-5 px-8 py-8 shadow-lg bg-white">
             <h3 className="text-primary-400 text-2xl font-semibold">
-                Create Barnch Manager
+                CREATE Admin
             </h3>
             <form
                 className=" space-y-4 w-full"
@@ -99,6 +90,7 @@ const CreateBranchManager = () => {
                     className="bg-primary-50 border-0 border-b-[1px]"
                     watch={watch}
                 />
+
                 <FloatingInput
                     id="password"
                     type={isPasswordVisible ? "text" : "password"}
@@ -109,14 +101,6 @@ const CreateBranchManager = () => {
                     className="bg-primary-50"
                 />
 
-                <CustomSelect
-                    id="branch"
-                    label="Branch"
-                    control={control}
-                    options={branchNamesOptions}
-                    disabled={isBranchNameFetching}
-                    className="bg-primary-50"
-                />
                 <FloatingInput
                     id="contactNumber"
                     type="text"
@@ -133,7 +117,6 @@ const CreateBranchManager = () => {
                     error={errors.address}
                     className="bg-primary-50"
                 />
-  
 
                 <Button type="submit">Create</Button>
             </form>
@@ -141,4 +124,4 @@ const CreateBranchManager = () => {
     );
 };
 
-export default CreateBranchManager;
+export default CreateAdmin;

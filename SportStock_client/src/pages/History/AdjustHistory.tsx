@@ -2,23 +2,31 @@ import DataTable from "@/components/table/DataTable";
 import FilterByDate from "@/components/table/FilterByDate";
 import FilterByInput from "@/components/table/FilterByInput";
 import FilterByOptions from "@/components/table/FilterByOptions";
+import { Button } from "@/components/ui/button";
 
 import { defaultParams } from "@/constants/global.constant";
+import { userRole } from "@/constants/user";
 import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { useGetAllCategoriesQuery } from "@/redux/api/productApi";
 import { useGetAdjustStockHistoryQuery } from "@/redux/api/stockApi";
+import { useGetAllUsersQuery } from "@/redux/api/userApi";
+import { useCurrentUser } from "@/redux/Hooks";
 
 import { TCategory } from "@/types/product";
 import { IStockHistory } from "@/types/stock.types";
-import { tableSerial } from "@/utls/utls";
+import { tableSerial, updateParam } from "@/utls/utls";
 import { ColDef } from "@ag-grid-community/core";
 import { useState } from "react";
+import { RiFilterLine } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
 const AdjustHistory = () => {
+    const user = useCurrentUser();
+    const navigate = useNavigate();
     const [params, setParams] = useState<any[]>(defaultParams);
 
     const { data, isFetching: historyFetching } =
-        useGetAdjustStockHistoryQuery(undefined);
+        useGetAdjustStockHistoryQuery(params);
 
     const { data: branchData } = useGetAllBranchesQuery(undefined);
 
@@ -35,6 +43,14 @@ const AdjustHistory = () => {
             label: category.category,
         })
     );
+
+    const users = useGetAllUsersQuery(undefined);
+
+    const userOptions =
+        users?.data?.data?.data?.map((user) => ({
+            value: user._id,
+            label: user.fullName,
+        })) || [];
 
     const historyData = data?.data?.data?.map((item, index) => ({
         ...item,
@@ -80,14 +96,43 @@ const AdjustHistory = () => {
         },
     ];
 
+    const filterdColumnDef = columnDefs.filter((col) => {
+        if (
+            (user?.role === userRole.BRANCH_MANAGER ||
+                user?.role === userRole.SELLER) &&
+            col.field === "branchId.branchName"
+        ) {
+            return false;
+        }
+        return true;
+    });
+
     const filters = [
-        <FilterByOptions
-            filterBy="branchId"
-            filterItems={branchOptions}
-            params={params}
-            setParams={setParams}
-            title="Branches"
-        />,
+        user?.role === userRole.ADMIN &&
+            user?.role === userRole.SUPER_ADMIN && (
+                <FilterByOptions
+                    filterBy="branchId"
+                    filterItems={branchOptions}
+                    params={params}
+                    setParams={setParams}
+                    title="Branches"
+                />
+            ),
+
+        <Button
+            onClick={() =>
+                setParams((prev) => updateParam(prev, "madeBy", user?._id))
+            }
+            size={"xsm"}
+            variant={
+                params?.find((item: any) => item.name === "madeBy")
+                    ? "default"
+                    : "outline_primary"
+            }
+        >
+            <RiFilterLine className=" mr-1" />
+            By Me
+        </Button>,
 
         <FilterByOptions
             filterBy="categoryId"
@@ -112,12 +157,20 @@ const AdjustHistory = () => {
         />,
     ];
 
+    const createButton = (
+        <Button size={"xsm"} onClick={() => navigate("/adjust-stock")}>
+            Adjust Stock
+        </Button>
+    );
+
     return (
         <div>
             <DataTable
                 title="ADJUSTED STOCK HISTORY"
+                createButton={createButton}
+                searchField
                 rowData={historyData}
-                columnDefs={columnDefs}
+                columnDefs={filterdColumnDef}
                 isFetching={historyFetching}
                 params={params}
                 setParams={setParams}

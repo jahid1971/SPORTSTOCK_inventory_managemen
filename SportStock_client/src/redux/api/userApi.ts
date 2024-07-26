@@ -1,53 +1,49 @@
 import { baseApi } from "@/redux/api/baseApi";
 import {
     createApiBuilder,
-    deleteApiBuilder,
     queryApiBuilder,
+    singleQueryApiBuilder,
     updateApiBuilder,
 } from "@/utls/api";
 import { tagTypes } from "../redux.constants";
 
 const userApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // create branch manager..........................................create branch manager
-        // createBranchManager: builder.mutation({
-        //     query: createApiBuilder("users/create-branch-manager"),
-        //     invalidatesTags: ["users"],
-        // }),
+        createAdmin: createApiBuilder(
+            builder,
+            "users/create-admin",
+            [tagTypes.users],
+            { contentType: false }
+        ),
 
         createBranchManager: createApiBuilder(
             builder,
             "users/create-branch-manager",
-            [tagTypes.users]
+            [tagTypes.users],
+            { contentType: false }
         ),
 
-        createSeller: createApiBuilder(builder, "users/create-seller", [
+        createSeller: createApiBuilder(
+            builder,
+            "users/create-seller",
+            [tagTypes.users],
+            { contentType: false }
+        ),
+
+        updateSeller: updateApiBuilder(
+            builder,
+            "users/update-seller",
+            [tagTypes.users],
+            { contentType: false }
+        ),
+
+        deleteUser: updateApiBuilder(builder, "users/delete-user", [
             tagTypes.users,
         ]),
-
-        //  delete user..........................................delete user
-        // deleteUser: builder.mutation({
-        //     query: updateApiBuilder("users/delete-user"),
-        //     invalidatesTags: ["users"],
-        // }),
-
-        deleteUser: deleteApiBuilder(builder, "users/delete-user", [
-            tagTypes.users,
-        ]),
-
-        //  get all users..........................................get all users
-        // getAllUsers: builder.query({
-        //     query: queryApiBuilder("users"),
-        //     providesTags: ["users"],
-        // }),
 
         getAllUsers: queryApiBuilder(builder, "users", [tagTypes.users]),
 
-        // update user status...................................update User Status
-        // updateUserStatus: builder.mutation({
-        //     query: updateApiBuilder("users/update-status"),
-        //     invalidatesTags: ["users"],
-        // }),
+        getuserById: singleQueryApiBuilder(builder, "users", [tagTypes.users]),
 
         updateUserStatus: updateApiBuilder(builder, "users/update-status", [
             tagTypes.users,
@@ -56,9 +52,12 @@ const userApi = baseApi.injectEndpoints({
 });
 
 export const {
+    useCreateAdminMutation,
     useCreateBranchManagerMutation,
     useDeleteUserMutation,
     useGetAllUsersQuery,
     useCreateSellerMutation,
     useUpdateUserStatusMutation,
+    useGetuserByIdQuery,
+    useUpdateSellerMutation,
 } = userApi;

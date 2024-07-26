@@ -9,6 +9,8 @@ import { salesRoutes } from "../modules/sales/sales.route";
 import { categoryRoutes } from "../modules/category/category.route";
 import { StockRoutes } from "../modules/stock/stock.route";
 import { StockHistoryRoutes } from "../modules/stockHistory/history.route";
+// import { authRoutes } from "../modules/auth/auth.route";
+
 
 const router = Router();
 

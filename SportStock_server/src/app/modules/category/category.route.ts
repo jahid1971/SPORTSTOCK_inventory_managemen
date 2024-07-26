@@ -7,9 +7,8 @@ const router = Router();
 
 router.post(
     "/create-category",
-    checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER),
+    checkAuth(userRole.ADMIN, userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER),
     CategoryController.createCategory
-    
 );
 router.get("/", CategoryController.getAllCategory);
 

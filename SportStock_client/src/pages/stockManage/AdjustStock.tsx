@@ -7,6 +7,7 @@ import CustomSelect from "@/components/ui/CustomSelect";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { userRole } from "@/constants/user";
 import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { useGetProductsQuery } from "@/redux/api/productApi";
 import {
@@ -107,10 +108,11 @@ const AdjustStock = () => {
 
     const onSubmit = (data: any) => {
         const payload = {
-            madeBy: user?.id,
+            madeBy: user?._id,
             ...data,
         };
 
+        console.log(payload, "payload ----------------------");
         tryCatch(
             async () => await adjustStock(payload),
             "Stock Adjusted Successfully",
@@ -151,25 +153,38 @@ const AdjustStock = () => {
                         defaultValue={new Date()}
                     />
                     <div className="w-full">
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <div className="flex items-center gap-1 justify-end  font-medium cursor-pointer">
-                                    <PiPlusCircleBold />
-                                    Add New
-                                </div>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[425px]">
-                                <CreateBranch isModalTrue />
-                            </DialogContent>
-                        </Dialog>
+                        {(user?.role === userRole.ADMIN ||
+                            user?.role === userRole.SUPER_ADMIN) && (
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <div className="flex items-center gap-1 justify-end  font-medium cursor-pointer">
+                                        <PiPlusCircleBold />
+                                        Add New
+                                    </div>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                    <CreateBranch isModalTrue />
+                                </DialogContent>
+                            </Dialog>
+                        )}
 
                         <CustomSelect
                             id="branchId"
                             label="Branch Name"
                             control={control}
                             options={branchNamesOptions}
-                            disabled={isBranchNameFetching}
                             required
+                            disabled={
+                                isBranchNameFetching ||
+                                user?.role === userRole?.BRANCH_MANAGER ||
+                                user?.role === userRole?.SELLER
+                            }
+                            defaultValue={
+                                user?.role === userRole?.BRANCH_MANAGER ||
+                                user?.role === userRole?.SELLER
+                                    ? user?.branch
+                                    : ""
+                            }
                         />
                     </div>
                     <div className="w-full">
@@ -216,6 +231,7 @@ const AdjustStock = () => {
                             options={reasonOptions}
                             disabled={isBranchNameFetching}
                             required
+                            defaultValue={reasonOptions[0]?.value}
                         />
                     </div>
                 </div>

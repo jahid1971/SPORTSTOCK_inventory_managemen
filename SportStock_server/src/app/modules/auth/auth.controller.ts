@@ -3,6 +3,20 @@ import { Request, Response } from "express";
 import catchAsynch from "../../utls/catchAsynch";
 import sendSuccessResponse from "../../utls/sendSuccessResponse";
 import { authServices } from "./auth.service";
+import AppError from "../../errors/AppError";
+
+const getMe = catchAsynch(async (req, res) => {
+    const refreshToken = req?.cookies?.refreshToken;
+
+    const { accessToken, userObject } = await authServices.getMe(refreshToken);
+
+    const data = {
+        user: userObject,
+        token: accessToken,
+    };
+
+    return sendSuccessResponse(res, data, "User fetched successfully", 200);
+});
 
 const logIn = catchAsynch(async (req: Request, res: Response) => {
     const { accessToken, refreshToken, userObject } = await authServices.logIn(
@@ -13,10 +27,12 @@ const logIn = catchAsynch(async (req: Request, res: Response) => {
         httpOnly: true,
         secure: true,
     });
+
     const data = {
         user: userObject,
         token: accessToken,
     };
+
     sendSuccessResponse(res, data, "User logged in successfully", 200);
 });
 
@@ -37,11 +53,20 @@ const changePassword = catchAsynch(async (req: Request, res: Response) => {
 const refresh = catchAsynch(async (req: Request, res: Response) => {
     const refreshToken = req?.cookies?.refreshToken;
 
-    if (!refreshToken) {
-        return sendSuccessResponse(res, {}, "Refresh token not found", 403);
-    }
+    if (!refreshToken) throw new AppError(403, "refresh token not found");
 
     const { accessToken } = await authServices.refresh(refreshToken);
+
+    if (!accessToken) {
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: true,
+        });
+        return res.status(403).json({
+            success: false,
+            message: "Session expired. Please log in again.",
+        });
+    }
 
     return sendSuccessResponse(
         res,
@@ -51,8 +76,19 @@ const refresh = catchAsynch(async (req: Request, res: Response) => {
     );
 });
 
+const logOut = catchAsynch(async (req: Request, res: Response) => {
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+    });
+
+    return sendSuccessResponse(res, {}, "User logged out successfully", 200);
+});
+
 export const authControllers = {
+    getMe,
     logIn,
     changePassword,
     refresh,
+    logOut,
 };

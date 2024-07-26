@@ -7,12 +7,14 @@ import CustomSelect from "@/components/ui/CustomSelect";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { userRole } from "@/constants/user";
 import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { useGetProductsQuery } from "@/redux/api/productApi";
 import {
     useAddStockMutation,
     useAdjustStockMutation,
     useGetAllStocksQuery,
+    useGetBranchStocksQuery,
     useTransferStockMutation,
 } from "@/redux/api/stockApi";
 import { useCurrentUser } from "@/redux/Hooks";
@@ -46,7 +48,7 @@ const StockTransfer = () => {
         }
     }, [state, reset]);
 
-    const { data: branchNames, isFetching: isBranchNameFetching } =
+    const { data: branchNames, isLoading: isBranchNameFetching } =
         useGetAllBranchesQuery(undefined);
 
     const branchNamesOptions = branchNames?.data?.data?.map(
@@ -75,31 +77,31 @@ const StockTransfer = () => {
         data: fromBranch,
         isSuccess: fromSuccess,
         isFetching: isFromBranchFetching,
-    } = useGetAllStocksQuery(
+    } = useGetBranchStocksQuery(
         [
             { name: "branchId", value: selectedFromBranch },
             { name: "productId", value: productId },
         ],
         { skip: !selectedFromBranch || !productId }
     );
-    const fromBranchData = fromBranch?.data?.data[0];
+    const fromBranchData = fromBranch?.data[0];
 
     const {
         data: toBranch,
         isSuccess,
         isFetching: isToBranchFetching,
-    } = useGetAllStocksQuery(
+    } = useGetBranchStocksQuery(
         [
             { name: "branchId", value: selectedToBranch },
             { name: "productId", value: productId },
         ],
         { skip: !selectedToBranch || !productId }
     );
-    const toBranchData = toBranch?.data?.data[0];
+    const toBranchData = toBranch?.data[0];
 
     const onSubmit = (data: any) => {
         const payload = {
-            madeBy: user?.id,
+            madeBy: user?._id,
             reason: "transferred",
             ...data,
         };
@@ -145,21 +147,32 @@ const StockTransfer = () => {
                         label="From Branch"
                         control={control}
                         options={branchNamesOptions}
-                        disabled={isBranchNameFetching}
+                        disabled={
+                            isBranchNameFetching ||
+                            user?.role === userRole.BRANCH_MANAGER
+                        }
+                        defaultValue={
+                            user?.role === userRole.BRANCH_MANAGER
+                                ? user?.branch
+                                : ""
+                        }
                         required
                     />
                     <div className="w-full">
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <div className="flex items-center gap-1 justify-end  font-medium cursor-pointer">
-                                    <PiPlusCircleBold />
-                                    Add New
-                                </div>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[425px]">
-                                <CreateBranch isModalTrue />
-                            </DialogContent>
-                        </Dialog>
+                        {(user?.role === userRole.ADMIN ||
+                            user?.role === userRole.SUPER_ADMIN) && (
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <div className="flex items-center gap-1 justify-end  font-medium cursor-pointer">
+                                        <PiPlusCircleBold />
+                                        Add New
+                                    </div>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                    <CreateBranch isModalTrue />
+                                </DialogContent>
+                            </Dialog>
+                        )}
 
                         <CustomSelect
                             id="toBranch"

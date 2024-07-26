@@ -6,13 +6,17 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { sellerMenuItems } from "@/constants/menuItems/sellerMenuItems";
-import { adminMenuItems } from "@/constants/menuItems/superAdminMenuItems";
+import {
+ 
+    superAdminMenuItems,
+} from "@/constants/menuItems/superAdminMenuItems";
 import { userRole } from "@/constants/user";
 import { useCurrentUser } from "@/redux/Hooks";
 import { TSidebarItemsProps, TUserMenuItems } from "@/types/sidebar.types";
 import { TUser } from "@/types/global.types";
 import { NavLink } from "react-router-dom";
 import { BranchManagerMenuItems } from "@/constants/menuItems/branchManagerMenuItems";
+import { adminMenuItems } from "@/constants/menuItems/adminMenuItems";
 
 const SidebarItems = ({
     mobileMenuOpen,
@@ -25,6 +29,9 @@ const SidebarItems = ({
 
     switch ((user as TUser)?.role) {
         case userRole.SUPER_ADMIN:
+            userMenuItems = superAdminMenuItems;
+            break;
+        case userRole.ADMIN:
             userMenuItems = adminMenuItems;
             break;
         case userRole.SELLER:
@@ -39,7 +46,9 @@ const SidebarItems = ({
 
     function renderMenuItems(item: any, childLevel: any) {
         const paddingLeft =
-            childLevel !== 0 ? `${childLevel * 35}px` : undefined;
+            desktopSidebarOpen && childLevel !== 0
+                ? `${childLevel * 35}px`
+                : undefined;
 
         return !item?.children ? (
             <NavLink
@@ -79,7 +88,7 @@ const SidebarItems = ({
                         className="px-3 py-2 [&[data-state=open]]:text-primary  hover:bg-primary-100/70 hover:text-primary/90"
                     >
                         <div className="flex gap-4 items-center text-nowrap">
-                        <span className="text-primary">{item.icon}</span>
+                            <span className="text-primary">{item.icon}</span>
                             <h3
                                 className={`${
                                     !desktopSidebarOpen &&

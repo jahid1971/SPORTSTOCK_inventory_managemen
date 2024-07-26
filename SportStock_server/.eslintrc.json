@@ -15,7 +15,12 @@
         "no-unused-expressions": "error",
         "prefer-const": "error",
         "no-console": "warn",
-        "no-undef": "error"
+        "no-undef": "error",
+        "import/extensions": [
+            "error",
+            "always",
+            { "js": "never", "ts": "never" }
+        ]
     },
     "globals": {
         "process": "readonly"

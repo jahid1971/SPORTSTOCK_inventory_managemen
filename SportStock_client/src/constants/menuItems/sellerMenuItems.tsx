@@ -1,7 +1,7 @@
 import { RxDashboard } from "react-icons/rx";
 import { MdOutlineInventory2 } from "react-icons/md";
 import { GoDotFill } from "react-icons/go";
-
+import { ClipboardMinus, KeyRound, Package, Warehouse } from "lucide-react";
 
 export const sellerMenuItems = [
     {
@@ -9,31 +9,22 @@ export const sellerMenuItems = [
         path: "dashboard",
         icon: <RxDashboard />,
     },
+
+
     {
-        label: "Inventory",
+        label: "Stock List",
+        path: "stock-list",
         icon: <MdOutlineInventory2 />,
-        children: [
-            {
-                label: "Products",
-                path: "products",
-                icon: <GoDotFill />,
-            }
-        ],
     },
-    // {
-    //     label: "Sales",
-    //     icon: <IoCartOutline />,
-    //     children: [
-    //         {
-    //             label: "Sales Report",
-    //             path: "sales-report",
-    //             icon: <GoDotFill />,
-    //         },
-    //         {
-    //             label: "Sales History",
-    //             path: "sales-history",
-    //             icon: <GoDotFill />,
-    //         },
-    //     ],
-    // },
+
+    {
+        label: "Adjust History",
+        path: "adjust-history",
+        icon: <ClipboardMinus size={15} />,
+    },
+    {
+        label: "Change Password",
+        icon: <KeyRound size={15} />,
+        path: "change-password",
+    },
 ];

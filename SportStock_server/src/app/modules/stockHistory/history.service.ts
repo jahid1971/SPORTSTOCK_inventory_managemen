@@ -1,13 +1,17 @@
 import mongoose from "mongoose";
 import getAllItems from "../../utls/getAllItems";
 import { StockHistory } from "./history.model";
-import { normalizeObjectIdField } from "../../utls/utls.global";
+import { convertToObjectId } from "../../utls/utls.global";
 import { Branch } from "../branch/branch.model";
 import AppError from "../../errors/AppError";
 import { userRole } from "../../constants/user";
 import { IUser } from "../user/user.interface";
 
-const getAllStockHistory = async (query: Record<string, unknown>) => {
+const getAllStockHistory = async (
+    user: IUser,
+    query: Record<string, unknown>,
+    andConditions?: any[]
+) => {
     const aggregationPipeline = [
         {
             $lookup: {
@@ -85,10 +89,13 @@ const getAllStockHistory = async (query: Record<string, unknown>) => {
         },
     ];
 
-    normalizeObjectIdField(query, "branchId", { nested: true });
-    normalizeObjectIdField(query, "productId", { nested: true });
-    normalizeObjectIdField(query, "stockId", { nested: true });
-    normalizeObjectIdField(query, "categoryId", { nested: true });
+    convertToObjectId(query, "branchId", { nested: true });
+    convertToObjectId(query, "productId", { nested: true });
+    convertToObjectId(query, "stockId", { nested: true });
+    convertToObjectId(query, "madeBy", { nested: true });
+    convertToObjectId(query, "categoryId", { nested: true });
+
+    console.log(query, " query  ================================");
 
     if (query?.minQuantityChanged || query?.maxQuantityChanged) {
         query.quantityChanged = {
@@ -116,6 +123,7 @@ const getAllStockHistory = async (query: Record<string, unknown>) => {
             "productId._id",
             "categoryId._id",
             "stockId._id",
+            "madeBy._id",
             "quantityChanged",
             "date",
             "reason",
@@ -123,6 +131,7 @@ const getAllStockHistory = async (query: Record<string, unknown>) => {
         ],
         mode: "aggregate",
         aggregationPipeline,
+        andConditions: andConditions || [],
     });
 
     return result;
@@ -137,16 +146,34 @@ const getAllAdjustHistory = async (query: Record<string, unknown>) => {
 };
 
 const getALlTransferredStockHistory = async (
+    user: IUser,
     query: Record<string, unknown>
 ) => {
     query.reason = "transferred";
 
-    const transferredStockHistory = await getAllStockHistory(query);
+    const andConditions = [];
+
+    if (user?.role === userRole.BRANCH_MANAGER) {
+        andConditions.push({
+            $or: [
+                { "branchId._id": user?.branch },
+                { "transferToStock._id": user?.branch },
+            ],
+        });
+    }
+
+    const transferredStockHistory = await getAllStockHistory(
+        query,
+        andConditions
+    );
 
     return transferredStockHistory;
 };
 
-const getLineChartData = async (query: Record<string, unknown>) => {
+const getLineChartData = async (
+    query: Record<string, unknown>,
+    user: IUser
+) => {
     const now = new Date();
 
     const startDate = new Date(now);
@@ -200,6 +227,9 @@ const getLineChartData = async (query: Record<string, unknown>) => {
         {
             $match: {
                 date: { $gte: startDate },
+                ...(user?.role === userRole.BRANCH_MANAGER && {
+                    branchId: user.branch,
+                }),
             },
         },
         {
@@ -272,7 +302,6 @@ const getLineChartData = async (query: Record<string, unknown>) => {
             date: weekdays[item.date] || item.date,
         }));
     }
-
 
     return result;
 };

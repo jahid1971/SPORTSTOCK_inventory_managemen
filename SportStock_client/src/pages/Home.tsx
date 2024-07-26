@@ -1,13 +1,12 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { HomeCard } from "@/components/cards/HomeCard";
 import { Barchart } from "@/components/charts/BarChart";
 
 import { PieCrtCategory } from "@/components/charts/PieChart";
 import { StocksLineChart } from "@/components/charts/StocksLineChart";
 import { userRole } from "@/constants/user";
-import {
-    useGetDashboardMetaQuery,
-    useGetStockAvailabilityQuery,
-} from "@/redux/api/productApi";
+
+import { useGetDashboardCardsQuery } from "@/redux/api/stockApi";
 import { useCurrentUser } from "@/redux/Hooks";
 import {
     DollarSign,
@@ -15,45 +14,50 @@ import {
     ShoppingBag,
     ShoppingCart,
 } from "lucide-react";
+import AdjustStock from "./stockManage/AdjustStock";
 
 const Home = () => {
     const user = useCurrentUser();
 
-    const { data } = useGetDashboardMetaQuery(undefined);
+    if (user?.role === userRole.SELLER) return <AdjustStock />; //only for .......................seller .........................................
 
-    const metaData = data?.data;
+    const { data } = useGetDashboardCardsQuery(undefined);
 
+    console.log(data, "dashboard cards data");
 
+    const cardData = data?.data;
 
     return (
-
         <div className="bg-white p-4">
             <div className="flex justify-between gap-4">
                 <HomeCard
                     title="Total Products"
-                    value={metaData?.totalProducts}
+                    value={cardData?.totalProducts}
                     icon={<ShoppingBag size={30} />}
-                    // subtext={`${metaData?.totalProducts} products added this week`}
+                    // subtext={`${cardData?.totalProducts} products added this week`}
                 />
                 <HomeCard
                     title="Total Stock Items"
                     icon={<ShoppingCart size={30} />}
-                    // subtext={`${metaData?.totalStocks} item added this week`}
-                    value={metaData?.totalStocks}
+                    // subtext={`${cardData?.totalStocks} item added this week`}
+                    value={cardData?.totalStockItems}
                 />
                 <HomeCard
                     title="Total Stock value"
                     icon={<DollarSign size={30} />}
-                    // subtext={`$${metaData?.totalStockValue}  stock value added this week`}
-                    value={metaData?.totalStockValue}
+                    // subtext={`$${cardData?.totalStockValue}  stock value added this week`}
+                    value={cardData?.totalStockValue}
                 />
             </div>
 
             <div className="flex justify-between gap-4 mt-14">
-                <div className="w-7/12">
-                    <Barchart />
-                </div>
-                <div className="w-5/12">
+                {user?.role === userRole.ADMIN ||
+                    (user?.role === userRole.SUPER_ADMIN && (
+                        <div className="w-7/12">
+                            <Barchart />
+                        </div>
+                    ))}
+                <div className="w-5/12 mx-auto">
                     <PieCrtCategory />
                 </div>
             </div>

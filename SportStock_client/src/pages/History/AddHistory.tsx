@@ -4,18 +4,23 @@ import FilterByInput from "@/components/table/FilterByInput";
 import FilterByOptions from "@/components/table/FilterByOptions";
 import { Button } from "@/components/ui/button";
 import { defaultParams, defaultQuery } from "@/constants/global.constant";
+import { userRole } from "@/constants/user";
 import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { useGetAllCategoriesQuery } from "@/redux/api/productApi";
 import { useGetStockHistoryQuery } from "@/redux/api/stockApi";
+import { useCurrentUser } from "@/redux/Hooks";
 import { TCategory } from "@/types/product";
 import { IStockHistory } from "@/types/stock.types";
-import { tableSerial } from "@/utls/utls";
+import { tableSerial, updateParam } from "@/utls/utls";
 import { ColDef } from "@ag-grid-community/core";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
+import { RiFilterLine } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
 
 const AddStockHistory = () => {
+    const user = useCurrentUser();
+
     const [params, setParams] = useState<any[]>(defaultParams);
 
     const { data, isFetching: historyFetching } = useGetStockHistoryQuery([
@@ -64,9 +69,9 @@ const AddStockHistory = () => {
             maxWidth: 150,
         },
         {
-            headerName: "Added Quantity",
+            headerName: "Quantity",
             field: "quantityChanged",
-            maxWidth: 150,
+            maxWidth: 100,
         },
         {
             headerName: "Added By",
@@ -75,7 +80,7 @@ const AddStockHistory = () => {
         },
         {
             headerName: "Date",
-            field: "createdAt",
+            field: "date",
             valueFormatter: (params) =>
                 new Date(params?.value).toLocaleDateString(),
             maxWidth: 150,
@@ -93,13 +98,30 @@ const AddStockHistory = () => {
     );
 
     const filters = [
-        <FilterByOptions
-            filterBy="branchId"
-            filterItems={branchOptions}
-            params={params}
-            setParams={setParams}
-            title="Branches"
-        />,
+        user?.role !== userRole.BRANCH_MANAGER && (
+            <FilterByOptions
+                filterBy="branchId"
+                filterItems={branchOptions}
+                params={params}
+                setParams={setParams}
+                title="Branches"
+            />
+        ),
+
+        <Button
+            onClick={() =>
+                setParams((prev) => updateParam(prev, "madeBy", user?._id))
+            }
+            size={"xsm"}
+            variant={
+                params?.find((item: any) => item.name === "madeBy")
+                    ? "default"
+                    : "outline_primary"
+            }
+        >
+            <RiFilterLine className=" mr-1" />
+            By Me
+        </Button>,
 
         <FilterByOptions
             filterBy="categoryId"
@@ -127,6 +149,7 @@ const AddStockHistory = () => {
     return (
         <div>
             <DataTable
+                searchField
                 createButton={addButton}
                 title="ADDED STOCK HISTORY"
                 rowData={historyData}

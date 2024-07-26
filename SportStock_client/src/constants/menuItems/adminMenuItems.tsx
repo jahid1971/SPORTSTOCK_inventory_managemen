@@ -3,9 +3,10 @@ import { MdOutlineInventory2 } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { GoDotFill } from "react-icons/go";
 import { IoCartOutline } from "react-icons/io5";
+import { FaMapLocationDot } from "react-icons/fa6";
 import { ClipboardMinus, KeyRound, Package, Warehouse } from "lucide-react";
 
-export const BranchManagerMenuItems = [
+export const adminMenuItems = [
     {
         label: "Dashboard",
         path: "dashboard",
@@ -18,6 +19,11 @@ export const BranchManagerMenuItems = [
             {
                 label: "Users",
                 path: "users",
+                icon: <GoDotFill />,
+            },
+            {
+                label: "Create Branch Manager",
+                path: "create-branch-manager",
                 icon: <GoDotFill />,
             },
             {
@@ -58,9 +64,25 @@ export const BranchManagerMenuItems = [
                 ],
             },
             {
-                label: "Products",
-                path: "products",
+                label: "Product Manage",
                 icon: <Package size={15} />,
+                children: [
+                    {
+                        label: "Products",
+                        path: "products",
+                        icon: <GoDotFill />,
+                    },
+                    {
+                        label: "Categories",
+                        path: "categories",
+                        icon: <GoDotFill />,
+                    },
+                    {
+                        label: "Create Product",
+                        path: "create-product",
+                        icon: <GoDotFill />,
+                    },
+                ],
             },
         ],
     },
@@ -85,6 +107,39 @@ export const BranchManagerMenuItems = [
             },
         ],
     },
+    // {
+    //     label: "Sales",
+    //     icon: <IoCartOutline />,
+    //     children: [
+    //         {
+    //             label: "Sales Report",
+    //             path: "sales-report",
+    //             icon: <GoDotFill />,
+    //         },
+    //         {
+    //             label: "Sales History",
+    //             path: "sales-history",
+    //             icon: <GoDotFill />,
+    //         },
+    //     ],
+    // },
+    {
+        label: "Branch Management",
+        icon: <FaMapLocationDot />,
+        children: [
+            {
+                label: "Branches",
+                path: "branches",
+                icon: <GoDotFill />,
+            },
+            {
+                label: "Add Branch",
+                path: "add-branch",
+                icon: <GoDotFill />,
+            },
+        ],
+    },
+
     {
         label: "Change Password",
         icon: <KeyRound size={15} />,

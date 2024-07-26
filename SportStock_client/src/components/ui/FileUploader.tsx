@@ -1,67 +1,36 @@
-// import { useState } from "react";
-// import { Controller } from "react-hook-form";
-// import { FloatingInput } from "./InputFloatingLabel";
-
-// const FileUploader = ({ control, id }: { control: any; id: string }) => {
-//     const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
-//     return (
-//         <Controller
-//             name={id}
-//             control={control}
-//             render={({ field: { onChange, value, ...field } }) => (
-//                 <div className="flex  items-center">
-//                     <FloatingInput
-//                         id={id}
-//                         label="Product image"
-//                         type="file"
-//                         value={value?.fileName}
-//                         {...field}
-//                         onChange={
-//                             (e: React.ChangeEvent<HTMLInputElement>) => {
-//                                 const file = e.target.files?.[0];
-//                                 if (file) {
-//                                     const reader = new FileReader();
-//                                     reader.onloadend = () => {
-//                                         setImagePreviewUrl(
-//                                             reader.result as string
-//                                         );
-//                                     };
-//                                     reader.readAsDataURL(file);
-//                                     control.setValue(id, file);
-//                                 }
-//                             }
-//                             // onChange(e.target.files?.[0])
-//                         }
-//                     />
-//                     {imagePreviewUrl && (
-//                         <div className="">
-//                             <img
-//                                 src={imagePreviewUrl}
-//                                 alt="Image Preview"
-//                                 className="w-16 h-auto rounded-md"
-//                             />
-//                         </div>
-//                     )}
-//                 </div>
-//             )}
-//         />
-//     );
-// };
-
-// export default FileUploader;
 import { ImageUp } from "lucide-react";
-import { useRef, useState } from "react";
-import { Controller } from "react-hook-form";
+import { useEffect, useRef, useState } from "react";
+import { Controller, useFormContext } from "react-hook-form";
 import { Button } from "./button";
+import { cn } from "@/lib/utils";
 
-const FileUploader = ({ control, id }: { control: any; id: string }) => {
+const FileUploader = ({
+    control,
+    id,
+    className,
+    watch,
+}: {
+    control?: any;
+    id: string;
+    className?: string;
+    watch?: any;
+}) => {
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    const methods = useFormContext?.();
+    const cntxtControl = methods?.control ?? control;
+
+    useEffect(() => {
+        if (watch && !watch(id)) {
+            setImagePreviewUrl(null);
+        }
+    }, [watch]);
 
     return (
         <Controller
             name={id}
-            control={control}
+            control={cntxtControl}
             render={({ field: { onChange, value, ...field } }) => (
                 <div className="flex items-center gap-4">
                     {/* Hidden file input */}
@@ -73,14 +42,6 @@ const FileUploader = ({ control, id }: { control: any; id: string }) => {
                         className="hidden"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             const file = e.target.files?.[0];
-                            // if (file) {
-                            //     const reader = new FileReader();
-                            //     reader.onloadend = () => {
-                            //         setImagePreviewUrl(reader.result as string);
-                            //     };
-                            //     reader.readAsDataURL(file);
-                            //     control.setValue(id, file);
-                            // }
 
                             if (file) {
                                 const reader = new FileReader();
@@ -99,9 +60,9 @@ const FileUploader = ({ control, id }: { control: any; id: string }) => {
                     <div className="flex  items-center gap-2">
                         <Button
                             type="button"
-                            className=" flex "
+                            className={cn("flex", className)}
                             onClick={() => fileInputRef.current?.click()}
-                            variant={"outline"}
+                            variant={"outline_primary"}
                             size={"lg"}
                         >
                             <ImageUp className="mr-2  " size={15} />

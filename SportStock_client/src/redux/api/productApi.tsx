@@ -11,9 +11,12 @@ import { tagTypes } from "../redux.constants";
 
 const productApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        createProduct: createApiBuilder(builder, "products/create-product", [
-            tagTypes.products,
-        ]),
+        createProduct: createApiBuilder(
+            builder,
+            "products/create-product",
+            [tagTypes.products],
+            { contentType: false }
+        ),
 
         getProducts: queryApiBuilder(builder, "products", [tagTypes.products]),
 

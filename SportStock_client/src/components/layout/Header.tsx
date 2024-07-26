@@ -4,9 +4,13 @@
 import { Button } from "@/components/ui/button";
 
 import { HiOutlineBars3 } from "react-icons/hi2";
-import { useAppDispatch } from "@/redux/Hooks";
-import { logOut } from "@/redux/features/auth/authSlice";
+import { useAppDispatch, useCurrentUser } from "@/redux/Hooks";
+
 import { TiArrowLeft } from "react-icons/ti";
+import { useLogInMutation, useLogOutMutation } from "@/redux/api/authApi";
+import tryCatch from "@/utls/tryCatch";
+import { useNavigate } from "react-router-dom";
+import { nullifyState } from "@/redux/features/auth/authSlice";
 
 type THeaderProps = {
     setMobileMenuOpen: (value: boolean) => void;
@@ -22,9 +26,21 @@ function Header({
     setDesktopSidebarOpen,
 }: THeaderProps) {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const user = useCurrentUser();
+
+    const [signOut] = useLogOutMutation();
 
     const handleSignOut = () => {
-        dispatch(logOut());
+        tryCatch(
+            async () => {
+                dispatch(nullifyState());
+                return signOut({});
+            },
+            "logged out successfully",
+            "log out in process",
+            () => navigate("/login")
+        );
     };
 
     return (
@@ -46,6 +62,9 @@ function Header({
                         }`}
                         size={28}
                     />
+                    <h5 className="font-medium  text-slate-600">
+                        Welcom Back, {user?.fullName}
+                    </h5>
                 </div>
 
                 <Button

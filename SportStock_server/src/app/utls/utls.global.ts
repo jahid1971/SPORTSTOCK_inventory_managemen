@@ -38,6 +38,14 @@ export const generateBranchManagerId = async () => {
     return currentBranchManagerId;
 };
 
+export const generateAdminId = async () => {
+    const lastAdminId = await findLastUser(userRole.ADMIN);
+    if (!lastAdminId) return "A-0001";
+    const lastId = parseInt(lastAdminId.split("-")[1]);
+    const currentAdminId = `A-${(lastId + 1).toString().padStart(4, "0")}`;
+    return currentAdminId;
+};
+
 // export const generateProductCode = async () => {
 //     const lastProductCode = await Product.findOne(
 //         {},
@@ -72,7 +80,7 @@ import mongoose from "mongoose";
  * Normalize a field in the query to MongoDB ObjectId(s), modifying the query in-place.
  * Supports string or array of strings.
  */
-export const normalizeObjectIdField = (
+export const convertToObjectId = (
     query: Record<string, any>,
     originalField: string,
     options?: { nested?: boolean; targetField?: string }

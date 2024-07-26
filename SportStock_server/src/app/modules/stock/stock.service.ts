@@ -5,6 +5,7 @@ import { IStock } from "./stock.interface";
 import { Stock } from "./stock.model";
 import { StockHistory } from "../stockHistory/history.model";
 import Product from "../product/product.model";
+import { userRole } from "../../constants/user";
 
 const stockHistoryData = (payload: any) => {
     return {
@@ -94,6 +95,8 @@ const adjustStock = async (payload: IStock) => {
             stockId: existingStock._id,
             date: payload.updatedAt,
         };
+
+        console.log("historyData  =tttttttttttttttttt", historyData);
 
         await StockHistory.create([{ ...historyData }], { session });
 
@@ -302,14 +305,33 @@ const stocksPieChart = async () => {
     return result;
 };
 
-const getDashboardCards = async (user) => {
-    const result = await Stock.aggregate([
-        {
-            $match: {
-                isDeleted: false,
-            },
-        },
+const getDashboardCardsData = async (user: any) => {
+    let stockMatch: any = { isDeleted: false };
+    let productMatch: any = { isDeleted: false };
 
+    if (
+        user?.role === userRole.BRANCH_MANAGER ||
+        user?.role === userRole.SELLER
+    ) {
+        if (user?.branch) {
+            stockMatch.branchId = user.branch;
+        }
+    }
+
+    let totalProducts: number;
+    if (stockMatch.branchId) {
+        const productIds = await Stock.distinct("productId", stockMatch);
+        totalProducts = await Product.countDocuments({
+            ...productMatch,
+            _id: { $in: productIds },
+        });
+    } else {
+        totalProducts = await Product.countDocuments(productMatch);
+    }
+
+    // Total stock items count and total stock value
+    const stockAgg = await Stock.aggregate([
+        { $match: stockMatch },
         {
             $lookup: {
                 from: "products",
@@ -318,34 +340,26 @@ const getDashboardCards = async (user) => {
                 as: "product",
             },
         },
-
-        {
-            $unwind: "$product",
-        },
-
+        { $unwind: "$product" },
         {
             $group: {
                 _id: null,
-                totalStocks: { $sum: "$quantity" },
-
+                totalStockItems: { $sum: "$quantity" },
                 totalStockValue: {
                     $sum: { $multiply: ["$quantity", "$product.price"] },
                 },
-                uniqueProducts: { $addToSet: "$product._id" },
-            },
-        },
-
-        {
-            $project: {
-                _id: 0,
-                totalStocks: 1,
-                totalStockValue: 1,
-                totalProducts: { $size: "$uniqueProducts" },
             },
         },
     ]);
 
-    return result[0];
+    const totalStockItems = stockAgg[0]?.totalStockItems || 0;
+    const totalStockValue = stockAgg[0]?.totalStockValue || 0;
+
+    return {
+        totalProducts,
+        totalStockItems,
+        totalStockValue,
+    };
 };
 
 export const StockServices = {
@@ -355,5 +369,5 @@ export const StockServices = {
     transferStock,
     stocksBarChart,
     stocksPieChart,
-    getDashboardCards,
+    getDashboardCardsData,
 };

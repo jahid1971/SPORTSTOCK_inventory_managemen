@@ -5,26 +5,30 @@ import FilterByOptions from "@/components/table/FilterByOptions";
 import { Button } from "@/components/ui/button";
 
 import { defaultParams } from "@/constants/global.constant";
+import { userRole } from "@/constants/user";
 import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { useGetAllCategoriesQuery } from "@/redux/api/productApi";
 import {
     useGetAdjustStockHistoryQuery,
     useGetTransferStockHistoryQuery,
 } from "@/redux/api/stockApi";
+import { useCurrentUser } from "@/redux/Hooks";
 
 import { TCategory } from "@/types/product";
 import { IStockHistory } from "@/types/stock.types";
-import { tableSerial } from "@/utls/utls";
+import { tableSerial, updateParam } from "@/utls/utls";
 import { ColDef } from "@ag-grid-community/core";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
+import { RiFilterLine } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
 
 const TransferedHistory = () => {
+    const user = useCurrentUser();
     const [params, setParams] = useState<any[]>(defaultParams);
 
     const { data, isFetching: historyFetching } =
-        useGetTransferStockHistoryQuery(undefined);
+        useGetTransferStockHistoryQuery(params);
 
     const { data: branchData } = useGetAllBranchesQuery(undefined);
 
@@ -55,18 +59,18 @@ const TransferedHistory = () => {
         {
             headerName: "Category",
             field: "categoryId.category",
-            maxWidth: 150,
+            maxWidth: user?.role !== userRole.BRANCH_MANAGER ? 120 : 150,
         },
 
         {
             headerName: "From Branch",
             field: "branchId.branchName",
-            maxWidth: 150,
+            maxWidth: 120,
         },
         {
             headerName: "To Branch",
             field: "transferToStock.branchName",
-            maxWidth: 150,
+            maxWidth: 120,
         },
         {
             headerName: "Quantity",
@@ -76,25 +80,51 @@ const TransferedHistory = () => {
         {
             headerName: "By",
             field: "madeBy.fullName",
-            maxWidth: 100,
+            maxWidth: 150,
         },
         {
             headerName: "Date",
-            field: "createdAt",
+            field: "date",
             valueFormatter: (params) =>
                 new Date(params?.value).toLocaleDateString(),
-            maxWidth: 100,
+            maxWidth: user?.role !== userRole.BRANCH_MANAGER ? 100 : 150,
         },
     ];
 
+    // const filteredColDefs = columnDefs.filter((col) => {
+    //     if (
+    //         user?.role === userRole.BRANCH_MANAGER &&
+    //         (col.field === "branchId.branchName" ||
+    //             col.field === "transferToStock.branchName")
+    //     ) {
+    //         return false;
+    //     }
+    //     return true;
+    // });
+
     const filters = [
-        <FilterByOptions
-            filterBy="branchId"
-            filterItems={branchOptions}
-            params={params}
-            setParams={setParams}
-            title="Branches"
-        />,
+        // <FilterByOptions
+        //     filterBy="branchId"
+        //     filterItems={branchOptions}
+        //     params={params}
+        //     setParams={setParams}
+        //     title="Branches"
+        // />,
+
+        <Button
+            onClick={() =>
+                setParams((prev) => updateParam(prev, "madeBy", user?._id))
+            }
+            size={"xsm"}
+            variant={
+                params?.find((item: any) => item.name === "madeBy")
+                    ? "default"
+                    : "outline_primary"
+            }
+        >
+            <RiFilterLine className=" mr-1" />
+            By Me
+        </Button>,
 
         <FilterByOptions
             filterBy="categoryId"
@@ -133,6 +163,7 @@ const TransferedHistory = () => {
     return (
         <div>
             <DataTable
+                searchField
                 title="TRANSFER STOCK HISTORY"
                 createButton={transferButton}
                 rowData={transferData}

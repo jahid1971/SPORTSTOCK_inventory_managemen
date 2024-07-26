@@ -1,4 +1,4 @@
-export type TUserRole = "seller" | "branchManager" | "superAdmin";
+export type TUserRole = "seller" | "branchManager" | "superAdmin" | "admin";
 
 export interface IUser {
     _id: string;
@@ -13,7 +13,9 @@ export interface IUser {
     };
     needsPasswordChange: boolean;
     branch?: string;
-    role: TUserRole
+    role: TUserRole;
     status: "active" | "blocked" | "pending";
+    contactNumber: string;
+    address: string;
     isDeleted: boolean;
 }

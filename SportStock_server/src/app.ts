@@ -8,17 +8,23 @@ import notFound from "./app/middleWares/notFound";
 const app: Application = express();
 
 app.use(express.json());
-
 app.use(cookieParser());
 
-app.use(cors({ origin: ["https://sport-stock.netlify.app", "http://localhost:5173"], credentials: true }));
+app.use(
+    cors({
+        origin: ["https://sport-stock.netlify.app", "http://localhost:5173"],
+        credentials: true, // Allow credentials (cookies) to be sent
+    })
+);
+
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1", router);
 
 app.use(globalErrorHandler);
 
 app.get("/", (req: Request, res: Response) => {
-    res.send("server is running");
+    res.json({ message: "server is running" });
 });
 
 app.use(notFound);

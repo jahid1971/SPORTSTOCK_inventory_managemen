@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { JwtPayload } from "jsonwebtoken";
 import httpStatus from "http-status";
@@ -7,6 +9,41 @@ import { passwordHash } from "../../utls/passwordHash";
 import User from "../user/user.model";
 import { jwtToken } from "../../utls/jwtToken";
 import config from "../../config";
+
+const getMe = async (refreshToken: string) => {
+    if (!refreshToken) throw new AppError(403, "unauthorized access!!!");
+
+    const verifiedToken = jwtToken.verifyToken(
+        refreshToken,
+        process.env.JWT_REFRESH_SECRET as string
+    );
+
+    if (!verifiedToken.id) throw new AppError(403, "invalid refresh token");
+
+    const user = await User.findById(verifiedToken.id);
+
+    const jwtPayload = {
+        id: user?._id,
+        role: user?.role,
+        email: user?.email,
+        iat: Math.floor(Date.now() / 1000),
+    };
+
+    const newAccessToken = jwtToken.createToken(
+        jwtPayload,
+        process.env.JWT_ACCESS_SECRET as string,
+        process.env.JWT_ACCESS_EXPIRES_IN as string
+    );
+
+    const { password, createdAt, updatedAt, ...userObject } = (
+        user as any
+    ).toObject();
+
+    return {
+        accessToken: newAccessToken,
+        userObject,
+    };
+};
 
 // logIn......................logIn
 
@@ -48,7 +85,6 @@ const logIn = async (payload: { email: string; password: string }) => {
         config.jwt_refresh_expiry as string
     );
 
-    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     const { password, createdAt, updatedAt, ...userObject } = (
         user as any
     ).toObject();
@@ -117,7 +153,11 @@ const refresh = async (refreshToken: string) => {
     };
 };
 
+
+     
+
 export const authServices = {
+    getMe,
     logIn,
     changePassword,
     refresh,

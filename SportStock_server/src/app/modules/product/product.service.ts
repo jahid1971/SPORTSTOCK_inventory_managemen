@@ -9,7 +9,7 @@ import { sendImageToCloudinary } from "../../utls/sendImageToCloudinary";
 import { IUser } from "../user/user.interface";
 import mongoose from "mongoose";
 import sharp from "sharp";
-import { generateProductCode } from "../../utls/utls.global";
+import { convertToObjectId, generateProductCode } from "../../utls/utls.global";
 
 const createProduct = async (file: any, payload: IProduct) => {
     const imageName = payload.productName;
@@ -47,7 +47,7 @@ const getAllProducts = async (user: IUser, query: Record<string, unknown>) => {
             $lte: Number(query?.maxQuantity) || Infinity,
         };
     }
-    
+
     if (query?.minPrice || query?.maxPrice) {
         query.price = {
             $gte: Number(query?.minPrice) || 0,
@@ -55,31 +55,43 @@ const getAllProducts = async (user: IUser, query: Record<string, unknown>) => {
         };
     }
 
-    if (
-        user.role === userRole.SELLER ||
-        user.role === userRole.BRANCH_MANAGER
-    ) {
-        const branch = user?.branch;
-        query.branch = branch;
-    }
+    const pipeline = [
+        {
+            $lookup: {
+                from: "categories",
+                localField: "category",
+                foreignField: "_id",
+                as: "category",
+            },
+        },
+        {
+            $unwind: "$category",
+        },
+        {
+            $lookup: {
+                from: "brands",
+                localField: "brand",
+                foreignField: "_id",
+                as: "brand",
+            },
+        },
+        {
+            $unwind: {
+                path: "$brand",
+                preserveNullAndEmptyArrays: true,
+            },
+        },
+    ];
+
+    convertToObjectId(query, "category", { nested: true });
+    convertToObjectId(query, "brand", { nested: true });
 
     const allProducts = await getAllItems<IProduct>(Product, query, {
         searchableFields: ["productName", "description"],
-        filterableFields: [
-            "status",
-            "branch",
-            "price",
-            "branch",
-            "quantity",
-            "branch",
-            "condition",
-        ],
-        // populate: {
-        //     path: "branch",
-        //     select: "_id branchName",
-        // },
+        filterableFields: ["price", "category._id", "brand._id"],
+        mode: "aggregate",
+        aggregationPipeline: pipeline,
     });
-
 
     return allProducts;
 };
@@ -118,49 +130,6 @@ const multiProductDelete = async (productIds: string[]) => {
     return result;
 };
 
-const getDashboardMeta = async (user: IUser) => {
-    const totalProducts = await Product.countDocuments({ isDeleted: false });
-
-    const totalItems = await Product.aggregate([
-        {
-            $match: {
-                isDeleted: false,
-            },
-        },
-
-        {
-            $group: {
-                _id: null,
-                totalQuantity: { $sum: "$quantity" },
-                // totalPrice: { $sum: "$price" },
-                totalStockValue: {
-                    $sum: { $multiply: ["$quantity", "$price"] },
-                },
-            },
-        },
-        {
-            $project: {
-                _id: 0,
-                totalQuantity: 1,
-                totalStockValue: 1,
-            },
-        },
-    ]);
-
-    console.log("totalItems", totalItems);
-
-    const totalQuantity = totalItems[0]?.totalQuantity || 0;
-    const totalStockValue = totalItems[0]?.totalStockValue || 0;
-
-    console.log(totalQuantity, totalStockValue);
-
-    return {
-        totalProducts,
-        totalQuantity,
-        totalStockValue,
-    };
-};
-
 const stockAvailability = async () => {
     const result = await Product.aggregate([
         {
@@ -194,6 +163,6 @@ export const productServices = {
     updateProduct,
     deleteProduct,
     multiProductDelete,
-    getDashboardMeta,
+
     stockAvailability,
 };

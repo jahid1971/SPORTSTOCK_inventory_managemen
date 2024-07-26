@@ -1,6 +1,6 @@
 import { Spinner } from "@/components/ui/Spinner";
 
-export const loadingOverlayComponent = () => {
+export const LoadingOverlayComponent = () => {
     return (
         <div className="relative " role="presentation">
             <Spinner label="please wait" />

@@ -12,7 +12,7 @@ import "@ag-grid-community/styles/ag-theme-quartz.css"; // Theme
 import { ColDef, ModuleRegistry } from "@ag-grid-community/core";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 
-import { loadingOverlayComponent } from "@/components/table/tableLoader/LoadingOverlay";
+import { LoadingOverlayComponent } from "@/components/table/tableLoader/LoadingOverlay";
 import { noRowsOverlayComponent } from "@/components/table/tableLoader/NoRowsOverlay";
 import SearchInput from "./SearchInput";
 import { Button } from "../ui/button";
@@ -21,8 +21,7 @@ import { X } from "lucide-react";
 import styles from "./table.module.css";
 import { CustomPagination } from "../others/Pagination";
 import {
-    removeAndAddItems,
-    replaceWithNewValue,
+
     tableSerial,
 } from "@/utls/utls";
 
@@ -35,7 +34,7 @@ const DataTable = ({
     handleSelectedRows,
     params,
     setParams,
-    searchField = true,
+    searchField,
     filterable,
     createButton,
     filters,
@@ -57,7 +56,7 @@ const DataTable = ({
     checkedRowsActionBtn?: React.ReactNode;
     title: string;
     metaData?: any;
-    serial: boolean;
+    serial?: boolean;
 }) => {
     const gridRef = useRef<AgGridReact>(null);
     const [showFilters, setShowFilters] = useState(false);
@@ -69,23 +68,36 @@ const DataTable = ({
         };
     }, []);
 
-    if (serial) {
-        columnDefs = [
-            {
-                headerName: "SL",
-                headerClass: "sl-header",
-                field: "sl",
-                maxWidth: 60,
-                cellStyle: {
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+    const processedColumnDefs = useMemo(() => {
+        if (serial && params) {
+            return [
+                {
+                    headerName: "SL",
+                    headerClass: "sl-header",
+                    field: "sl",
+                    maxWidth: 60,
+                    cellStyle: {
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    },
+                    sortable: false,
                 },
-                sortable: false,
-            },
-            ...columnDefs,
-        ];
-    }
+                ...columnDefs,
+            ];
+        }
+        return columnDefs;
+    }, [serial, params, columnDefs]);
+
+    const processedRowData = useMemo(() => {
+        if (serial && params && rowData) {
+            return rowData.map((item: any, index: number) => ({
+                ...item,
+                sl: tableSerial(params, index),
+            }));
+        }
+        return rowData;
+    }, [serial, params, rowData]);
 
     useEffect(() => {
         setTimeout(() => {
@@ -178,7 +190,7 @@ const DataTable = ({
                     (title || createButton) && `mt-12`
                 }`}
             >
-                {searchField && (
+                {searchField && params && setParams && (
                     <SearchInput params={params} setParams={setParams} />
                 )}
                 {filterable && (
@@ -207,8 +219,8 @@ const DataTable = ({
                 )?.length > 0 && (
                     <Button
                         size={"xsm"}
-                        variant={"outline"}
-                        className="text-red-500"
+                        // variant={"outline"}
+                        // className="text-red-500"
                         onClick={() => setParams && setParams([])}
                     >
                         <X size={20} className="mr-1" /> RESET
@@ -231,11 +243,11 @@ const DataTable = ({
             <div className={`ag-theme-quartz ${styles.noBorders} my-3`}>
                 <AgGridReact
                     ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
+                    rowData={processedRowData}
+                    columnDefs={processedColumnDefs}
                     defaultColDef={defaultColDef}
                     domLayout="autoHeight"
-                    loadingOverlayComponent={loadingOverlayComponent}
+                    loadingOverlayComponent={LoadingOverlayComponent}
                     noRowsOverlayComponent={noRowsOverlayComponent}
                     rowSelection={"multiple"}
                     suppressRowClickSelection={true}

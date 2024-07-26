@@ -1,4 +1,7 @@
 import DataTable from "@/components/table/DataTable";
+import FilterByDate from "@/components/table/FilterByDate";
+import FilterByInput from "@/components/table/FilterByInput";
+import FilterByOptions from "@/components/table/FilterByOptions";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -6,47 +9,47 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
+import { useGetAllCategoriesQuery } from "@/redux/api/productApi";
+import { defaultParams } from "@/constants/global.constant";
 import { useGetAllStocksQuery } from "@/redux/api/stockApi";
 import { IStock } from "@/types/stock.types";
-import { dateFormatter } from "@/utls/utls";
+
 import { ColDef, ICellRendererParams } from "@ag-grid-community/core";
 import { EllipsisVertical, MinusIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCurrentUser } from "@/redux/Hooks";
+import { userRole } from "@/constants/user";
 
 const StockList = () => {
-    const [params, setParams] = useState<any[]>([]);
+    const user = useCurrentUser();
+    const [params, setParams] = useState<any[]>(defaultParams);
     const navigate = useNavigate();
 
     const { data, isFetching: stockFetching } = useGetAllStocksQuery(params);
     const stocksData = data?.data?.data;
 
-    console.log(stocksData, "stocksData");
+    const { data: branchData } = useGetAllBranchesQuery(undefined);
+    const branchOptions = branchData?.data?.data.map((branch) => ({
+        value: branch._id,
+        label: branch.branchName,
+    }));
+
+    const { data: categoriesData } = useGetAllCategoriesQuery(undefined);
+    const categoryOptions = categoriesData?.data?.map((category) => ({
+        value: category._id,
+        label: category.category,
+    }));
 
     const columnDefs: ColDef<IStock | any>[] = [
-        // {
-        //     headerName: "Image",
-        //     field: "productId.image",
-        //     cellRenderer: (params: any) => {
-        //         return params?.value ? (
-        //             <img
-        //                 src={params?.value}
-        //                 alt="product"
-        //                 className="size-12 my-2"
-
-        //             />
-        //         ) : undefined;
-        //     },
-        //     maxWidth: 80,
-        //     autoHeight: true,
-        // },
         {
             headerName: "Product Name",
             field: "productId.productName",
         },
         {
             headerName: "Category",
-            field: "productId.category.category",
+            field: "categoryId.category",
             maxWidth: 150,
         },
         {
@@ -54,18 +57,17 @@ const StockList = () => {
             field: "branchId.branchName",
             maxWidth: 150,
         },
-
         {
             headerName: "Price",
             field: "productId.price",
             maxWidth: 100,
         },
         {
-            headerName: "Available Stock Quantity",
+            headerName: "Stock Quantity",
             field: "quantity",
             maxWidth: 300,
             cellRenderer: (params) => (
-                <div className="text-xl font-semibold text-slate-700 pl-20">
+                <div className="text-xl font-semibold text-slate-700 ">
                     {params?.data?.quantity}{" "}
                     <span className="text-sm font-normal">pcs</span>
                 </div>
@@ -77,7 +79,10 @@ const StockList = () => {
             cellRenderer: (params: ICellRendererParams) => (
                 <DropdownMenu>
                     <DropdownMenuTrigger>
-                        <EllipsisVertical className="cursor-pointer" size={15} />
+                        <EllipsisVertical
+                            className="cursor-pointer"
+                            size={15}
+                        />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         <DropdownMenuItem
@@ -114,7 +119,6 @@ const StockList = () => {
                         <DropdownMenuItem>
                             <Button
                                 className=" p-1 font-normal w-full"
-                                
                                 size={"xsm"}
                                 onClick={() => {
                                     navigate(`/stock-transfer`, {
@@ -130,27 +134,86 @@ const StockList = () => {
                 </DropdownMenu>
             ),
         },
-        // {
-        //     headerName: "Date",
-        //     field: "createdAt",
-        //     valueFormatter: (params) => dateFormatter(params?.value),
-        //     maxWidth: 150,
-        // },
     ];
+
+    const filteredColumnDefs = columnDefs.filter((column) => {
+        if (
+            (user?.role === userRole.BRANCH_MANAGER ||
+                user?.role === userRole.SELLER) &&
+            column.field === "branchId.branchName"
+        ) {
+            return false;
+        }
+
+        if (user?.role === userRole.SELLER && column.field === "action") false;
+        return true;
+    });
+
+    const filters = [
+        user?.role !== userRole.BRANCH_MANAGER &&
+            user?.role !== userRole.SELLER && (
+                <FilterByOptions
+                    filterBy="branchId"
+                    filterItems={branchOptions}
+                    params={params}
+                    setParams={setParams}
+                    title="Branches"
+                />
+            ),
+
+        <FilterByOptions
+            filterBy="branchId"
+            filterItems={branchOptions}
+            params={params}
+            setParams={setParams}
+            title="Branches"
+        />,
+
+        <FilterByOptions
+            filterBy="categoryId"
+            filterItems={categoryOptions}
+            params={params}
+            setParams={setParams}
+            title="Categories"
+        />,
+        <FilterByInput
+            filterBy="quantity"
+            params={params}
+            setParams={setParams}
+            title="Quantity"
+        />,
+        <FilterByInput
+            filterBy="price"
+            params={params}
+            setParams={setParams}
+            title="Price"
+        />,
+    ];
+
+    const createButton =
+        user?.role === userRole.SELLER ? (
+            <Button size={"xsm"} onClick={() => navigate(`/adjust-stock`)}>
+                Adjust Stock
+            </Button>
+        ) : (
+            <Button size={"xsm"} onClick={() => navigate(`/add-stock`)}>
+                Add Stock
+            </Button>
+        );
 
     return (
         <div>
-            {" "}
             <DataTable
+                title="STOCKS"
+                createButton={createButton}
                 rowData={stocksData}
-                columnDefs={columnDefs}
+                columnDefs={filteredColumnDefs}
                 isFetching={stockFetching}
-                // handleSelectedRows={handleSelectedRows}
                 params={params}
                 setParams={setParams}
                 filterable={true}
-                // filters={filters}
-                // createButton={createButton}
+                filters={filters}
+                searchField={true}
             />
         </div>
     );

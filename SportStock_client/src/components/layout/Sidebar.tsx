@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import SidebarItems from "./SidebarItems";
 
 import { NavLink } from "react-router-dom";
-import { Sheet,SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { MdOutlineSportsBaseball } from "react-icons/md";
 import { TSidebarItemsProps } from "@/types/sidebar.types";
 
@@ -16,7 +16,8 @@ export default function Sidebar({
             <MdOutlineSportsBaseball className="text-primary text-lg" />
             {(desktopSidebarOpen || mobileMenuOpen) && (
                 <h4>
-                    <span className="text-primary-400 font-bold">SPORT </span>STOCK
+                    <span className="text-primary-400 font-bold">SPORT </span>
+                    STOCK
                 </h4>
             )}
         </NavLink>
@@ -25,9 +26,10 @@ export default function Sidebar({
     return (
         <nav
             className={cn(
-                `sticky top-0 min-h-full hidden   py-5  md:block duration-500 scrollbar  overflow-y-auto overflow-x-auto   shadow-lg`,
+                `sticky top-0 h-screen hidden   py-5  md:block duration-500 scrollbar  overflow-y-auto overflow-x-auto   shadow-lg`,
                 desktopSidebarOpen ? "w-[290px]" : "w-[60px] "
-            )}>
+            )}
+        >
             {/* desktop sidebar..................................desktop sidebar */}
             {logo}
 
@@ -41,7 +43,10 @@ export default function Sidebar({
                     {logo}
 
                     <div className="flex flex-col space-y-2 mt-10 pl-2 ">
-                        <SidebarItems mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
+                        <SidebarItems
+                            mobileMenuOpen={mobileMenuOpen}
+                            setMobileMenuOpen={setMobileMenuOpen}
+                        />
                     </div>
                 </SheetContent>
             </Sheet>

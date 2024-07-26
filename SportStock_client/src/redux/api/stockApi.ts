@@ -9,32 +9,7 @@ import { tagTypes } from "../redux.constants";
 
 const stockApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // addStock: builder.mutation({
-        //     query: createApiBuilder("stocks"),
-        //     invalidatesTags: ["stocks"],
-        // }),
-
         addStock: createApiBuilder(builder, "stocks", [tagTypes.stocks]),
-
-        // adjustStock: builder.mutation({
-        //     query: createApiBuilder("stocks/adjust"),
-        //     invalidatesTags: ["stocks"],
-        // }),
-
-        // transferStock: builder.mutation({
-        //     query: createApiBuilder("stocks/transfer"),
-        //     invalidatesTags: ["stocks"],
-        // }),
-
-        // getAllStocks: builder.query({
-        //     query: queryApiBuilder("stocks"),
-        //     providesTags: ["stocks"],
-        // }),
-
-        // getStockHistory: builder.query({
-        //     query: queryApiBuilder("history"),
-        //     providesTags: ["stockHistory"],
-        // }),
 
         adjustStock: createApiBuilder(builder, "stocks/adjust", [
             tagTypes.stocks,
@@ -45,6 +20,10 @@ const stockApi = baseApi.injectEndpoints({
         ]),
 
         getAllStocks: queryApiBuilder(builder, "stocks", [tagTypes.stocks]),
+
+        getBranchStocks: queryApiBuilder(builder, "stocks/branch", [
+            tagTypes.stocks,
+        ]),
 
         getStockHistory: queryApiBuilder(builder, "history", [
             tagTypes.stockHistory,
@@ -80,6 +59,12 @@ const stockApi = baseApi.injectEndpoints({
             tagTypes.stockHistory,
             tagTypes.stocks,
         ]),
+
+        getDashboardCards: queryApiBuilder(builder, "stocks/dashboard-cards", [
+            tagTypes.stocks,
+            tagTypes.stockHistory,
+            tagTypes.products,
+        ]),
     }),
 });
 
@@ -96,4 +81,6 @@ export const {
     useGetStocksBarChartQuery,
     useGetStockPieChartQuery,
     useGetStockLineChartQuery,
+    useGetDashboardCardsQuery,
+    useGetBranchStocksQuery,
 } = stockApi;

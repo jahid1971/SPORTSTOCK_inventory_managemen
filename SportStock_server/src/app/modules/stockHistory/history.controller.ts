@@ -18,6 +18,7 @@ const getALlAdjustedStockHistory = catchAsynch(async (req, res) => {
 
 const getALlTransferredStockHistory = catchAsynch(async (req, res) => {
     const result = await StockHistoryServices.getALlTransferredStockHistory(
+        req.user,
         req.query
     );
     sendSuccessResponse(
@@ -28,8 +29,15 @@ const getALlTransferredStockHistory = catchAsynch(async (req, res) => {
 });
 
 const getLineChartData = catchAsynch(async (req, res) => {
-    const result = await StockHistoryServices.getLineChartData(req.query);
-    sendSuccessResponse(res, result, "Stock line chart data fetched successfully");
+    const result = await StockHistoryServices.getLineChartData(
+        req.query,
+        req.user
+    );
+    sendSuccessResponse(
+        res,
+        result,
+        "Stock line chart data fetched successfully"
+    );
 });
 
 export const StockHistoryController = {

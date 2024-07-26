@@ -37,6 +37,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { defaultParams } from "@/constants/global.constant";
 
 interface IRow {
     _id: string;
@@ -49,7 +50,7 @@ interface IRow {
 }
 
 const Products = () => {
-    const [params, setParams] = useState<TQueryParam[]>([]);
+    const [params, setParams] = useState<TQueryParam[]>(defaultParams);
     const [modalOpen, setModalOpen] = useState(false);
     const [productToUpdate, setProductToUpdate] = useState<IRow | null>(null);
 
@@ -62,17 +63,10 @@ const Products = () => {
     console.log(data, "products data");
     const [multiDelete] = useMultiProductDeleteMutation();
 
-    const { data: branches, isLoading: isBranchesLoading } =
-        useGetAllBranchesQuery(undefined);
     const { data: category, isFetching: isCategoryFetching } =
         useGetAllCategoriesQuery(undefined);
     const { data: brands, isFetching: isBrandFetching } =
         useGetAllBrandNamesQuery(undefined);
-
-    const branchOptions = branches?.data?.data?.map((branch: TBranch) => ({
-        label: branch.branchName,
-        value: branch._id,
-    }));
 
     const categoryOptions = category?.data?.map((category: TCategory) => ({
         label: category.category,
@@ -96,6 +90,8 @@ const Products = () => {
             price: product.price,
             quantity: product.quantity,
             productData: product,
+            category: product?.category?.category,
+            brand: product?.brand?.brandName,
         };
     });
 
@@ -125,23 +121,39 @@ const Products = () => {
         },
         {
             field: "image",
-            maxWidth: role !== userRole.SELLER ? 80 : undefined,
+            maxWidth:
+                role !== userRole.SELLER && role !== userRole.BRANCH_MANAGER
+                    ? 80
+                    : undefined,
             cellRenderer: (params: any) => {
                 return params?.data?.image ? (
                     <img
                         src={params?.data?.image}
                         alt="product"
-                        className="size-10 rounded-full"
+                        className="size-10 "
                     />
                 ) : undefined;
             },
         },
 
         {
-            field: "price",
-            maxWidth: role !== userRole.SELLER ? 100 : undefined,
+            field: "category",
+            headerName: "Category",
+            maxWidth: 150,
         },
-        
+        {
+            field: "brand",
+            headerName: "Brand",
+            maxWidth: 150,
+        },
+        {
+            field: "price",
+            maxWidth:
+                role !== userRole.SELLER && role !== userRole.BRANCH_MANAGER
+                    ? 100
+                    : undefined,
+        },
+
         {
             headerName: "Create variant",
             cellRenderer: (params: ICellRendererParams<IRow>) => (
@@ -206,12 +218,14 @@ const Products = () => {
     ]);
 
     const getColumnDefsForRole = (role: TUserRole) => {
-        if (role === userRole.SELLER) {
+        if (role === userRole.SELLER || role === userRole.BRANCH_MANAGER) {
             return allColumnDefs.filter(
                 (col) =>
                     col.field !== "branch" &&
                     col.headerName !== "Update" &&
-                    col.checkboxSelection !== true
+                    col.checkboxSelection !== true &&
+                    col.headerName !== "Action" &&
+                    col.headerName !== "Create variant"
             );
         } else return allColumnDefs;
     };
@@ -239,15 +253,6 @@ const Products = () => {
 
     const filters = (
         <div className="flex gap-1 flex-wrap">
-            {!isBranchesLoading && (
-                <FilterByOptions
-                    title="Branches"
-                    filterBy="branch"
-                    params={params}
-                    setParams={setParams}
-                    filterItems={branchOptions}
-                />
-            )}
             {!isCategoryFetching && (
                 <FilterByOptions
                     title="Sprts Types"
@@ -268,26 +273,9 @@ const Products = () => {
                 />
             )}
 
-            <FilterByOptions
-                title="Condition"
-                filterBy="condition"
-                params={params}
-                setParams={setParams}
-                filterItems={[
-                    { label: "New", value: "new" },
-                    { label: "Used", value: "used" },
-                ]}
-            />
             <FilterByInput
                 filterBy="Price"
                 title="Price"
-                params={params}
-                setParams={setParams}
-            />
-            
-            <FilterByInput
-                filterBy="Quantity"
-                title="Quantity"
                 params={params}
                 setParams={setParams}
             />
@@ -305,23 +293,11 @@ const Products = () => {
 
     return (
         <div className="">
-            {/* filter and search options .......... */}
-
-            {/* <div className="">
-                {params.length > 0 && (
-                    <Button
-                        className="text-primary border border-primary pr-6 px-10 text-base h-9 mb-2 "
-                        variant={"outline"}
-                        onClick={() => setParams([])}
-                    >
-                        <RxCross2 className="size-5 mr-1 pt-0.5 " /> Reset
-                    </Button>
-                )}
-            </div> */}
-
             {/* table..............table */}
 
             <DataTable
+                title="PRODUCTS"
+                searchField
                 rowData={products}
                 columnDefs={columnDefs}
                 isFetching={isFetching}
@@ -330,7 +306,11 @@ const Products = () => {
                 setParams={setParams}
                 filterable={true}
                 filters={filters}
-                createButton={createButton}
+                createButton={
+                    role !== userRole.SELLER &&
+                    role !== userRole.BRANCH_MANAGER &&
+                    createButton
+                }
                 checkedRowsActionBtn={checkedRowsActionBtn}
             />
             <UpdateProduct

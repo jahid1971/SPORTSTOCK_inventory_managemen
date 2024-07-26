@@ -42,3 +42,47 @@ export const replaceWithNewValue = (
 
     return [...filteredArray, { name: queryProperty, value }];
 };
+
+// hooks/useDebouncedParams.ts
+import { useEffect, useState } from "react";
+
+export function useDebouncedParams<T>(params: T, delay = 500) {
+    const [debouncedParams, setDebouncedParams] = useState(params);
+
+    useEffect(() => {
+        const handler = setTimeout(() => setDebouncedParams(params), delay);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [params, delay]);
+
+    return debouncedParams;
+}
+
+
+export const updateParam = (params: any[], name: string, value: any) => [
+    ...params.filter((item) => item.name !== name),
+    { name, value },
+  ];
+// type TDebouncedProps = {
+//     searchQuery: any;
+//     delay: number;
+// };
+// export const useDebounced = ({ searchQuery, delay }: TDebouncedProps) => {
+//     const [debouncedValue, setDebouncedValue] = useState<string>(searchQuery);
+
+//     useEffect(() => {
+//         const handler = setTimeout(() => setDebouncedValue(searchQuery), delay);
+//         return () => clearTimeout(handler);
+//     }, [searchQuery, delay]);
+
+//     return debouncedValue;
+// };
+
+
+export const consoleFormData = (formData: FormData) => {
+    for (const [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+    }
+}

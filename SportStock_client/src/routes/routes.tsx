@@ -30,14 +30,7 @@ const router = createBrowserRouter([
         path: "/login",
         element: <LogIn />,
     },
-    {
-        path: "/change-password",
-        element: (
-            <ProtectedRoutes>
-                <ChangePassword />
-            </ProtectedRoutes>
-        ),
-    },
+  
     {
         path: "*",
         element: <NotFound />,

@@ -1,62 +1,3 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-
-// // api builder for create,
-// export const createApiBuilder = (url: string) => {
-//     return (data: any) => ({
-//         url: url,
-//         method: "POST",
-//         body: data,
-//     });
-// };
-
-// // api builder for update
-// export const updateApiBuilder = (url: string, method = "PATCH") => {
-//     return (args: { data?: any; id?: string }) => ({
-//         url: `${url}/${args?.id}`,
-//         method: method,
-//         body: args?.data,
-//     });
-// };
-
-// // api builder for delete
-// export const deleteApiBuilder = (url: string) => {
-//     return (args: { id?: string }) => ({
-//         url: `${url}/${args?.id}`,
-//         method: "DELETE",
-//     });
-// };
-
-// // api builder for query
-// import { TQueryParam } from "@/types/global.types";
-
-// export const queryApiBuilder = (url: string) => {
-//     return (args?: TQueryParam[]) => {
-//         const params = new URLSearchParams();
-
-//         if (args) {
-//             args.forEach((item: TQueryParam) => {
-//                 params.append(item.name, item.value as string);
-//             });
-//         }
-
-//         return {
-//             url: url,
-//             method: "GET",
-//             params: params,
-//         };
-//     };
-// };
-
-// // api builder for single query
-// export const singleQueryApiBuilder = (url: string) => {
-//     return (id: string) => ({
-//         url: `${url}/${id}`,
-//         method: "GET",
-//     });
-// };
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { TResponse } from "@/types/common";
 import { TQueryParam } from "@/types/global.types";
 import { EndpointBuilder } from "@reduxjs/toolkit/query";
@@ -73,16 +14,38 @@ export const createApiBuilder = (
     build: any,
     url: string,
     tagTypes?: string[],
-    options: { method?: string; contentType?: string } = {}
+    customOptions: {
+        contentType?: string | boolean;
+        credentials?: boolean;
+    } = {}
 ) => {
+    const options = {
+        contentType: "application/json",
+        ...customOptions,
+    };
+
     return build.mutation({
         query: (args: any) => {
             console.log("args in createApiBuilder", args);
+
+            const isFormEncoded =
+                options.contentType === "application/x-www-form-urlencoded";
+            const body = isFormEncoded
+                ? new URLSearchParams(Object.entries(args)).toString()
+                : args;
+
+            const headers: HeadersInit = {};
+            
+            if (typeof options.contentType === "string") {
+                headers["Content-Type"] = options.contentType;
+            }
+
             return {
                 url: url,
                 method: "POST",
-                body: args,
-                contentType: options.contentType ?? "application/json",
+                body: body,
+                credentials: options.credentials ? "include" : undefined,
+                headers: headers,
             };
         },
         invalidatesTags: tagTypes,
@@ -93,17 +56,31 @@ export const updateApiBuilder = <T>(
     build: IBuildApi,
     url: string,
     tagTypes: string[],
-    options: { method?: string; contentType?: string } = {}
+    customOptions: { method?: string; contentType?: string | boolean } = {}
 ) => {
+    const options = {
+        method: "PATCH",
+        contentType: "application/json",
+        ...customOptions,
+    };
+
     return build.mutation<TResponse<T>, TUpdateArgs>({
         query: (args: { data?: any; id?: string }) => {
             console.log("args in updateApiBuilderrrrr", args);
 
+            const headers: HeadersInit = {};
+            if (
+                options.contentType &&
+                typeof options.contentType === "string"
+            ) {
+                headers["Content-Type"] = options.contentType;
+            }
+
             return {
                 url: `${url}${args.id ? `/${args.id}` : ""}`,
-                method: options.method ?? "PATCH",
-                data: args?.data,
-                contentType: options.contentType ?? "application/json",
+                method: options.method,
+                body: args?.data,
+                headers: headers,
             };
         },
         invalidatesTags: tagTypes,
@@ -113,14 +90,16 @@ export const updateApiBuilder = <T>(
 export const queryApiBuilder = <T>(
     build: IBuildApi,
     url: string,
-    tagTypes?: string[]
+    tagTypes?: string[],
+    options: {
+        credentials?: boolean;
+    } = {}
 ) => {
     return build.query<TResponse<T>, Record<string, any> | undefined>({
         query: (args?: TQueryParam[]) => {
             const params = new URLSearchParams();
 
             if (args) {
-
                 console.log("args in queryApiBuilder", args);
                 args.forEach((item: any) => {
                     params.append(item.name, item.value as string);
@@ -130,6 +109,7 @@ export const queryApiBuilder = <T>(
                 url: url,
                 method: "GET",
                 params: params,
+                credentials: options.credentials ? "include" : undefined,
             };
         },
         providesTags: tagTypes,
@@ -143,11 +123,18 @@ export const singleQueryApiBuilder = <T>(
 ) => {
     return build.query<TResponse<T>, { id?: string; id_2?: string }>({
         query: (args) => {
+            let requestUrl = url;
+
+            if (typeof args === "string") {
+                requestUrl = `${url}/${args}`;
+            } else if (args?.id && args.id_2) {
+                requestUrl = `${url}/${args.id}/${args.id_2}`;
+            } else if (args?.id) {
+                requestUrl = `${url}/${args.id}`;
+            }
+
             return {
-                url:
-                    args?.id && args.id_2
-                        ? `${url}/${args.id}/${args.id_2}`
-                        : `${url}/${args.id}`,
+                url: requestUrl,
                 method: "GET",
             };
         },

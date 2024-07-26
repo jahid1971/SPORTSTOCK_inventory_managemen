@@ -15,12 +15,14 @@ import AddStock from "@/pages/stockManage/AddStock";
 import AdjustStock from "@/pages/stockManage/AdjustStock";
 import StockList from "@/pages/stockManage/StockList";
 import StockTransfer from "@/pages/stockManage/StockTransfer";
+import CreateAdmin from "@/pages/user/CreateAdmin";
 import CreateBranchManager from "@/pages/user/CreateBranchManager";
 import CreateSeller from "@/pages/user/CreateSeller";
 import Users from "@/pages/user/Users";
+import UpdateUser from "@/pages/user/update user/UpdateUser";
 import { Route, Routes } from "react-router-dom";
 
-export const AdminRoutes = () => {
+export const SuperAdminRoutes = () => {
     return (
         <Routes>
             <Route path="dashboard" element={<Home />} />
@@ -43,6 +45,7 @@ export const AdminRoutes = () => {
             <Route path="adjust-history" element={<AdjustHistory />} />
             <Route path="transfer-history" element={<TransferedHistory />} />
 
+            <Route path="create-admin" element={<CreateAdmin />} />
             <Route
                 path="create-branch-manager"
                 element={<CreateBranchManager />}
@@ -50,7 +53,9 @@ export const AdminRoutes = () => {
             <Route path="create-seller" element={<CreateSeller />} />
             <Route path="categories" element={<Categories />} />
             <Route path="branches" element={<Branches />} />
+
             <Route path="change-password" element={<ChangePassword />} />
+            <Route path="update-user" element={<UpdateUser />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     );

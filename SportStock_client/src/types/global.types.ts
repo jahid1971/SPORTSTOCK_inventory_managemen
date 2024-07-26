@@ -3,7 +3,7 @@ import { BaseQueryApi } from "@reduxjs/toolkit/query";
 export type TUserRole = "seller" | "branchManager" | "superAdmin";
 
 export type TUser = {
-    id?:string
+    id?: string;
     _id?: string;
     userPhoto?: string;
     userId: number;
@@ -13,7 +13,10 @@ export type TUser = {
     email?: string;
     password?: string;
     fullName?: string;
-    status?: string
+    status?: string;
+    contactNumber?: string;
+    address?: string;
+    branch?: string;
 };
 
 export type TError = {

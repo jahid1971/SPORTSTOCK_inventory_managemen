@@ -9,8 +9,13 @@ const addStock = catchAsynch(async (req, res) => {
 });
 
 const getAllStocks = catchAsynch(async (req, res) => {
-    const result = await StockServices.getAllStocks(req.query);
+    const result = await StockServices.getAllStocks(req.user, req.query);
 
+    sendSuccessResponse(res, result, "Stock fetched successfully");
+});
+
+const getBranchStocks = catchAsynch(async (req, res) => {
+    const result = await StockServices.getBranchStocks(req.query);
     sendSuccessResponse(res, result, "Stock fetched successfully");
 });
 
@@ -44,8 +49,8 @@ const stocksPieChart = catchAsynch(async (req, res) => {
     );
 });
 
-const getDashboardCards = catchAsynch(async (req, res) => {
-    const result = await StockServices.getDashboardCards(req.user);
+const getDashboardCardsData = catchAsynch(async (req, res) => {
+    const result = await StockServices.getDashboardCardsData(req?.user);
     sendSuccessResponse(
         res,
         result,
@@ -60,5 +65,6 @@ export const StockController = {
     transferStock,
     stocksBarChart,
     stocksPieChart,
-    getDashboardCards,
+    getDashboardCardsData,
+    getBranchStocks,
 };

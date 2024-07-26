@@ -9,25 +9,30 @@ const router = Router();
 
 router.post(
     "/create-branch",
-    checkAuth(userRole.SUPER_ADMIN),
+    checkAuth(userRole.ADMIN, userRole.SUPER_ADMIN),
     validateRequest(BranchValidation.CrteateBranchSchema),
     BranchController.createBranch
 );
 router.get(
     "/",
-    checkAuth(userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER, userRole.SELLER),
+    checkAuth(
+        userRole.ADMIN,
+        userRole.SUPER_ADMIN,
+        userRole.BRANCH_MANAGER,
+        userRole.SELLER
+    ),
     BranchController.getAllBranches
 );
 
 router.patch(
     "/update-branch-status/:branchId",
-    checkAuth(userRole.SUPER_ADMIN),
+    checkAuth(userRole.ADMIN, userRole.SUPER_ADMIN),
     BranchController.updateBranchStatus
 );
 
 router.delete(
     "/delete-branch/:id",
-    checkAuth(userRole.SUPER_ADMIN),
+    checkAuth(userRole.ADMIN, userRole.SUPER_ADMIN),
     BranchController.deleteBranch
 );
 
