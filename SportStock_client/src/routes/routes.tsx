@@ -6,6 +6,8 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import RoleBasedRoutes from "./RoleBasedRoutes";
 import ChangePassword from "@/pages/auth/ChangePassword";
 import Home from "@/pages/Home";
+import ForgotPassword from "@/pages/auth/ForgotPassword";
+import ResetPassword from "@/pages/auth/ResetPassword";
 
 const router = createBrowserRouter([
     {
@@ -30,7 +32,14 @@ const router = createBrowserRouter([
         path: "/login",
         element: <LogIn />,
     },
-  
+    {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
+    },
+    {
+        path: "/reset-password",
+        element: <ResetPassword />,
+    },
     {
         path: "*",
         element: <NotFound />,

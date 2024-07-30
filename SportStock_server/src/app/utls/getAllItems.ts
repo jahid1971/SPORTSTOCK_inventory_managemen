@@ -1,5 +1,3 @@
-
-
 import { Model, QueryOptions, FilterQuery, SortOrder } from "mongoose";
 
 export type TQueryObject<T = {}> = {
@@ -120,9 +118,30 @@ const getAllItems = async <T>(
         // AGGREGATE MODE
         const basePipeline = [...(options.aggregationPipeline || [])];
 
+        // if (whereConditions) {
+        //     basePipeline.push({ $match: whereConditions });
+        // }
+
+        // const basePipeline = [...(options.aggregationPipeline || [])];
+
         if (whereConditions) {
-            basePipeline.push({ $match: whereConditions });
+           
+            // console.log(whereConditions ,"where condition ----------------")
+           
+            const projectIndex = basePipeline.findIndex(
+                (stage) => "$project" in stage
+            );
+
+            if (projectIndex !== -1) {
+                basePipeline.splice(projectIndex, 0, {
+                    $match: whereConditions,
+                });
+            } else {
+                basePipeline.push({ $match: whereConditions });
+            }
         }
+
+        // console.log(basePipeline ,"base pipeleine    ----------------")
 
         const aggregationPipeline = [
             ...basePipeline,

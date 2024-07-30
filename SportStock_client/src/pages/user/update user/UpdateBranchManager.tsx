@@ -1,18 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { FieldValues } from "react-hook-form";
 import tryCatch from "@/utls/tryCatch";
-
-import { useUpdateSellerMutation } from "@/redux/api/userApi";
-
+import { useUpdateBranchManagerMutation } from "@/redux/api/userApi";
 import SellerForm from "@/components/form/SellerForm";
 import { TUser } from "@/types/global.types";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-const UpdateSeller = ({ userData }: { userData: TUser }) => {
+const UpdateBranchManager = ({ userData }: { userData: TUser }) => {
     const navigate = useNavigate();
-    const [updateSeller] = useUpdateSellerMutation();
+    const [updateBranchManager] = useUpdateBranchManagerMutation();
 
     const onSubmit = async (data: FieldValues, formOptions: any) => {
         const dirtyFields = formOptions?.dirtyFields;
@@ -39,7 +35,7 @@ const UpdateSeller = ({ userData }: { userData: TUser }) => {
 
         tryCatch(
             async () => {
-                const res = await updateSeller({
+                const res = await updateBranchManager({
                     data: formData,
                     id: userData?._id,
                 });
@@ -50,20 +46,18 @@ const UpdateSeller = ({ userData }: { userData: TUser }) => {
                         ...updatedData,
                         branch: (updatedData as any)?.branch?._id,
                     });
-
                     navigate("/users");
                 }
-
                 return res;
             },
-            "Seller Updated",
-            "Seller is Updating"
+            "Branch Manager Updated",
+            "Branch Manager is Updating"
         );
     };
     return (
         <div className=" w-11/12 md:w-8/12 mx-auto flex  flex-col  justify-center  gap-5 mt-5 px-8 py-8 shadow-lg bg-white rounded-2xl">
             <h3 className="text-primary-400 text-2xl font-semibold">
-                UPDATE SELLER
+                UPDATE BRANCH MANAGER
             </h3>
             <SellerForm
                 isEditMode
@@ -77,4 +71,4 @@ const UpdateSeller = ({ userData }: { userData: TUser }) => {
     );
 };
 
-export default UpdateSeller;
+export default UpdateBranchManager;

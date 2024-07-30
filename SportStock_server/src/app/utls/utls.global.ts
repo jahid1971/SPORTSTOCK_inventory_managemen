@@ -76,15 +76,13 @@ export function generateProductCode() {
 
 import mongoose from "mongoose";
 
-/**
- * Normalize a field in the query to MongoDB ObjectId(s), modifying the query in-place.
- * Supports string or array of strings.
- */
 export const convertToObjectId = (
     query: Record<string, any>,
     originalField: string,
     options?: { nested?: boolean; targetField?: string }
 ) => {
+    if (!query || typeof query !== "object") return; 
+
     const value = query[originalField];
     if (!value) return;
 
@@ -103,5 +101,5 @@ export const convertToObjectId = (
         query[target] = new mongoose.Types.ObjectId(value);
     }
 
-    delete query[originalField];
+    // delete query[originalField];
 };

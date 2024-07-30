@@ -9,7 +9,7 @@ import { IUser } from "../user/user.interface";
 
 const getAllStockHistory = async (
     user: IUser,
-    query: Record<string, unknown>,
+    query: Record<string, unknown> = {},
     andConditions?: any[]
 ) => {
     const aggregationPipeline = [
@@ -18,28 +18,28 @@ const getAllStockHistory = async (
                 from: "products",
                 localField: "productId",
                 foreignField: "_id",
-                as: "productId",
+                as: "product",
             },
         },
-        { $unwind: "$productId" },
+        { $unwind: "$product" },
         {
             $lookup: {
                 from: "categories",
                 localField: "productId.category",
                 foreignField: "_id",
-                as: "categoryId",
+                as: "category",
             },
         },
-        { $unwind: "$categoryId" },
+        { $unwind: "$category" },
         {
             $lookup: {
                 from: "branches",
                 localField: "branchId",
                 foreignField: "_id",
-                as: "branchId",
+                as: "branch",
             },
         },
-        { $unwind: "$branchId" },
+        { $unwind: "$branch" },
 
         {
             $lookup: {
@@ -66,48 +66,50 @@ const getAllStockHistory = async (
         },
         { $unwind: "$madeBy" },
 
-        {
-            $project: {
-                _id: 1,
-                quantityChanged: 1,
-                createdAt: 1,
-                updatedAt: 1,
-                date: 1,
-                reason: 1,
-                "productId._id": 1,
-                "productId.productName": 1,
-                "productId.productCode": 1,
-                "branchId._id": 1,
-                "branchId.branchName": 1,
-                "transferToStock._id": 1,
-                "transferToStock.branchName": 1,
-                "madeBy._id": 1,
-                "madeBy.fullName": 1,
-                "categoryId._id": 1,
-                "categoryId.category": 1,
-            },
-        },
+        // {
+        //     $project: {
+        //         _id: 1,
+        //         quantityChanged: 1,
+        //         createdAt: 1,
+        //         updatedAt: 1,
+        //         date: 1,
+        //         reason: 1,
+        //         "productId._id": 1,
+        //         "productId.productName": 1,
+        //         "productId.productCode": 1,
+        //         "branchId._id": 1,
+        //         "branchId.branchName": 1,
+        //         "transferToStock._id": 1,
+        //         "transferToStock.branchName": 1,
+        //         "madeBy._id": 1,
+        //         "madeBy.fullName": 1,
+        //         "categoryId._id": 1,
+        //         "categoryId.category": 1,
+        //     },
+        // },
     ];
 
-    convertToObjectId(query, "branchId", { nested: true });
-    convertToObjectId(query, "productId", { nested: true });
-    convertToObjectId(query, "stockId", { nested: true });
-    convertToObjectId(query, "madeBy", { nested: true });
-    convertToObjectId(query, "categoryId", { nested: true });
+    convertToObjectId(query, "branchId", { targetField: "branch._id" });
+    convertToObjectId(query, "productId", { targetField: "product._id" });
+    convertToObjectId(query, "stockId", { targetField: "stock._id" });
+    convertToObjectId(query, "madeBy", { targetField: "madeBy._id" });
+    convertToObjectId(query, "categoryId", { targetField: "category._id" });
 
-    console.log(query, " query  ================================");
+    if (query?.startDate || query?.endDate) {
+        query.date = {
+            $gte: query.startDate
+                ? new Date(query.startDate as string)
+                : new Date(0),
+            $lte: query.endDate
+                ? new Date(query.endDate as string)
+                : new Date(),
+        };
+    }
 
     if (query?.minQuantityChanged || query?.maxQuantityChanged) {
         query.quantityChanged = {
             $gte: Number(query?.minQuantityChanged) || 0,
             $lte: Number(query?.maxQuantityChanged) || Infinity,
-        };
-    }
-
-    if (query.startDate || query.endDate) {
-        query.date = {
-            $gte: new Date(query.startDate as string),
-            $lte: new Date(query.endDate as string),
         };
     }
 
@@ -133,6 +135,12 @@ const getAllStockHistory = async (
         aggregationPipeline,
         andConditions: andConditions || [],
     });
+
+    console.log(
+        result,
+        query,
+        "result -------------------------------------------"
+    );
 
     return result;
 };

@@ -67,6 +67,26 @@ const updateSeller = catchAsynch(async (req: any, res: Response) => {
     sendSuccessResponse(res, result, "Seller updated successfully", 200);
 });
 
+const updateAdmin = catchAsynch(async (req: any, res: Response) => {
+    const result = await userServices.updateAdmin(
+        req.params.id,
+        req.file,
+        req.body.data
+    );
+
+    sendSuccessResponse(res, result, "Admin updated successfully", 200);
+});
+
+const updateBranchManager = catchAsynch(async (req: any, res: Response) => {
+    const result = await userServices.updateBranchManager(
+        req.params.id,
+        req.file,
+        req.body.data
+    );
+
+    sendSuccessResponse(res, result, "Branch manager updated successfully", 200);
+});
+
 const getUserById = catchAsynch(async (req: Request, res: Response) => {
     const result = await userServices.getUserById(req.params.id);
 
@@ -81,5 +101,7 @@ export const userController = {
     createBranchManager,
     deleteUser,
     updateSeller,
+    updateAdmin,
+    updateBranchManager,
     getUserById,
 };

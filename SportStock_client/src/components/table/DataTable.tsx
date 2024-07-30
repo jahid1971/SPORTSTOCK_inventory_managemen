@@ -20,10 +20,7 @@ import { RiFilterLine } from "react-icons/ri";
 import { X } from "lucide-react";
 import styles from "./table.module.css";
 import { CustomPagination } from "../others/Pagination";
-import {
-
-    tableSerial,
-} from "@/utls/utls";
+import { tableSerial } from "@/utls/utls";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -94,6 +91,7 @@ const DataTable = ({
             return rowData.map((item: any, index: number) => ({
                 ...item,
                 sl: tableSerial(params, index),
+                key: index,
             }));
         }
         return rowData;

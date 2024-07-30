@@ -1,6 +1,8 @@
 import { userRole } from "@/constants/user";
 
 import UpdateSeller from "./UpdateSeller";
+import UpdateAdmin from "./UpdateAdmin";
+import UpdateBranchManager from "./UpdateBranchManager";
 import { useLocation } from "react-router-dom";
 import { useGetuserByIdQuery } from "@/redux/api/userApi";
 import { Spinner } from "@/components/ui/Spinner";
@@ -17,6 +19,10 @@ const UpdateUser = () => {
 
     if (userData?.role === userRole.SELLER)
         return <UpdateSeller userData={userData} />;
+    if (userData?.role === userRole.ADMIN)
+        return <UpdateAdmin userData={userData} />;
+    if (userData?.role === userRole.BRANCH_MANAGER)
+        return <UpdateBranchManager userData={userData} />;
 };
 
 export default UpdateUser;

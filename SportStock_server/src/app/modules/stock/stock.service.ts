@@ -6,6 +6,8 @@ import { Stock } from "./stock.model";
 import { StockHistory } from "../stockHistory/history.model";
 import Product from "../product/product.model";
 import { userRole } from "../../constants/user";
+import { IUser } from "../user/user.interface";
+import { convertToObjectId } from "../../utls/utls.global";
 
 const stockHistoryData = (payload: any) => {
     return {
@@ -184,20 +186,82 @@ const transferStock = async (payload: any) => {
     }
 };
 
-const getAllStocks = async (query: Record<string, unknown>) => {
-    const result = await getAllItems<IStock>(Stock, query, {
-        filterableFields: ["branchId", "productId"],
-        populate: [
-            {
-                path: "productId",
-                select: "_id productName price",
-                populate: {
-                    path: "category",
-                    select: "category",
-                },
+const getAllStocks = async (user: IUser, query: Record<string, unknown>) => {
+    const pipeline = [
+        {
+            $lookup: {
+                from: "products",
+                localField: "productId",
+                foreignField: "_id",
+                as: "product",
             },
-            { path: "branchId", select: "_id  branchName" },
+        },
+        { $unwind: "$product" },
+        {
+            $lookup: {
+                from: "branches",
+                localField: "branchId",
+                foreignField: "_id",
+                as: "branch",
+            },
+        },
+        { $unwind: "$branch" },
+        {
+            $lookup: {
+                from: "categories",
+                localField: "product.category",
+                foreignField: "_id",
+                as: "category",
+            },
+        },
+        { $unwind: "$category" },
+        {
+            $project: {
+                branchId: 1,
+                productId: 1,
+                quantity: 1,
+                updatedAt: 1,
+                branchName: "$branch.branchName",
+                productName: "$product.productName",
+                category: "$category.category",
+                price: "$product.price",
+                image: "$product.image",
+            },
+        },
+    ];
+
+    if (query?.minQuantity || query?.maxQuantity) {
+        query.quantity = {
+            $gte: Number(query?.minQuantity) || 0,
+            $lte: Number(query?.maxQuantity) || Infinity,
+        };
+    }
+
+    if (query?.minPrice || query?.maxPrice) {
+        query["product.price"] = {
+            $gte: Number(query?.minPrice) || 0,
+            $lte: Number(query?.maxPrice) || Infinity,
+        };
+    }
+
+    convertToObjectId(query, "branchId");
+
+    convertToObjectId(query, "categoryId", { targetField: "category._id" });
+
+    const result = await getAllItems<IStock>(Stock, query, {
+        filterableFields: [
+            "branchId",
+            "category._id",
+            "quantity",
+            "product.price",
         ],
+        searchableFields: [
+            "branch.branchName",
+            "product.productName",
+            "category.category",
+        ],
+        mode: "aggregate",
+        aggregationPipeline: pipeline,
     });
 
     return result;

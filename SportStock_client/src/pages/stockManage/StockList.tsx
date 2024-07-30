@@ -45,21 +45,21 @@ const StockList = () => {
     const columnDefs: ColDef<IStock | any>[] = [
         {
             headerName: "Product Name",
-            field: "productId.productName",
+            field: "productName",
         },
         {
             headerName: "Category",
-            field: "categoryId.category",
+            field: "category",
             maxWidth: 150,
         },
         {
             headerName: "Branch Name",
-            field: "branchId.branchName",
+            field: "branchName",
             maxWidth: 150,
         },
         {
             headerName: "Price",
-            field: "productId.price",
+            field: "price",
             maxWidth: 100,
         },
         {
@@ -161,13 +161,6 @@ const StockList = () => {
                 />
             ),
 
-        <FilterByOptions
-            filterBy="branchId"
-            filterItems={branchOptions}
-            params={params}
-            setParams={setParams}
-            title="Branches"
-        />,
 
         <FilterByOptions
             filterBy="categoryId"
@@ -214,6 +207,7 @@ const StockList = () => {
                 filterable={true}
                 filters={filters}
                 searchField={true}
+                metaData={data?.data?.meta}
             />
         </div>
     );

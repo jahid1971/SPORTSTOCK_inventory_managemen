@@ -12,13 +12,21 @@ const createToken = (
     });
 };
 
-const verifyToken = (token: string, secret: string) => {
+const verifyToken = (
+    token: string,
+    secret: string,
+    tokenType: string = "Token"
+) => {
     let decoded;
     try {
         decoded = jwt.verify(token, secret as string) as JwtPayload;
-    } catch (error) {
-        console.log("error in jwt verify token >>>>>>>>>>>>>>>>", error);
-        throw new AppError(401, "Unauthorized !");
+    } catch (error: any) {
+        if (error?.name === "TokenExpiredError") {
+            console.log("error in jwt verify token >>>>>>>>>>>>>>>>", error);
+
+            throw new AppError(401, `${tokenType} has expired!!`, error);
+        }
+        throw new AppError(401, "Unauthorized access !", error);
     }
     return decoded;
 };

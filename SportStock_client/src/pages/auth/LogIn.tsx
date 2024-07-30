@@ -1,5 +1,3 @@
-
-
 import { FloatingInput } from "@/components/ui/InputFloatingLabel";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch } from "@/redux/Hooks";
@@ -100,12 +98,13 @@ const LogIn = () => {
                         className="bg-primary-50 dark:bg-gray-800"
                     />
                     <div className="flex justify-end">
-                        <a
-                            href="#"
+                        <button
+                            type="button"
                             className="text-xs text-primary-500 hover:underline"
+                            onClick={() => navigate("/forgot-password")}
                         >
                             Forgot password?
-                        </a>
+                        </button>
                     </div>
                     <Button
                         type="submit"

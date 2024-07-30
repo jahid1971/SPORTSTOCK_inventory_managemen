@@ -50,6 +50,12 @@ const changePassword = catchAsynch(async (req: Request, res: Response) => {
     );
 });
 
+const forgotPassword = catchAsynch(async (req, res) => {
+    const result = await authServices.forgotPassword(req.body.email);
+  
+    sendSuccessResponse(res, result, "Check your email for reset link");
+  });
+
 const refresh = catchAsynch(async (req: Request, res: Response) => {
     const refreshToken = req?.cookies?.refreshToken;
 
@@ -85,10 +91,18 @@ const logOut = catchAsynch(async (req: Request, res: Response) => {
     return sendSuccessResponse(res, {}, "User logged out successfully", 200);
 });
 
+const resetPassword = catchAsynch(async (req: Request, res: Response) => {
+    const { id, token, newPassword } = req.body;
+    const result = await authServices.resetPassword({ id, token, newPassword });
+    return sendSuccessResponse(res, result, "Password reset successfully", 200);
+});
+
 export const authControllers = {
     getMe,
     logIn,
     changePassword,
+    forgotPassword,
     refresh,
     logOut,
+    resetPassword,
 };

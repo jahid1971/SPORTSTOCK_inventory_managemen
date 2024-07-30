@@ -73,4 +73,18 @@ router.patch(
     userController.updateSeller
 );
 
+router.patch(
+    "/update-admin/:id",
+    checkAuth(userRole.SUPER_ADMIN),
+    handleImageUpload,
+    userController.updateAdmin
+);
+
+router.patch(
+    "/update-branch-manager/:id",
+    checkAuth(userRole.ADMIN, userRole.SUPER_ADMIN),
+    handleImageUpload,
+    userController.updateBranchManager
+);
+
 export const userRoutes = router;

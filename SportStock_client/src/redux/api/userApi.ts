@@ -37,6 +37,20 @@ const userApi = baseApi.injectEndpoints({
             { contentType: false }
         ),
 
+        updateAdmin: updateApiBuilder(
+            builder,
+            "users/update-admin",
+            [tagTypes.users],
+            { contentType: false }
+        ),
+
+        updateBranchManager: updateApiBuilder(
+            builder,
+            "users/update-branch-manager",
+            [tagTypes.users],
+            { contentType: false }
+        ),
+
         deleteUser: updateApiBuilder(builder, "users/delete-user", [
             tagTypes.users,
         ]),
@@ -60,4 +74,6 @@ export const {
     useUpdateUserStatusMutation,
     useGetuserByIdQuery,
     useUpdateSellerMutation,
+    useUpdateAdminMutation,
+    useUpdateBranchManagerMutation,
 } = userApi;

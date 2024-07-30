@@ -142,6 +142,100 @@ const updateSeller = async (
     return userObject;
 };
 
+const updateAdmin = async (
+    id: string,
+    file: any,
+    payload: Partial<IUser> = {}
+) => {
+    const admin = await User.findById(id);
+
+    if (!admin || admin.role !== userRole.ADMIN) {
+        throw new AppError(404, "Admin not found");
+    }
+
+    if (file) {
+        const optimizedBuffer = await sharp(file.buffer)
+            .resize({ width: 240 })
+            .webp({ quality: 100 })
+            .toBuffer();
+
+        const imageName = payload.fullName || admin.fullName;
+        const userPhoto = await sendImageToCloudinary(
+            imageName,
+            optimizedBuffer
+        );
+
+        payload.userPhoto = (userPhoto as any)?.secure_url;
+    }
+
+    if (payload.password) {
+        const hashedPassword = await passwordHash.hashPassword(
+            payload.password
+        );
+        payload.password = hashedPassword;
+    }
+
+    const updatedAdmin = await User.findByIdAndUpdate(id, payload, {
+        new: true,
+    });
+
+    if (!updatedAdmin) {
+        throw new AppError(500, "Failed to update admin");
+    }
+
+    const userObject = updatedAdmin.toObject();
+    delete userObject.password;
+
+    return userObject;
+};
+
+const updateBranchManager = async (
+    id: string,
+    file: any,
+    payload: Partial<IUser> = {}
+) => {
+    const bm = await User.findById(id);
+
+    if (!bm || bm.role !== userRole.BRANCH_MANAGER) {
+        throw new AppError(404, "Branch manager not found");
+    }
+
+    if (file) {
+        const optimizedBuffer = await sharp(file.buffer)
+            .resize({ width: 240 })
+            .webp({ quality: 100 })
+            .toBuffer();
+
+        const imageName = payload.fullName || bm.fullName;
+        const userPhoto = await sendImageToCloudinary(
+            imageName,
+            optimizedBuffer
+        );
+
+        payload.userPhoto = (userPhoto as any)?.secure_url;
+    }
+
+    if (payload.password) {
+        const hashedPassword = await passwordHash.hashPassword(
+            payload.password
+        );
+        payload.password = hashedPassword;
+    }
+
+    const updatedBM = await User.findByIdAndUpdate(id, payload, {
+        new: true,
+    });
+
+    if (!updatedBM) {
+        throw new AppError(500, "Failed to update branch manager");
+    }
+
+    const userObject = updatedBM.toObject();
+    delete userObject.password;
+
+    return userObject;
+};
+
 const createBranchManager = async (file: any, payload: IUser) => {
     const user = await User.findOne({ email: payload.email });
     if (user)
@@ -311,6 +405,8 @@ export const userServices = {
     createAdmin,
     createSeller,
     updateSeller,
+    updateAdmin,
+    updateBranchManager,
     getAllUsers,
     updateUserStatus,
     createBranchManager,

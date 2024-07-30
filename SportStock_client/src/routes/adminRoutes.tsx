@@ -18,6 +18,7 @@ import StockTransfer from "@/pages/stockManage/StockTransfer";
 import CreateBranchManager from "@/pages/user/CreateBranchManager";
 import CreateSeller from "@/pages/user/CreateSeller";
 import Users from "@/pages/user/Users";
+import UpdateUser from "@/pages/user/update user/UpdateUser";
 import { Route, Routes } from "react-router-dom";
 
 export const AdminRoutes = () => {
@@ -25,6 +26,7 @@ export const AdminRoutes = () => {
         <Routes>
             <Route path="dashboard" element={<Home />} />
             <Route path="users" element={<Users />} />
+            <Route path="update-user" element={<UpdateUser />} />
             <Route path="create-product" element={<CreatreProduct />} />
             <Route
                 path="create-variant/:productId"

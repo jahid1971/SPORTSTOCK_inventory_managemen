@@ -22,12 +22,14 @@ import AdjustStock from "@/pages/stockManage/AdjustStock";
 import StockList from "@/pages/stockManage/StockList";
 import StockTransfer from "@/pages/stockManage/StockTransfer";
 import CreateBranchManager from "@/pages/user/CreateBranchManager";
+import UpdateUser from "@/pages/user/update user/UpdateUser";
 
 export const BranchManagerRoutes = () => {
     return (
         <Routes>
             <Route path="dashboard" element={<Home />} />
             <Route path="users" element={<Users />} />
+            <Route path="update-user" element={<UpdateUser />} />
             {/* <Route path="create-product" element={<CreatreProduct />} /> */}
             <Route path="products" element={<Products />} />
             <Route path="create-seller" element={<CreateSeller />} />
