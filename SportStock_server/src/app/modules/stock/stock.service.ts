@@ -98,7 +98,6 @@ const adjustStock = async (payload: IStock) => {
             date: payload.updatedAt,
         };
 
-        console.log("historyData  =tttttttttttttttttt", historyData);
 
         await StockHistory.create([{ ...historyData }], { session });
 
@@ -187,7 +186,19 @@ const transferStock = async (payload: any) => {
 };
 
 const getAllStocks = async (user: IUser, query: Record<string, unknown>) => {
+    const stockMatch: any = {};
+
+    if (
+        user?.role === userRole.BRANCH_MANAGER ||
+        user?.role === userRole.SELLER
+    ) {
+        stockMatch.branchId = user?.branch;
+    }
+
     const pipeline = [
+        {
+            $match: stockMatch,
+        },
         {
             $lookup: {
                 from: "products",
@@ -321,12 +332,19 @@ const stocksBarChart = async (query: Record<string, unknown>) => {
     return result;
 };
 
-const stocksPieChart = async () => {
+const stocksPieChart = async (user: IUser) => {
+    const stockMatch: any = {};
+
+    if (
+        user?.role === userRole.BRANCH_MANAGER ||
+        user?.role === userRole.SELLER
+    ) {
+        stockMatch.branchId = user?.branch;
+    }
+
     const result = await Stock.aggregate([
         {
-            $match: {
-                isDeleted: false,
-            },
+            $match: stockMatch,
         },
         {
             $lookup: {
@@ -370,8 +388,8 @@ const stocksPieChart = async () => {
 };
 
 const getDashboardCardsData = async (user: any) => {
-    let stockMatch: any = { isDeleted: false };
-    let productMatch: any = { isDeleted: false };
+    const stockMatch: any = { isDeleted: false };
+    const productMatch: any = { isDeleted: false };
 
     if (
         user?.role === userRole.BRANCH_MANAGER ||

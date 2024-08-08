@@ -5,15 +5,14 @@ import {
     Select,
     SelectContent,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
 
 type TCustomPaginationProps = {
-    metaData: { totalPages: number; page: number; limit: number };
+    metaData: { totalPages: number; page: number; limit: number,total: number };
     params: { name: string; value: any }[];
-    setParams: (params: { name: string; value: any }[]) => void;
+    setParams: any;
 };
 
 export const CustomPagination = ({
@@ -37,6 +36,7 @@ export const CustomPagination = ({
         updatedParams.push({ name: "page", value: 1 });
         setParams(updatedParams);
     };
+
 
     return (
         <div className="flex flex-col sm:flex-row items-center justify-between my-4 space-y-4 sm:space-y-0">

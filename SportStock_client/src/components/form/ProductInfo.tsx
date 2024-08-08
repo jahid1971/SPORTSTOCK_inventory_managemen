@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+
 import { FloatingInput } from "../ui/InputFloatingLabel";
-import { Controller } from "react-hook-form";
+
 import { PiPlusCircleBold } from "react-icons/pi";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 
@@ -14,8 +14,8 @@ import { TextArea } from "../ui/TextArea";
 import FileUploader from "../ui/FileUploader";
 
 const ProductInfo = ({ control }: { control: any }) => {
-    const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
-    const { data: brandNames, isFetching: isBrandNameFetching } =
+ 
+    const { data: brandNames, isFetching: isBrandNameFetching }:any =
         useGetAllBrandNamesQuery(undefined);
 
     const brandNamesOptions = brandNames?.data?.map((brand: TBrand) => ({

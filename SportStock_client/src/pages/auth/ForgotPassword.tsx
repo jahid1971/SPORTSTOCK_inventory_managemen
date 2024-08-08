@@ -10,7 +10,7 @@ const ForgotPassword = () => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm();
+    } = useForm() as any;
     const [forgotPassword,{isLoading}] = useForgotPasswordMutation();
     const [message, setMessage] = useState("");
     const [success, setSuccess] = useState(false);

@@ -11,7 +11,7 @@ import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-mod
 // import { UserDeleteButton } from "@/components/table/users/UserDeleteButton";
 import { useGetAllUsersQuery } from "@/redux/api/userApi";
 import DataTable from "@/components/table/DataTable";
-import { TQueryParam } from "@/types/global.types";
+import { TBranch, TQueryParam } from "@/types/global.types";
 import { UserDeleteButton } from "@/components/table/users/UserDeleteButton";
 import { UpdateButton } from "@/components/table/products/UpdateButton";
 import { defaultParams } from "@/constants/global.constant";
@@ -31,11 +31,11 @@ import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import FilterByOptions from "@/components/table/FilterByOptions";
 import { userRole } from "@/constants/user";
 import { useCurrentUser } from "@/redux/Hooks";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 interface IRow {
+    _id?: string;
     id: string;
     fullName: string;
     role: number;
@@ -57,9 +57,9 @@ const Users = () => {
 
     const [params, setParams] = useState<TQueryParam[]>(defaultParams);
 
-    const { data: branches } = useGetAllBranchesQuery(undefined);
+    const { data: branches }:any = useGetAllBranchesQuery(undefined);
 
-    const { data, isFetching } = useGetAllUsersQuery(params);
+    const { data, isFetching }:any = useGetAllUsersQuery(params);
 
     const colDefs: ColDef<IRow>[] = [
         {
@@ -237,7 +237,7 @@ const Users = () => {
         user?.role !== userRole.BRANCH_MANAGER && (
             <FilterByOptions
                 filterBy="branch"
-                filterItems={branches?.data?.data.map((branch) => ({
+                filterItems={branches?.data?.data.map((branch:TBranch) => ({
                     label: branch.branchName,
                     value: branch._id,
                 }))}

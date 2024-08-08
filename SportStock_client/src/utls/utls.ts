@@ -1,8 +1,9 @@
+// eslint-disable-next-line no-unused-vars
 export function debounce<T extends (...args: any[]) => void>(
     callback: T,
     delay: number
 ): T {
-    let timer: NodeJS.Timeout | null = null;
+    let timer: ReturnType<typeof setTimeout> | null = null;
 
     return ((...args: any[]) => {
         if (timer) clearTimeout(timer);
@@ -43,6 +44,7 @@ export const replaceWithNewValue = (
     return [...filteredArray, { name: queryProperty, value }];
 };
 
+import { TQueryParam } from "@/types/global.types";
 // hooks/useDebouncedParams.ts
 import { useEffect, useState } from "react";
 
@@ -60,11 +62,30 @@ export function useDebouncedParams<T>(params: T, delay = 500) {
     return debouncedParams;
 }
 
+// export const updateParam = (
+//     params: TQueryParam[],
+//     name: string,
+//     value: any
+// ) => [...params.filter((item) => item.name !== name), { name, value }];
 
-export const updateParam = (params: any[], name: string, value: any) => [
-    ...params.filter((item) => item.name !== name),
-    { name, value },
-  ];
+export const updateParam = (
+    params: TQueryParam[],
+    name: string,
+    value: any
+): TQueryParam[] => {
+    const newParams = [
+        ...params.filter((item) => item.name !== name),
+        { name, value },
+    ];
+
+    if (name !== "page") {
+        const filtered = newParams.filter((item) => item.name !== "page");
+        return [...filtered, { name: "page", value: 1 }];
+    }
+
+    return newParams;
+};
+
 // type TDebouncedProps = {
 //     searchQuery: any;
 //     delay: number;
@@ -80,9 +101,9 @@ export const updateParam = (params: any[], name: string, value: any) => [
 //     return debouncedValue;
 // };
 
-
 export const consoleFormData = (formData: FormData) => {
     for (const [key, value] of formData.entries()) {
+        // eslint-disable-next-line no-console
         console.log(`${key}:`, value);
     }
-}
+};

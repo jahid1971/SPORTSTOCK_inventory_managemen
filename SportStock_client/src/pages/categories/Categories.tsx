@@ -4,17 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useGetAllCategoriesQuery } from "@/redux/api/productApi";
 import { TQueryParam } from "@/types/global.types";
+import { TCategory } from "@/types/product";
 import { tableSerial } from "@/utls/utls";
 import { useState } from "react";
-import { PiPlusBold, PiPlusCircleBold } from "react-icons/pi";
+import { PiPlusBold } from "react-icons/pi";
 
 const Categories = () => {
     const [params, setParams] = useState<TQueryParam[]>([]);
-    const { data, isFetching } = useGetAllCategoriesQuery(undefined);
+    const { data, isFetching } = useGetAllCategoriesQuery(undefined) as any;
     const categories = data?.data;
-    console.log("categories", categories);
 
-    const categoryData = categories?.map((category, i) => ({
+    const categoryData = categories?.map((category: TCategory, i: number) => ({
         sl: tableSerial(params, i),
         id: category._id,
         category: category.category,
@@ -44,6 +44,7 @@ const Categories = () => {
     return (
         <div>
             <DataTable
+                title="Categories"
                 rowData={categoryData}
                 columnDefs={columnDefs}
                 isFetching={isFetching}

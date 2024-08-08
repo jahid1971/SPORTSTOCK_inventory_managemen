@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Line, LineChart, CartesianGrid, XAxis } from "recharts";
 import {
     Card,
@@ -45,7 +45,7 @@ export function StocksLineChart() {
 
     const chartData = data?.data || [];
 
-    console.log("Chart Data:  --------------------------------", chartData);
+
 
     return (
         <Card className="my-10 border-l-0 border-b-0 border-r-0 shadow-sm">
@@ -77,7 +77,7 @@ export function StocksLineChart() {
                     <ChartContainer config={chartConfig} className="h-[400px] mx-auto">
                         <LineChart
                             accessibilityLayer
-                            data={chartData}
+                            data={chartData as any}
                             margin={{ left: 12, right: 12 }}
                         >
                             <CartesianGrid vertical={false} />

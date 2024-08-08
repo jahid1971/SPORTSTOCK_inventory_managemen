@@ -14,9 +14,10 @@ import {
 } from "@/redux/api/stockApi";
 import { useCurrentUser } from "@/redux/Hooks";
 import { TBranch } from "@/types/global.types";
+import { TProduct } from "@/types/product";
 import tryCatch from "@/utls/tryCatch";
 import { PlusIcon } from "lucide-react";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { PiPlusCircleBold } from "react-icons/pi";
 import { NavLink, useLocation } from "react-router-dom";
@@ -25,12 +26,12 @@ const AddStock = () => {
     const user = useCurrentUser();
     const { state } = useLocation();
 
-    const { control, handleSubmit, watch, reset, formState } = useForm({
+    const { control, handleSubmit, watch, reset } = useForm({
         defaultValues: {
             branchId: state?.params?.branchId?._id,
             productId: state?.params?.productId?._id,
         },
-    });
+    }) as any;
 
     useEffect(() => {
         if (state?.params) {
@@ -42,7 +43,7 @@ const AddStock = () => {
     }, [state, reset]);
 
     const { data: branchNames, isFetching: isBranchNameFetching } =
-        useGetAllBranchesQuery(undefined);
+        useGetAllBranchesQuery(undefined) as any;
 
     const branchNamesOptions = branchNames?.data?.data?.map(
         (branch: TBranch) => ({
@@ -55,11 +56,11 @@ const AddStock = () => {
     const inputQuantity = watch("quantity");
     const productId = watch("productId");
 
-    const { data: product } = useGetProductsQuery(undefined);
+    const { data: product } = useGetProductsQuery(undefined) as any;
 
-    const productOptions = product?.data?.map((product: any) => ({
+    const productOptions = product?.data?.map((product: TProduct) => ({
         value: product._id,
-        label: product.productName,
+        label: product.productName + " - " + product.productCode,
     }));
 
     const [addStock] = useAddStockMutation();
@@ -68,7 +69,7 @@ const AddStock = () => {
         data,
         isSuccess,
         isFetching: isStockFetching,
-    } = useGetAllStocksQuery(
+    }: any = useGetAllStocksQuery(
         [
             { name: "branchId", value: selectedBranchId },
             { name: "productId", value: productId },
@@ -76,11 +77,6 @@ const AddStock = () => {
         { skip: !selectedBranchId || !productId }
     );
     const stockedProduct = data?.data?.data[0];
-
-    const totalStock = useMemo(
-        () => stockedProduct?.quantity + Number(inputQuantity),
-        [inputQuantity, stockedProduct]
-    );
 
     const onSubmit = (data: any) => {
         const payload = {

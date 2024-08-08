@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
@@ -276,7 +277,7 @@ const ChartTooltipContent = React.forwardRef<
                                                     {customValue
                                                         ? customValue(
                                                               item?.value,
-                                                              item.name
+                                                               item.name as "string"
                                                           )
                                                         : item.value.toLocaleString()}
                                                 </span>

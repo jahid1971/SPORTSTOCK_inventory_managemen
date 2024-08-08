@@ -8,7 +8,7 @@ import {
     useDeleteBranchMutation,
     useGetAllBranchesQuery,
 } from "@/redux/api/adminApi";
-import { TQueryParam } from "@/types/global.types";
+import { TBranch, TQueryParam } from "@/types/global.types";
 import tryCatch from "@/utls/tryCatch";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -16,8 +16,8 @@ import { NavLink } from "react-router-dom";
 
 const Branches = () => {
     const [params, setParams] = useState<TQueryParam[]>([]);
-    const { data, isFetching } = useGetAllBranchesQuery(params);
-    const branches = data?.data?.data;
+    const { data, isFetching } = useGetAllBranchesQuery(params) as any;
+    const branches: TBranch[] = data?.data?.data;
 
     const [deleteBranch] = useDeleteBranchMutation();
 
@@ -59,7 +59,6 @@ const Branches = () => {
             ),
         },
     ];
-    
 
     const createButton = (
         <NavLink to="/add-branch">
@@ -84,6 +83,7 @@ const Branches = () => {
     return (
         <div>
             <DataTable
+                title={"Branches"}
                 rowData={branches}
                 columnDefs={colDefs}
                 isFetching={isFetching}

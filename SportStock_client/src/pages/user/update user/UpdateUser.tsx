@@ -6,6 +6,7 @@ import UpdateBranchManager from "./UpdateBranchManager";
 import { useLocation } from "react-router-dom";
 import { useGetuserByIdQuery } from "@/redux/api/userApi";
 import { Spinner } from "@/components/ui/Spinner";
+import { TUser } from "@/types/global.types";
 
 const UpdateUser = () => {
     const { state } = useLocation();
@@ -15,7 +16,7 @@ const UpdateUser = () => {
 
     if (!data) return <Spinner label="Please wait..." />;
 
-    const userData = data?.data;
+    const userData = data?.data as TUser
 
     if (userData?.role === userRole.SELLER)
         return <UpdateSeller userData={userData} />;

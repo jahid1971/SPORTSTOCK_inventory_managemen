@@ -1,6 +1,6 @@
 import { Model, QueryOptions, FilterQuery, SortOrder } from "mongoose";
 
-export type TQueryObject<T = {}> = {
+export type TQueryObject<T> = {
     searchTerm?: string;
     sortBy?: string;
     sortOrder?: string;
@@ -24,7 +24,7 @@ type TGetAllItemsOptions<T> = {
 
 const getAllItems = async <T>(
     Model: Model<T>,
-    query: Partial<Record<keyof T, unknown>> & TQueryObject,
+    query: Partial<Record<keyof T, unknown>> & TQueryObject<T> = {},
     options?: TGetAllItemsOptions<T>
 ): Promise<{
     data: T[];
@@ -47,14 +47,14 @@ const getAllItems = async <T>(
         typeof query.searchTerm === "string" &&
         query?.searchTerm.trim() !== ""
     ) {
-        const orConditions = (options.searchableFields ?? []).map(
+        const orConditions = (options?.searchableFields ?? []).map(
             (field) =>
                 ({
                     [field]: { $regex: query.searchTerm, $options: "i" },
                 }) as FilterQuery<T>
         );
 
-        if (options.extraSearchConditions) {
+        if (options?.extraSearchConditions) {
             orConditions.push(...options.extraSearchConditions);
         }
 
@@ -125,9 +125,8 @@ const getAllItems = async <T>(
         // const basePipeline = [...(options.aggregationPipeline || [])];
 
         if (whereConditions) {
-           
             // console.log(whereConditions ,"where condition ----------------")
-           
+
             const projectIndex = basePipeline.findIndex(
                 (stage) => "$project" in stage
             );

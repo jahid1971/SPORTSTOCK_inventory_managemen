@@ -3,7 +3,7 @@ import {
     Dialog,
     DialogClose,
     DialogContent,
-    DialogTrigger,
+  
 } from "../../ui/dialog";
 import { Button } from "../../ui/button";
 

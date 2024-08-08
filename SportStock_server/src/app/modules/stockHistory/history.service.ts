@@ -1,8 +1,6 @@
-import mongoose from "mongoose";
 import getAllItems from "../../utls/getAllItems";
 import { StockHistory } from "./history.model";
 import { convertToObjectId } from "../../utls/utls.global";
-import { Branch } from "../branch/branch.model";
 import AppError from "../../errors/AppError";
 import { userRole } from "../../constants/user";
 import { IUser } from "../user/user.interface";
@@ -10,9 +8,22 @@ import { IUser } from "../user/user.interface";
 const getAllStockHistory = async (
     user: IUser,
     query: Record<string, unknown> = {},
-    andConditions?: any[]
+    andConditions?: any[],
+    transferFlag: boolean = false
 ) => {
+    const stockMatch: any = {};
+    if (
+        (user?.role === userRole.BRANCH_MANAGER ||
+            user?.role === userRole.SELLER) &&
+        !transferFlag
+    ) {
+        stockMatch.branchId = user?.branch;
+    }
+
     const aggregationPipeline = [
+        // {
+        //     $match: stockMatch,
+        // },
         {
             $lookup: {
                 from: "products",
@@ -25,7 +36,7 @@ const getAllStockHistory = async (
         {
             $lookup: {
                 from: "categories",
-                localField: "productId.category",
+                localField: "product.category",
                 foreignField: "_id",
                 as: "category",
             },
@@ -46,13 +57,13 @@ const getAllStockHistory = async (
                 from: "branches",
                 localField: "transferToStock",
                 foreignField: "_id",
-                as: "transferToStock",
+                as: "toBranch",
             },
         },
         {
             $unwind: {
-                path: "$transferToStock",
-                preserveNullAndEmptyArrays: true, //preserve the document even if transferToStock is missing or not matched
+                path: "$toBranch",
+                preserveNullAndEmptyArrays: true, //it will keep the documents even if it is null
             },
         },
 
@@ -61,38 +72,35 @@ const getAllStockHistory = async (
                 from: "users",
                 localField: "madeBy",
                 foreignField: "_id",
-                as: "madeBy",
+                as: "createdBy",
             },
         },
-        { $unwind: "$madeBy" },
+        { $unwind: "$createdBy" },
 
-        // {
-        //     $project: {
-        //         _id: 1,
-        //         quantityChanged: 1,
-        //         createdAt: 1,
-        //         updatedAt: 1,
-        //         date: 1,
-        //         reason: 1,
-        //         "productId._id": 1,
-        //         "productId.productName": 1,
-        //         "productId.productCode": 1,
-        //         "branchId._id": 1,
-        //         "branchId.branchName": 1,
-        //         "transferToStock._id": 1,
-        //         "transferToStock.branchName": 1,
-        //         "madeBy._id": 1,
-        //         "madeBy.fullName": 1,
-        //         "categoryId._id": 1,
-        //         "categoryId.category": 1,
-        //     },
-        // },
+        {
+            $project: {
+                _id: 1,
+                quantityChanged: 1,
+                date: 1,
+                reason: 1,
+                productId: 1,
+                branchId: 1,
+                categoryId: "$category._id",
+                transferToStock: 1,
+                madeBy: 1,
+                productName: "$product.productName",
+                productCode: "$product.productCode",
+                branchName: "$branch.branchName",
+                transferToStockName: "$toBranch.branchName",
+                categoryName: "$category.category",
+                madeByName: "$createdBy.fullName",
+            },
+        },
     ];
 
-    convertToObjectId(query, "branchId", { targetField: "branch._id" });
-    convertToObjectId(query, "productId", { targetField: "product._id" });
-    convertToObjectId(query, "stockId", { targetField: "stock._id" });
-    convertToObjectId(query, "madeBy", { targetField: "madeBy._id" });
+    convertToObjectId(query, "branchId");
+    convertToObjectId(query, "productId");
+    convertToObjectId(query, "madeBy");
     convertToObjectId(query, "categoryId", { targetField: "category._id" });
 
     if (query?.startDate || query?.endDate) {
@@ -115,17 +123,16 @@ const getAllStockHistory = async (
 
     const result = await getAllItems(StockHistory, query, {
         searchableFields: [
-            "productId.productName",
-            "branchId.branchName",
+            "product.productName",
+            "branch.branchName",
             "madeBy.fullName",
-            "categoryId.category",
+            "category.category",
         ],
         filterableFields: [
-            "branchId._id",
-            "productId._id",
-            "categoryId._id",
-            "stockId._id",
-            "madeBy._id",
+            "branchId",
+            "productId",
+            "category._id",
+            "madeBy",
             "quantityChanged",
             "date",
             "reason",
@@ -136,19 +143,16 @@ const getAllStockHistory = async (
         andConditions: andConditions || [],
     });
 
-    console.log(
-        result,
-        query,
-        "result -------------------------------------------"
-    );
-
     return result;
 };
 
-const getAllAdjustHistory = async (query: Record<string, unknown>) => {
+const getAllAdjustHistory = async (
+    user: IUser,
+    query: Record<string, unknown>
+) => {
     query.reason = { $nin: ["added", "transferred"] };
 
-    const adjustedStockHistory = await getAllStockHistory(query);
+    const adjustedStockHistory = await getAllStockHistory(user, query);
 
     return adjustedStockHistory;
 };
@@ -164,15 +168,17 @@ const getALlTransferredStockHistory = async (
     if (user?.role === userRole.BRANCH_MANAGER) {
         andConditions.push({
             $or: [
-                { "branchId._id": user?.branch },
-                { "transferToStock._id": user?.branch },
+                { branchId: user?.branch },
+                { transferToStock: user?.branch },
             ],
         });
     }
 
     const transferredStockHistory = await getAllStockHistory(
+        user,
         query,
-        andConditions
+        andConditions,
+        true
     );
 
     return transferredStockHistory;

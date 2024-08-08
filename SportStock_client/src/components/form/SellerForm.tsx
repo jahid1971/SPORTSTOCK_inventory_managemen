@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FloatingInput } from "@/components/ui/InputFloatingLabel";
 import { Button } from "@/components/ui/button";
-import { FieldValues, useForm } from "react-hook-form";
-import { useEffect } from "react";
+import {  useForm } from "react-hook-form";
 
 import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { TBranch, TUser } from "@/types/global.types";
@@ -14,13 +13,7 @@ import FileUploader from "@/components/ui/FileUploader";
 
 type SellerFormProps = {
     defaultValues?: Partial<TUser>;
-    onSubmit: (
-        data: FieldValues,
-        formOptions: {
-            reset: () => void;
-            dirtyFields: any;
-        }
-    ) => Promise<any>;
+    onSubmit:any
     isEditMode?: boolean;
     isSubmitting?: boolean;
 };
@@ -42,12 +35,10 @@ const SellerForm = ({
         defaultValues,
     });
 
-  
-
     const [isPasswordVisible, setIsPasswordVisible] = useState(true);
 
     const { data: branchNames, isFetching: isBranchNameFetching } =
-        useGetAllBranchesQuery(undefined);
+        useGetAllBranchesQuery(undefined) as any
 
     const branchOptions = branchNames?.data?.data?.map((branch: TBranch) => ({
         value: branch._id,

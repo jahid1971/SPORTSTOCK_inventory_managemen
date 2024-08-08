@@ -85,8 +85,6 @@ const createSeller = async (file: any, payload: IUser) => {
     payload.isDeleted = false;
     payload.id = await generateSellerId();
 
-    console.log("payload -------------", payload);
-
     const result = await User.create(payload);
     const userObject = (result as any).toObject();
     delete (userObject as any).password;
@@ -137,7 +135,7 @@ const updateSeller = async (
     }
 
     const userObject = updatedSeller.toObject();
-    delete userObject.password;
+    delete (userObject as any).password;
 
     return userObject;
 };
@@ -184,7 +182,7 @@ const updateAdmin = async (
     }
 
     const userObject = updatedAdmin.toObject();
-    delete userObject.password;
+    delete (userObject as any).password;
 
     return userObject;
 };
@@ -231,7 +229,7 @@ const updateBranchManager = async (
     }
 
     const userObject = updatedBM.toObject();
-    delete userObject.password;
+    delete (userObject as any).password;
 
     return userObject;
 };
@@ -396,7 +394,7 @@ const getUserById = async (id: string) => {
     }
 
     const userObject = user.toObject();
-    delete userObject.password;
+    delete (userObject as any).password;
 
     return userObject;
 };

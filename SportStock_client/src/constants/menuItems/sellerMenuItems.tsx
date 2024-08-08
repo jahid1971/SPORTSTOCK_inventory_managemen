@@ -1,7 +1,7 @@
 import { RxDashboard } from "react-icons/rx";
 import { MdOutlineInventory2 } from "react-icons/md";
-import { GoDotFill } from "react-icons/go";
-import { ClipboardMinus, KeyRound, Package, Warehouse } from "lucide-react";
+
+import { ClipboardMinus, KeyRound } from "lucide-react";
 
 export const sellerMenuItems = [
     {

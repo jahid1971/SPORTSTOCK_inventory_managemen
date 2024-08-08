@@ -1,14 +1,6 @@
-import { TrendingUp } from "lucide-react";
 import { Pie, PieChart } from "recharts";
 
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import {
     ChartConfig,
     ChartContainer,
@@ -34,12 +26,12 @@ const orderedPrimaryShades = [
 ];
 
 export function PieCrtCategory() {
-    const { data, isLoading } = useGetStockPieChartQuery(undefined);
+    const { data, isLoading }: any = useGetStockPieChartQuery(undefined);
     if (isLoading) {
         return <div>Loading stock data...</div>;
     }
 
-    const chartData = data?.data?.map((item, index) => ({
+    const chartData = data?.data?.map((item:any, index:any) => ({
         label: item.category,
         value: item.totalQuantity,
         fill: orderedPrimaryShades[index % orderedPrimaryShades.length],
@@ -47,7 +39,7 @@ export function PieCrtCategory() {
 
     const chartConfig: ChartConfig =
         chartData?.length > 0 &&
-        chartData?.reduce((config, item, index) => {
+        chartData?.reduce((config: any, item: any, index: any) => {
             config[item.label] = {
                 label:
                     item?.label?.charAt(0).toUpperCase() +

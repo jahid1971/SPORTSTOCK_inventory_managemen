@@ -2,7 +2,7 @@ import { RxDashboard } from "react-icons/rx";
 import { MdOutlineInventory2 } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { GoDotFill } from "react-icons/go";
-import { IoCartOutline } from "react-icons/io5";
+
 import { FaMapLocationDot } from "react-icons/fa6";
 import { ClipboardMinus, KeyRound, Package, Warehouse } from "lucide-react";
 

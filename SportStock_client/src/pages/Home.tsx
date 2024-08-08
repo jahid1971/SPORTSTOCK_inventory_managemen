@@ -10,7 +10,6 @@ import { useGetDashboardCardsQuery } from "@/redux/api/stockApi";
 import { useCurrentUser } from "@/redux/Hooks";
 import {
     DollarSign,
-    PackageIcon,
     ShoppingBag,
     ShoppingCart,
 } from "lucide-react";
@@ -23,9 +22,9 @@ const Home = () => {
 
     const { data } = useGetDashboardCardsQuery(undefined);
 
-    console.log(data, "dashboard cards data");
 
-    const cardData = data?.data;
+
+    const cardData:any = data?.data;
 
     return (
         <div className="bg-white p-4">
@@ -50,21 +49,29 @@ const Home = () => {
                 />
             </div>
 
+            {user?.role === userRole.BRANCH_MANAGER && (
+                <div>
+                    <StocksLineChart />
+                </div>
+            )}
+
             <div className="flex justify-between gap-4 mt-14">
-                {user?.role === userRole.ADMIN ||
-                    (user?.role === userRole.SUPER_ADMIN && (
-                        <div className="w-7/12">
-                            <Barchart />
-                        </div>
-                    ))}
+                {(user?.role === userRole.ADMIN ||
+                    user?.role === userRole.SUPER_ADMIN) && (
+                    <div className="w-7/12">
+                        <Barchart />
+                    </div>
+                )}
                 <div className="w-5/12 mx-auto">
                     <PieCrtCategory />
                 </div>
             </div>
 
-            <div>
-                <StocksLineChart />
-            </div>
+            {user?.role !== userRole.BRANCH_MANAGER && (
+                <div>
+                    <StocksLineChart />
+                </div>
+            )}
         </div>
     );
 };

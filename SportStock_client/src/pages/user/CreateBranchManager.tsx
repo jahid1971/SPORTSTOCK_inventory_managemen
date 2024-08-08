@@ -2,7 +2,7 @@
 import { FloatingInput } from "@/components/ui/InputFloatingLabel";
 import { Button } from "@/components/ui/button";
 
-import { Controller, FieldValues, useForm } from "react-hook-form";
+import {  FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
@@ -16,7 +16,7 @@ import FileUploader from "@/components/ui/FileUploader";
 
 const CreateBranchManager = () => {
     const [createBranchManager] = useCreateBranchManagerMutation();
-    const { data: branchNames, isFetching: isBranchNameFetching } =
+    const { data: branchNames, isFetching: isBranchNameFetching }:any =
         useGetAllBranchesQuery(undefined);
     const branchNamesOptions = branchNames?.data?.data?.map(
         (branch: TBranch) => ({

@@ -1,5 +1,5 @@
 export const productSizeOptions = [
-    { label: "Not Applicable", value: null },
+    { label: "Not Applicable", value: '' },
     { label: "S", value: "s" },
     { label: "M", value: "m" },
     { label: "L", value: "l" },

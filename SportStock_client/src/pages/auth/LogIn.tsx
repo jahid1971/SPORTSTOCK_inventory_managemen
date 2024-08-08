@@ -9,8 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useState } from "react";
 import tryCatch from "@/utls/tryCatch";
-import { jwtDecode } from "jwt-decode";
-import { TUser } from "@/types/global.types";
+
 import { useLogInMutation } from "@/redux/api/authApi";
 
 const LogIn = () => {
@@ -49,7 +48,7 @@ const LogIn = () => {
                 dispatch(
                     setUser({ user: res?.data?.user, token: res?.data?.token })
                 );
-                console.log(res?.data, " res?.data");
+
                 if (res.data?.user?.needsPasswordChange) {
                     navigate("/change-password");
                 } else if (res?.data?.user) {

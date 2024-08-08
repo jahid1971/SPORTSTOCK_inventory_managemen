@@ -4,6 +4,7 @@ export type TProduct = {
     image: any;
     productName: string;
     price: number;
+    productCode: string;
     category: string;
     brand: string;
     size: string;

@@ -1,4 +1,3 @@
-import Custom_Form from "@/components/form/Custom_Form";
 import CreateBranch from "@/components/product/CreateBranch";
 import { Button } from "@/components/ui/button";
 import { CustomCombobox } from "@/components/ui/CustomCombobox";
@@ -11,7 +10,6 @@ import { userRole } from "@/constants/user";
 import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { useGetProductsQuery } from "@/redux/api/productApi";
 import {
-    useAddStockMutation,
     useAdjustStockMutation,
     useGetAllStocksQuery,
 } from "@/redux/api/stockApi";
@@ -19,8 +17,8 @@ import { useCurrentUser } from "@/redux/Hooks";
 import { TBranch } from "@/types/global.types";
 import tryCatch from "@/utls/tryCatch";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { MinusIcon, PlusIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { MinusIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { PiPlusCircleBold } from "react-icons/pi";
 import { NavLink, useLocation } from "react-router-dom";
@@ -61,7 +59,7 @@ const AdjustStock = () => {
             branchId: state?.params?.branchId?._id,
             productId: state?.params?.productId?._id,
         },
-    });
+    }) as any;
 
     useEffect(() => {
         if (state?.params) {
@@ -73,7 +71,7 @@ const AdjustStock = () => {
     }, [state, reset]);
 
     const { data: branchNames, isFetching: isBranchNameFetching } =
-        useGetAllBranchesQuery(undefined);
+        useGetAllBranchesQuery(undefined) as any;
 
     const branchNamesOptions = branchNames?.data?.data?.map(
         (branch: TBranch) => ({
@@ -86,13 +84,11 @@ const AdjustStock = () => {
     const inputQuantity = watch("quantity");
     const productId = watch("productId");
 
-    const { data: product, isFetching } = useGetProductsQuery(undefined);
-    // selectedBranchId ? { branchId: selectedBranchId } : undefined,
-    // { skip: !selectedBranchId }
+    const { data: product } = useGetProductsQuery(undefined) as any;
 
     const productOptions = product?.data?.map((product: any) => ({
         value: product._id,
-        label: product.productName,
+        label: product.productName + " - " + product.productCode,
     }));
 
     const [adjustStock] = useAdjustStockMutation();
@@ -103,7 +99,8 @@ const AdjustStock = () => {
             { name: "productId", value: productId },
         ],
         { skip: !selectedBranchId || !productId }
-    );
+    ) as any;
+
     const stockedProduct = data?.data?.data[0];
 
     const onSubmit = (data: any) => {
@@ -112,7 +109,6 @@ const AdjustStock = () => {
             ...data,
         };
 
-        console.log(payload, "payload ----------------------");
         tryCatch(
             async () => await adjustStock(payload),
             "Stock Adjusted Successfully",
@@ -260,6 +256,7 @@ const AdjustStock = () => {
                                 control={control}
                                 id={"quantity"}
                                 type="number"
+                                required
                             />
                         </div>
                     </div>

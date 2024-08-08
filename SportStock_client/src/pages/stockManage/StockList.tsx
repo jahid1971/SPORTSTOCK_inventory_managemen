@@ -1,5 +1,4 @@
 import DataTable from "@/components/table/DataTable";
-import FilterByDate from "@/components/table/FilterByDate";
 import FilterByInput from "@/components/table/FilterByInput";
 import FilterByOptions from "@/components/table/FilterByOptions";
 import { Button } from "@/components/ui/button";
@@ -21,26 +20,30 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCurrentUser } from "@/redux/Hooks";
 import { userRole } from "@/constants/user";
+import { TCategory } from "@/types/product";
+import { TBranch } from "@/types/global.types";
 
 const StockList = () => {
     const user = useCurrentUser();
     const [params, setParams] = useState<any[]>(defaultParams);
     const navigate = useNavigate();
 
-    const { data, isFetching: stockFetching } = useGetAllStocksQuery(params);
+    const { data, isFetching: stockFetching }:any = useGetAllStocksQuery(params);
     const stocksData = data?.data?.data;
 
-    const { data: branchData } = useGetAllBranchesQuery(undefined);
-    const branchOptions = branchData?.data?.data.map((branch) => ({
+    const { data: branchData }:any = useGetAllBranchesQuery(undefined);
+    const branchOptions = branchData?.data?.data.map((branch: TBranch) => ({
         value: branch._id,
         label: branch.branchName,
     }));
 
-    const { data: categoriesData } = useGetAllCategoriesQuery(undefined);
-    const categoryOptions = categoriesData?.data?.map((category) => ({
-        value: category._id,
-        label: category.category,
-    }));
+    const { data: categoriesData }:any = useGetAllCategoriesQuery(undefined);
+    const categoryOptions = categoriesData?.data?.map(
+        (category: TCategory) => ({
+            value: category._id,
+            label: category.category,
+        })
+    );
 
     const columnDefs: ColDef<IStock | any>[] = [
         {
@@ -66,7 +69,7 @@ const StockList = () => {
             headerName: "Stock Quantity",
             field: "quantity",
             maxWidth: 300,
-            cellRenderer: (params) => (
+            cellRenderer: (params: any) => (
                 <div className="text-xl font-semibold text-slate-700 ">
                     {params?.data?.quantity}{" "}
                     <span className="text-sm font-normal">pcs</span>
@@ -145,7 +148,8 @@ const StockList = () => {
             return false;
         }
 
-        if (user?.role === userRole.SELLER && column.field === "action") false;
+        if (user?.role === userRole.SELLER && column.field === "action")
+            return false;
         return true;
     });
 
@@ -160,7 +164,6 @@ const StockList = () => {
                     title="Branches"
                 />
             ),
-
 
         <FilterByOptions
             filterBy="categoryId"

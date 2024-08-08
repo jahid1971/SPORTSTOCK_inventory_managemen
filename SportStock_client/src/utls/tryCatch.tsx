@@ -29,7 +29,7 @@ export const tryCatch: WithErrorHandlingFunction = async (
             if (action_2) action_2();
         } else if (res?.error?.data?.message || res?.error?.data?.errorMessage)
             toast.error(res?.error?.data?.errorMessage || res?.error?.data?.message, { id: toastId });
-        else if (res.error) toast.error("Something went wrong", { id: toastId });
+        else if (res?.error) toast.error("Something went wrong", { id: toastId });
 
         return res;
     } catch (err:any) {

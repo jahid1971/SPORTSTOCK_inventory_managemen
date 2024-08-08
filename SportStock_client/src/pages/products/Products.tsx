@@ -5,32 +5,26 @@ import {
     useGetAllBrandNamesQuery,
     useGetAllCategoriesQuery,
     useGetProductsQuery,
-    useMultiProductDeleteMutation,
 } from "@/redux/api/productApi";
-import { TBrand, TProduct, TCategory } from "@/types/product";
+import { TBrand, TCategory, TProduct } from "@/types/product";
 
 import { UpdateProduct } from "@/components/table/products/UpdateProduct";
 import { Button } from "@/components/ui/button";
 
-import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
-import { TBranch, TQueryParam, TUserRole } from "@/types/global.types";
-import { RxCross2 } from "react-icons/rx";
+import { TQueryParam, TUserRole } from "@/types/global.types";
 import FilterByOptions from "@/components/table/FilterByOptions";
 import FilterByInput from "@/components/table/FilterByInput";
-import { SellProduct } from "@/components/table/products/SellProduct";
 import DataTable from "@/components/table/DataTable";
 
-// import { productSizeOptions } from "@/constants/product";
-import tryCatch from "@/utls/tryCatch";
-import { toast } from "sonner";
+
+
 import { userRole } from "@/constants/user";
 import { useCurrentUser } from "@/redux/Hooks";
 import { ICellRendererParams } from "@ag-grid-community/core";
-// import DeleteModal from "@/components/Modals/DeleteModal";
 import DeleteButton from "@/components/table/products/DeleteButton";
 import { NavLink } from "react-router-dom";
 import { PiPlusBold } from "react-icons/pi";
-import { EllipsisVertical, Pencil } from "lucide-react";
+import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -39,33 +33,31 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { defaultParams } from "@/constants/global.constant";
 
-interface IRow {
+interface IRow extends TProduct{
     _id: string;
     id: string;
     name: string;
     image: string;
     price: number;
     quantity: number;
-    branch: string;
-}
+ 
+} 
 
 const Products = () => {
     const [params, setParams] = useState<TQueryParam[]>(defaultParams);
-    const [modalOpen, setModalOpen] = useState(false);
-    const [productToUpdate, setProductToUpdate] = useState<IRow | null>(null);
+
+    const [productToUpdate, setProductToUpdate] = useState<TProduct | null>(null);
+    const [deletIds, setDeleteIds] = useState<string[]>([]);
 
     const user = useCurrentUser();
     const role: any = user?.role;
     const selectedRowsRef = useRef<IRow[]>([]);
 
-    const { data, isFetching } = useGetProductsQuery(params);
+    const { data, isFetching }: any = useGetProductsQuery(params);
 
-    console.log(data, "products data");
-    const [multiDelete] = useMultiProductDeleteMutation();
-
-    const { data: category, isFetching: isCategoryFetching } =
+    const { data: category, isFetching: isCategoryFetching }: any =
         useGetAllCategoriesQuery(undefined);
-    const { data: brands, isFetching: isBrandFetching } =
+    const { data: brands, isFetching: isBrandFetching }: any =
         useGetAllBrandNamesQuery(undefined);
 
     const categoryOptions = category?.data?.map((category: TCategory) => ({
@@ -77,11 +69,8 @@ const Products = () => {
         label: brand.brandName,
         value: brand._id,
     }));
-    // const sizeOptions = productSizeOptions.filter((size) => size.label !== "Not Applicable");
 
-    console.log(data, "products --------------------");
-
-    const products = data?.data?.map((product: TProduct) => {
+    const products = data?.data?.map((product: any) => {
         return {
             _id: product._id,
             // id: user.id,
@@ -94,20 +83,6 @@ const Products = () => {
             brand: product?.brand?.brandName,
         };
     });
-
-    const handleDelete = (id: string) => {
-        let selectedIds: string[] = [];
-        if (id) {
-            selectedIds = [id];
-        } else {
-            selectedIds = selectedRowsRef.current.map((row: IRow) => row._id);
-        }
-        tryCatch(
-            async () => await multiDelete(selectedIds),
-            "Products Deleted",
-            "Deleting Products"
-        );
-    };
 
     const [allColumnDefs] = useState([
         {
@@ -181,7 +156,7 @@ const Products = () => {
                             <DropdownMenuItem
                                 onClick={() =>
                                     setTimeout(() => {
-                                        setProductToUpdate(params?.data);
+                                        setProductToUpdate(params?.data ?? null);
                                     }, 100)
                                 }
                             >
@@ -195,16 +170,19 @@ const Products = () => {
                                 </Button>
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                                <DeleteButton
-                                    classNames="w-full"
-                                    handleTrigger={() => setModalOpen(true)}
-                                    setOpen={setModalOpen}
-                                    open={modalOpen}
-                                    handleDelete={() =>
-                                        handleDelete(params?.data?._id)
+                                <Button
+                                    className=" p-1 font-normal w-full"
+                                    variant="outline_primary"
+                                    size={"xsm"}
+                                    onClick={() =>
+                                        setTimeout(() => {
+                                            setDeleteIds([params?.data?._id ?? ""]);
+                                        }, 100)
                                     }
-                                    variant={"outline_primary"}
-                                />
+                                >
+                                    <Trash2 className="mr-2" size={15} />
+                                    Delete
+                                </Button>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -234,14 +212,10 @@ const Products = () => {
 
     const handleSelectedRows = (rows: any) => {
         selectedRowsRef.current = rows; // Update the ref
-        console.log(selectedRowsRef.current, "selectedRows");
+        
     };
 
-    const handleDeleteTrigger = () => {
-        if (selectedRowsRef.current.length === 0)
-            return toast.error("Please select products to delete");
-        setModalOpen(true);
-    };
+
 
     const createButton = (
         <NavLink to="/create-product">
@@ -283,14 +257,17 @@ const Products = () => {
     );
 
     const checkedRowsActionBtn = (
-        <DeleteButton
-            handleTrigger={handleDeleteTrigger}
-            setOpen={setModalOpen}
-            open={modalOpen}
-            handleMultiDelete={handleDelete}
-        />
+        <Button
+            size={"xsm"}
+            onClick={() =>
+                setDeleteIds(
+                    selectedRowsRef.current.map((row: IRow) => row._id)
+                )
+            }
+        >
+            DELETE
+        </Button>
     );
-
     return (
         <div className="">
             {/* table..............table */}
@@ -317,6 +294,7 @@ const Products = () => {
                 productToUpdate={productToUpdate}
                 setProductToUpdate={setProductToUpdate}
             />
+            <DeleteButton deleteids={deletIds} setDeleteIds={setDeleteIds} />
         </div>
     );
 };

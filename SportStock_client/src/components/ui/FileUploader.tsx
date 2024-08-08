@@ -1,5 +1,5 @@
 import { ImageUp } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
@@ -25,13 +25,13 @@ const FileUploader = ({
         if (watch && !watch(id)) {
             setImagePreviewUrl(null);
         }
-    }, [watch]);
+    }, [watch,id]);
 
     return (
         <Controller
             name={id}
             control={cntxtControl}
-            render={({ field: { onChange, value, ...field } }) => (
+            render={({ field: { onChange } }) => (
                 <div className="flex items-center gap-4">
                     {/* Hidden file input */}
                     <input

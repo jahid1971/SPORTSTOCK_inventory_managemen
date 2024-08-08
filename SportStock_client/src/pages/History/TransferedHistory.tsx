@@ -6,12 +6,8 @@ import { Button } from "@/components/ui/button";
 
 import { defaultParams } from "@/constants/global.constant";
 import { userRole } from "@/constants/user";
-import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { useGetAllCategoriesQuery } from "@/redux/api/productApi";
-import {
-    useGetAdjustStockHistoryQuery,
-    useGetTransferStockHistoryQuery,
-} from "@/redux/api/stockApi";
+import { useGetTransferStockHistoryQuery } from "@/redux/api/stockApi";
 import { useCurrentUser } from "@/redux/Hooks";
 
 import { TCategory } from "@/types/product";
@@ -27,17 +23,10 @@ const TransferedHistory = () => {
     const user = useCurrentUser();
     const [params, setParams] = useState<any[]>(defaultParams);
 
-    const { data, isFetching: historyFetching } =
+    const { data, isFetching: historyFetching }:any =
         useGetTransferStockHistoryQuery(params);
 
-    const { data: branchData } = useGetAllBranchesQuery(undefined);
-
-    const branchOptions = branchData?.data?.data.map((branch) => ({
-        value: branch._id,
-        label: branch.branchName,
-    }));
-
-    const { data: categoriesData } = useGetAllCategoriesQuery(undefined);
+    const { data: categoriesData }:any = useGetAllCategoriesQuery(undefined);
 
     const categoryOptions = categoriesData?.data?.map(
         (category: TCategory) => ({
@@ -46,7 +35,7 @@ const TransferedHistory = () => {
         })
     );
 
-    const transferData = data?.data?.data?.map((item, index) => ({
+    const transferData = data?.data?.data?.map((item: any, index: number) => ({
         ...item,
         sl: tableSerial(params, index),
     }));
@@ -54,22 +43,22 @@ const TransferedHistory = () => {
     const columnDefs: ColDef<IStockHistory | any>[] = [
         {
             headerName: "Product Name",
-            field: "productId.productName",
+            field: "productName",
         },
         {
             headerName: "Category",
-            field: "categoryId.category",
+            field: "categoryName",
             maxWidth: user?.role !== userRole.BRANCH_MANAGER ? 120 : 150,
         },
 
         {
             headerName: "From Branch",
-            field: "branchId.branchName",
+            field: "branchName",
             maxWidth: 120,
         },
         {
             headerName: "To Branch",
-            field: "transferToStock.branchName",
+            field: "transferToStockName",
             maxWidth: 120,
         },
         {
@@ -79,7 +68,7 @@ const TransferedHistory = () => {
         },
         {
             headerName: "By",
-            field: "madeBy.fullName",
+            field: "madeByName",
             maxWidth: 150,
         },
         {
@@ -91,26 +80,7 @@ const TransferedHistory = () => {
         },
     ];
 
-    // const filteredColDefs = columnDefs.filter((col) => {
-    //     if (
-    //         user?.role === userRole.BRANCH_MANAGER &&
-    //         (col.field === "branchId.branchName" ||
-    //             col.field === "transferToStock.branchName")
-    //     ) {
-    //         return false;
-    //     }
-    //     return true;
-    // });
-
     const filters = [
-        // <FilterByOptions
-        //     filterBy="branchId"
-        //     filterItems={branchOptions}
-        //     params={params}
-        //     setParams={setParams}
-        //     title="Branches"
-        // />,
-
         <Button
             onClick={() =>
                 setParams((prev) => updateParam(prev, "madeBy", user?._id))
@@ -141,12 +111,7 @@ const TransferedHistory = () => {
             title="Quantity"
         />,
 
-        <FilterByDate
-            filterBy="date"
-            params={params}
-            setParams={setParams}
-            title="Date"
-        />,
+        <FilterByDate params={params} setParams={setParams} title="Date" />,
     ];
 
     const transferButton = (
@@ -159,7 +124,7 @@ const TransferedHistory = () => {
         </NavLink>
     );
 
-    console.log("transferData", transferData);
+  
     return (
         <div>
             <DataTable

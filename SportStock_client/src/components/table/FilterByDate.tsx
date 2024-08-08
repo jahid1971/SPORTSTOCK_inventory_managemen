@@ -6,7 +6,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TQueryParam } from "@/types/global.types";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { useForm } from "react-hook-form";
@@ -14,14 +14,13 @@ import { DatePicker } from "@/components/ui/DatePicker";
 
 interface FilterByProps {
     title: string;
-    filterBy: string;
     params: TQueryParam[];
-    setParams: (params: TQueryParam[]) => void;
+    setParams: any;
 }
 
 const FilterByDate: React.FC<FilterByProps> = ({
     title,
-    filterBy,
+    // filterBy,
     params,
     setParams,
 }) => {
@@ -57,37 +56,50 @@ const FilterByDate: React.FC<FilterByProps> = ({
         </Button>
     );
 
-    filterBy = filterBy.charAt(0).toUpperCase() + filterBy.slice(1);
+    // filterBy = filterBy.charAt(0).toUpperCase() + filterBy.slice(1);
 
     const handleFilter = (data: { [key: string]: Date }) => {
         const updatedParams = params.filter(
             (param) =>
-                param.name !== `start${filterBy}` &&
-                param.name !== `end${filterBy}`
+                param.name !== `startDate` &&
+                param.name !== `endDate` &&
+                param.name !== `page`
         );
         setInputValues([]);
 
-        if (data[`start${filterBy}`]) {
-            const startDate = new Date(data[`start${filterBy}`]);
-            startDate.setHours(0, 0, 0, 0); 
-            
-            updatedParams.push({
-                name: `start${filterBy}`,
-                value: startDate.toISOString(),
-            });
+        if (data[`startDate`]) {
+            const startDate = new Date(data[`startDate`]);
+            startDate.setHours(0, 0, 0, 0);
+
+            updatedParams.push(
+                {
+                    name: `startDate`,
+                    value: startDate.toISOString(),
+                },
+                {
+                    name: "page",
+                    value: "1",
+                }
+            );
             setInputValues((prev) => [
                 ...prev,
                 `Start Date=${startDate.toLocaleDateString()}`,
             ]);
         }
-        if (data[`end${filterBy}`]) {
-            const endDate = new Date(data[`end${filterBy}`]);
-            endDate.setHours(23, 59, 59, 999); 
+        if (data[`endDate`]) {
+            const endDate = new Date(data[`endDate`]);
+            endDate.setHours(23, 59, 59, 999);
 
-            updatedParams.push({
-                name: `end${filterBy}`,
-                value: endDate.toISOString(),
-            });
+            updatedParams.push(
+                {
+                    name: `endDate`,
+                    value: endDate.toISOString(),
+                },
+                {
+                    name: "page",
+                    value: "1",
+                }
+            );
             setInputValues((prev) => [
                 ...prev,
                 `End Date=${endDate.toLocaleDateString()}`,
@@ -108,13 +120,13 @@ const FilterByDate: React.FC<FilterByProps> = ({
                     className="flex flex-col gap-2 p-4"
                 >
                     <DatePicker
-                        id={`start${filterBy}`}
+                        id={`startDate`}
                         label={`Start Date`}
                         control={control}
                         rules={{ required: false }}
                     />
                     <DatePicker
-                        id={`end${filterBy}`}
+                        id={`endDate`}
                         label={`End Date`}
                         control={control}
                         rules={{ required: false }}

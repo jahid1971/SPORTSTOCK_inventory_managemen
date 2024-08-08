@@ -19,7 +19,7 @@ const ProtectedRoutes = ({
 }) => {
     const dispatch = useAppDispatch();
 
-    const { data, isLoading } = useGetMeQuery(undefined);
+    const { data, isLoading }:any = useGetMeQuery(undefined);
 
     useEffect(() => {
         if (!isLoading && data?.data?.user && data?.data?.token) {
@@ -41,17 +41,10 @@ const ProtectedRoutes = ({
     }
 
     if (!currentUser) {
-        console.error("router error no current user issue ", currentUser);
         return <Navigate to="/login" replace={true} />;
     }
     if (role !== undefined && currentUser?.role !== role) {
-        console.error(
-            "router error required rule and current role doesnt match ",
-            "required rule: ",
-            role,
-            "current role: ",
-            currentUser?.role
-        );
+
         return <Navigate to="/login" replace={true} />;
     }
 

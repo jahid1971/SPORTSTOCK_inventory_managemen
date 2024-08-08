@@ -3,12 +3,13 @@ import FilterByDate from "@/components/table/FilterByDate";
 import FilterByInput from "@/components/table/FilterByInput";
 import FilterByOptions from "@/components/table/FilterByOptions";
 import { Button } from "@/components/ui/button";
-import { defaultParams, defaultQuery } from "@/constants/global.constant";
+import { defaultParams } from "@/constants/global.constant";
 import { userRole } from "@/constants/user";
 import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { useGetAllCategoriesQuery } from "@/redux/api/productApi";
 import { useGetStockHistoryQuery } from "@/redux/api/stockApi";
 import { useCurrentUser } from "@/redux/Hooks";
+import { TBranch } from "@/types/global.types";
 import { TCategory } from "@/types/product";
 import { IStockHistory } from "@/types/stock.types";
 import { tableSerial, updateParam } from "@/utls/utls";
@@ -23,19 +24,19 @@ const AddStockHistory = () => {
 
     const [params, setParams] = useState<any[]>(defaultParams);
 
-    const { data, isFetching: historyFetching } = useGetStockHistoryQuery([
+    const { data, isFetching: historyFetching }:any = useGetStockHistoryQuery([
         { name: "reason", value: "added" },
         ...params,
     ]);
 
-    const { data: branchData } = useGetAllBranchesQuery(undefined);
+    const { data: branchData }:any = useGetAllBranchesQuery(undefined);
 
-    const branchOptions = branchData?.data?.data.map((branch) => ({
+    const branchOptions = branchData?.data?.data.map((branch:TBranch) => ({
         value: branch._id,
         label: branch.branchName,
     }));
 
-    const { data: categoriesData } = useGetAllCategoriesQuery(undefined);
+    const { data: categoriesData }:any = useGetAllCategoriesQuery(undefined);
 
     const categoryOptions = categoriesData?.data?.map(
         (category: TCategory) => ({
@@ -44,38 +45,40 @@ const AddStockHistory = () => {
         })
     );
 
-    const historyData = data?.data?.data?.map((item, index) => ({
-        ...item,
-        sl: tableSerial(params, index),
-    }));
+    const historyData = data?.data?.data?.map(
+        (item: IStockHistory, index: number) => ({
+            ...item,
+            sl: tableSerial(params, index),
+        })
+    );
 
     const columnDefs: ColDef<IStockHistory | any>[] = [
         {
             headerName: "Product Name",
-            field: "productId.productName",
+            field: "productName",
         },
         {
             headerName: "Category",
-            field: "categoryId.category",
+            field: "categoryName",
         },
         {
-            headerName: "Product Code",
-            field: "productId.productCode",
-            maxWidth: 150,
+            headerName: "Sku",
+            field: "productCode",
+            maxWidth: 120,
         },
         {
             headerName: "Branch Name",
-            field: "branchId.branchName",
+            field: "branchName",
             maxWidth: 150,
         },
         {
             headerName: "Quantity",
             field: "quantityChanged",
-            maxWidth: 100,
+            maxWidth: 90,
         },
         {
             headerName: "Added By",
-            field: "madeBy.fullName",
+            field: "madeByName",
             maxWidth: 150,
         },
         {
@@ -108,20 +111,22 @@ const AddStockHistory = () => {
             />
         ),
 
-        <Button
-            onClick={() =>
-                setParams((prev) => updateParam(prev, "madeBy", user?._id))
-            }
-            size={"xsm"}
-            variant={
-                params?.find((item: any) => item.name === "madeBy")
-                    ? "default"
-                    : "outline_primary"
-            }
-        >
-            <RiFilterLine className=" mr-1" />
-            By Me
-        </Button>,
+        user?.role !== userRole.BRANCH_MANAGER && (
+            <Button
+                onClick={() =>
+                    setParams((prev) => updateParam(prev, "madeBy", user?._id))
+                }
+                size={"xsm"}
+                variant={
+                    params?.find((item: any) => item.name === "madeBy")
+                        ? "default"
+                        : "outline_primary"
+                }
+            >
+                <RiFilterLine className=" mr-1" />
+                By Me
+            </Button>
+        ),
 
         <FilterByOptions
             filterBy="categoryId"
@@ -138,12 +143,7 @@ const AddStockHistory = () => {
             title="Quantity"
         />,
 
-        <FilterByDate
-            filterBy=""
-            params={params}
-            setParams={setParams}
-            title="Date"
-        />,
+        <FilterByDate params={params} setParams={setParams} title="Date" />,
     ];
 
     return (

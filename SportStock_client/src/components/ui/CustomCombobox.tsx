@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -20,14 +20,12 @@ import { Controller } from "react-hook-form";
 
 export function CustomCombobox({
     options,
-    className,
+
     label,
     id,
     control,
     required,
-    rules,
-    error,
-    ...props
+
 }: {
     options: { value: string; label: string }[];
     className?: string;

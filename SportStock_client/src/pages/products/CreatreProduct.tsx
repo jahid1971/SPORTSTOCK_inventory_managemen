@@ -18,6 +18,12 @@ const CreatreProduct = ({ dataForVariant }: { dataForVariant?: TProduct }) => {
 
     const onSubmit = (data: TProduct) => {
         delete data?._id;
+
+        for (const key in data) {
+            if (data[key as keyof TProduct] === "") {
+                delete data[key as keyof TProduct];
+            }
+        }
         const formData = new FormData();
 
         formData.append("data", JSON.stringify(data));
@@ -32,7 +38,7 @@ const CreatreProduct = ({ dataForVariant }: { dataForVariant?: TProduct }) => {
             "Creating Product"
         );
 
-        console.log(Object.fromEntries(formData.entries()), "formData");
+      
     };
     return (
         <div className="flex flex-col">
@@ -43,9 +49,7 @@ const CreatreProduct = ({ dataForVariant }: { dataForVariant?: TProduct }) => {
                         : "Create New Variant"}
                 </h5>
                 <Link to="/products">
-                    <Button  size={"xsm"}>
-                        Back to Product
-                    </Button>
+                    <Button size={"xsm"}>Back to Product</Button>
                 </Link>
             </div>
 

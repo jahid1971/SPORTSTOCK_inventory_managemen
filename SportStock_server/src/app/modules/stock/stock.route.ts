@@ -39,11 +39,11 @@ router.get(
     StockController.getAllStocks
 );
 
-router.get(
-    "/branch",
-    checkAuth(userRole.ADMIN, userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER),
-    StockController.getBranchStocks
-);
+// router.get(
+//     "/branch",
+//     checkAuth(userRole.ADMIN, userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER),
+//     StockController.getBranchStocks
+// );
 
 router.get(
     "/bar-chart",

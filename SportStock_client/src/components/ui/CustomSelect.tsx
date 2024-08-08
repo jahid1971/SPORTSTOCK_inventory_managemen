@@ -14,7 +14,7 @@ type TCustomSelectProps = {
     label: string;
     options: { value: string; label: string }[];
     disabled?: boolean;
-    control: any;
+    control?: any;
     required?: boolean;
     className?: string;
     defaultValue?: string;

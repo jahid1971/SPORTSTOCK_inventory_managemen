@@ -43,11 +43,11 @@ const DataTable = ({
     rowData: any[];
     columnDefs: ColDef[];
     isFetching: boolean;
-    handleSelectedRows?: (selectedRows: any) => void;
+    handleSelectedRows?: any,
     searchField?: boolean;
     filterable?: boolean;
     params?: any;
-    setParams?: (params: any) => void;
+    setParams?: any;
     createButton?: React.ReactNode;
     filters?: React.ReactNode;
     checkedRowsActionBtn?: React.ReactNode;
@@ -115,6 +115,7 @@ const DataTable = ({
         const selectedData = selectedNodes.map((item: any) => item.data);
 
         setSelectedRows(selectedData);
+        // eslint-disable-next-line no-unused-expressions
         handleSelectedRows && handleSelectedRows(selectedData);
     }, [gridApi, handleSelectedRows]);
 
@@ -152,11 +153,11 @@ const DataTable = ({
         if (sortModel.length > 0) {
             const { colId, sort } = sortModel[0];
 
-            console.log("sortModel", sortModel);
+       
 
             setParams((prevParams: any) => {
                 const filteredArray = prevParams.filter(
-                    (item) =>
+                    (item:any) =>
                         item.name !== "sortBy" &&
                         item.name !== "sortOrder" &&
                         item.name !== "page"
@@ -228,10 +229,10 @@ const DataTable = ({
 
             {checkedRowsActionBtn && (
                 <div
-                    className={`mb-2 transform transition-transform duration-300 ease-in-out ${
+                    className={`my-2 transform transition-transform duration-300 ease-in-out ${
                         selectedRows?.length > 0
                             ? "translate-x-0"
-                            : "absolute left-0 -translate-x-full"
+                            : "absolute -left-2 -translate-x-full"
                     }`}
                 >
                     {checkedRowsActionBtn}

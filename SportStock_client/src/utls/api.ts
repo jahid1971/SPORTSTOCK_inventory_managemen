@@ -1,5 +1,4 @@
-import { TResponse } from "@/types/common";
-import { TQueryParam } from "@/types/global.types";
+import { TQueryParam, TResponse } from "@/types/global.types";
 import { EndpointBuilder } from "@reduxjs/toolkit/query";
 
 type IBuildApi = EndpointBuilder<any, any, any>;
@@ -26,16 +25,14 @@ export const createApiBuilder = (
 
     return build.mutation({
         query: (args: any) => {
-            console.log("args in createApiBuilder", args);
-
             const isFormEncoded =
                 options.contentType === "application/x-www-form-urlencoded";
             const body = isFormEncoded
                 ? new URLSearchParams(Object.entries(args)).toString()
                 : args;
 
-            const headers: HeadersInit = {};
-            
+            const headers: Record<string, any> = {};
+
             if (typeof options.contentType === "string") {
                 headers["Content-Type"] = options.contentType;
             }
@@ -66,9 +63,7 @@ export const updateApiBuilder = <T>(
 
     return build.mutation<TResponse<T>, TUpdateArgs>({
         query: (args: { data?: any; id?: string }) => {
-            console.log("args in updateApiBuilderrrrr", args);
-
-            const headers: HeadersInit = {};
+            const headers: Record<string, any> = {};
             if (
                 options.contentType &&
                 typeof options.contentType === "string"
@@ -100,7 +95,6 @@ export const queryApiBuilder = <T>(
             const params = new URLSearchParams();
 
             if (args) {
-                console.log("args in queryApiBuilder", args);
                 args.forEach((item: any) => {
                     params.append(item.name, item.value as string);
                 });

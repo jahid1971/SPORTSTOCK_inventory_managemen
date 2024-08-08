@@ -1,11 +1,9 @@
-import { TrendingUpIcon } from "lucide-react";
-import { PackageIcon } from "lucide-react";
+import React from "react";
 
 export function HomeCard({
     title,
     value,
     icon,
-    subtext,
 }: {
     title: string;
     value: number;

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { IUser } from "../modules/user/user.interface";
 

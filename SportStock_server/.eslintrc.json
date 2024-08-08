@@ -16,11 +16,7 @@
         "prefer-const": "error",
         "no-console": "warn",
         "no-undef": "error",
-        "import/extensions": [
-            "error",
-            "always",
-            { "js": "never", "ts": "never" }
-        ]
+        "@typescript-eslint/no-explicit-any": "off"
     },
     "globals": {
         "process": "readonly"

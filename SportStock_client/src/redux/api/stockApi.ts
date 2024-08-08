@@ -3,7 +3,6 @@ import {
     createApiBuilder,
     deleteApiBuilder,
     queryApiBuilder,
-    updateApiBuilder,
 } from "@/utls/api";
 import { tagTypes } from "../redux.constants";
 

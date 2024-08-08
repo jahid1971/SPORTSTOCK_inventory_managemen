@@ -16,9 +16,12 @@ const UserDetailsModal = ({
     userId,
     userData,
 }: UserDetailsModalProps) => {
-    const { data, isFetching } = useGetuserByIdQuery(userId!, {
-        skip: !userId,
-    });
+    const { data, isFetching }: any = useGetuserByIdQuery(
+        { id: userId },
+        {
+            skip: !userId,
+        }
+    );
     const user = userData || data?.data;
 
     return (

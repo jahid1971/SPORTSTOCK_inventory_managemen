@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "@/redux/api/baseApi";
-import { TQueryParam } from "@/types/global.types";
 import {
     createApiBuilder,
     queryApiBuilder,

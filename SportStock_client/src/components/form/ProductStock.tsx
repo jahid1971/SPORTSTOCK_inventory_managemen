@@ -2,36 +2,21 @@
 import CustomSelect from "../ui/CustomSelect";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { PiPlusCircleBold } from "react-icons/pi";
-import CreateBranch from "../product/CreateBranch";
-import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
-import { TBranch } from "@/types/global.types";
+
 import { FloatingInput } from "../ui/InputFloatingLabel";
-import { useCurrentUser } from "@/redux/Hooks";
-import { userRole } from "@/constants/user";
+
 import { useGetAllCategoriesQuery } from "@/redux/api/productApi";
 import CreateCategory from "../product/createCategory";
-import FileUploader from "../ui/FileUploader";
+import { TCategory } from "@/types/product";
 
 const ProductStock = ({ control }: { control: any }) => {
-    const { data: branchNames, isFetching: isBranchNameFetching } =
-        useGetAllBranchesQuery(undefined);
-
-    const { data: categorys, isFetching: isCategoryFetching } =
+    const { data: categorys, isFetching: isCategoryFetching }: any =
         useGetAllCategoriesQuery(undefined);
 
     const categorysOptions = categorys?.data?.map((category: TCategory) => ({
         value: category._id,
         label: category?.category,
     }));
-
-    const user = useCurrentUser();
-
-    const branchNamesOptions = branchNames?.data?.data?.map(
-        (branch: TBranch) => ({
-            value: branch._id,
-            label: branch.branchName,
-        })
-    );
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2  gap-4 items-end w-full">

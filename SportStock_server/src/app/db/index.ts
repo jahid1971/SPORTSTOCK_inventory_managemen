@@ -1,9 +1,9 @@
+/* eslint-disable no-console */
 import { userRole } from "../constants/user";
 import User from "../modules/user/user.model";
 import { passwordHash } from "../utls/passwordHash";
 
 const seedSuperAdmin = async () => {
-    console.log("Seeding super admin...");
     const isSuperAdminExists = await User.findOne({
         role: userRole.SUPER_ADMIN,
     });

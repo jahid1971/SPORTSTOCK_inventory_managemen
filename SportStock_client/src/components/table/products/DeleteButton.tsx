@@ -1,33 +1,35 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
-import { Trash2 } from "lucide-react";
+import { useMultiProductDeleteMutation } from "@/redux/api/productApi";
+import tryCatch from "@/utls/tryCatch";
+
+import React from "react";
 
 const DeleteButton = ({
-    setOpen,
-    open,
-    handleTrigger,
-    handleMultiDelete,
-    classNames,
-    variant,
+    deleteids,
+    setDeleteIds,
 }: {
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    open: boolean;
-    handleTrigger: () => void;
-    handleMultiDelete: any
-    variant?: any;
-    classNames?: string;
+    deleteids?: any;
+    setDeleteIds: React.Dispatch<React.SetStateAction<any>>;
 }) => {
+    const [multiDelete] = useMultiProductDeleteMutation();
+
+    const handleDelete = (deleteids: string[]) => {
+        tryCatch(
+            async () => await multiDelete({ data: deleteids }),
+            "Products Deleted",
+            "Deleting Products",
+            () => {
+                setDeleteIds([]);
+            }
+        );
+    };
+
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <Button
-                onClick={() => handleTrigger()}
-                className={` mt-2 ${classNames}`}
-                size={"xsm"}
-                variant={variant}
-            >
-                <Trash2 className="mr-2" size={15} />
-                DELETE
-            </Button>
+        <Dialog
+            open={deleteids?.length > 0 ? true : false}
+            onOpenChange={() => setDeleteIds && setDeleteIds([])}
+        >
             <DialogContent className="sm:max-w-[425px]">
                 <h4 className="text-2xl text-center">Are you Sure?</h4>
                 <h5 className="text-xl text-center text-slate-500">
@@ -35,9 +37,14 @@ const DeleteButton = ({
                 </h5>
 
                 <div className="flex justify-between px-14 mt-8">
-                    <DialogClose asChild>
-                        <Button onClick={() => handleMultiDelete()}>Yes</Button>
-                    </DialogClose>
+                    <Button
+                        onClick={() => {
+                            handleDelete(deleteids);
+                        }}
+                    >
+                        Yes
+                    </Button>
+
                     <DialogClose asChild>
                         <Button variant={"base"}>No</Button>
                     </DialogClose>

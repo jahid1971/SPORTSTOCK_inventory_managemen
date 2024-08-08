@@ -7,16 +7,16 @@ import { HiOutlineBars3 } from "react-icons/hi2";
 import { useAppDispatch, useCurrentUser } from "@/redux/Hooks";
 
 import { TiArrowLeft } from "react-icons/ti";
-import { useLogInMutation, useLogOutMutation } from "@/redux/api/authApi";
+import {  useLogOutMutation } from "@/redux/api/authApi";
 import tryCatch from "@/utls/tryCatch";
 import { useNavigate } from "react-router-dom";
 import { nullifyState } from "@/redux/features/auth/authSlice";
 
 type THeaderProps = {
-    setMobileMenuOpen: (value: boolean) => void;
+    setMobileMenuOpen:  any
     mobileMenuOpen: boolean;
     desktopSidebarOpen: boolean;
-    setDesktopSidebarOpen: (value: boolean) => void;
+    setDesktopSidebarOpen: any
 };
 
 function Header({

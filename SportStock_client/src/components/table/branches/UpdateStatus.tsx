@@ -9,7 +9,7 @@ import { FieldValues } from "react-hook-form";
 const UpdateBranchStatus = (params: CustomCellRendererProps) => {
     const [updateBranchStatus, { isLoading }] = useUpdateBranchStatusMutation();
 
-    const handleUpdate = (name: string, fielValue: FieldValues) => {
+    const handleUpdate = (_name: string, fielValue: FieldValues) => {
         tryCatch(
             async () =>
                 await updateBranchStatus({

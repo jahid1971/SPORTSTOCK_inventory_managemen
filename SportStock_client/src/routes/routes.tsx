@@ -4,7 +4,7 @@ import NotFound from "@/pages/others/NotFound";
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoutes from "./ProtectedRoutes";
 import RoleBasedRoutes from "./RoleBasedRoutes";
-import ChangePassword from "@/pages/auth/ChangePassword";
+
 import Home from "@/pages/Home";
 import ForgotPassword from "@/pages/auth/ForgotPassword";
 import ResetPassword from "@/pages/auth/ResetPassword";

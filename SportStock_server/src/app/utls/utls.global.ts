@@ -1,5 +1,4 @@
 import { userRole } from "../constants/user";
-import Product from "../modules/product/product.model";
 import User from "../modules/user/user.model";
 
 const findLastUser = async (userRole: string) => {

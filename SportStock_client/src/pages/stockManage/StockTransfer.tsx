@@ -1,4 +1,3 @@
-import Custom_Form from "@/components/form/Custom_Form";
 import CreateBranch from "@/components/product/CreateBranch";
 import { Button } from "@/components/ui/button";
 import { CustomCombobox } from "@/components/ui/CustomCombobox";
@@ -6,23 +5,17 @@ import CustomInput from "@/components/ui/CustomInput";
 import CustomSelect from "@/components/ui/CustomSelect";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { userRole } from "@/constants/user";
 import { useGetAllBranchesQuery } from "@/redux/api/adminApi";
 import { useGetProductsQuery } from "@/redux/api/productApi";
 import {
-    useAddStockMutation,
-    useAdjustStockMutation,
-    useGetAllStocksQuery,
     useGetBranchStocksQuery,
     useTransferStockMutation,
 } from "@/redux/api/stockApi";
 import { useCurrentUser } from "@/redux/Hooks";
 import { TBranch } from "@/types/global.types";
 import tryCatch from "@/utls/tryCatch";
-import { DialogClose } from "@radix-ui/react-dialog";
-import { MinusIcon, PlusIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { PiPlusCircleBold } from "react-icons/pi";
 import { NavLink, useLocation } from "react-router-dom";
@@ -31,7 +24,7 @@ const StockTransfer = () => {
     const user = useCurrentUser();
     const { state } = useLocation();
 
-    const { control, handleSubmit, watch, reset, setError } = useForm({
+    const { control, handleSubmit, watch, reset }: any = useForm({
         // mode: "onBlur",
         defaultValues: {
             fromBranch: state?.params?.branchId?._id,
@@ -49,7 +42,7 @@ const StockTransfer = () => {
     }, [state, reset]);
 
     const { data: branchNames, isLoading: isBranchNameFetching } =
-        useGetAllBranchesQuery(undefined);
+        useGetAllBranchesQuery(undefined) as any;
 
     const branchNamesOptions = branchNames?.data?.data?.map(
         (branch: TBranch) => ({
@@ -64,11 +57,11 @@ const StockTransfer = () => {
     const inputQuantity = watch("quantity");
     const productId = watch("productId");
 
-    const { data: product, isFetching } = useGetProductsQuery(undefined);
+    const { data: product } = useGetProductsQuery(undefined) as any;
 
     const productOptions = product?.data?.map((product: any) => ({
         value: product._id,
-        label: product.productName,
+        label: product.productName + " - " + product.productCode,
     }));
 
     const [transferStock] = useTransferStockMutation();
@@ -83,7 +76,7 @@ const StockTransfer = () => {
             { name: "productId", value: productId },
         ],
         { skip: !selectedFromBranch || !productId }
-    );
+    ) as any
     const fromBranchData = fromBranch?.data[0];
 
     const {
@@ -96,7 +89,8 @@ const StockTransfer = () => {
             { name: "productId", value: productId },
         ],
         { skip: !selectedToBranch || !productId }
-    );
+    ) as any;
+
     const toBranchData = toBranch?.data[0];
 
     const onSubmit = (data: any) => {
@@ -179,7 +173,7 @@ const StockTransfer = () => {
                             label="To Branch"
                             control={control}
                             options={branchNamesOptions?.filter(
-                                (branch) => branch.value !== selectedFromBranch
+                                (branch:any) => branch.value !== selectedFromBranch
                             )}
                             disabled={
                                 isBranchNameFetching || !selectedFromBranch
@@ -215,10 +209,6 @@ const StockTransfer = () => {
                                 type="number"
                                 rules={{
                                     validate: (value: number) => {
-                                        console.log(
-                                            value,
-                                            fromBranchData?.quantity
-                                        );
                                         if (value > fromBranchData?.quantity)
                                             return "Quantity can not be greater than available stock";
                                     },

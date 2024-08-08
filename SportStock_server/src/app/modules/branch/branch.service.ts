@@ -1,4 +1,3 @@
-import { userRole } from "../../constants/user";
 import AppError from "../../errors/AppError";
 import getAllItems from "../../utls/getAllItems";
 import { IUser } from "../user/user.interface";
@@ -18,7 +17,7 @@ const createBranch = async (payload: IBranch) => {
     return result;
 };
 
-const getAllBranches = async (user: IUser, query) => {
+const getAllBranches = async (user: IUser, query: any) => {
     // if (
     //     user?.role === userRole.BRANCH_MANAGER ||
     //     user?.role === userRole.SELLER
@@ -29,7 +28,6 @@ const getAllBranches = async (user: IUser, query) => {
     const result = await getAllItems(Branch, query, {
         filterableFields: ["status"],
     });
-
 
     return result;
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import AppError from "../errors/AppError";
 

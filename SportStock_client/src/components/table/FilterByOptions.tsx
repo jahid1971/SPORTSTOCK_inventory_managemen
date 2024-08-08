@@ -16,8 +16,9 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TQueryParam } from "@/types/global.types";
+import { updateParam } from "@/utls/utls";
 
 interface FilterItem {
     value: string;
@@ -29,7 +30,7 @@ interface FilterByProps {
     filterItems: FilterItem[];
     filterBy: string;
     params: TQueryParam[];
-    setParams: (params: TQueryParam[]) => void;
+    setParams: React.Dispatch<React.SetStateAction<TQueryParam[]>>;
 }
 
 const FilterByOptions: React.FC<FilterByProps> = ({
@@ -53,7 +54,7 @@ const FilterByOptions: React.FC<FilterByProps> = ({
 
     const handleOnSelect = (filterItem: FilterItem) => {
         const updatedValues = [...selectedValues];
-        const updatedParams = [...params];
+        let updatedParams = [...params];
 
         if (selectedValues.includes(filterItem.value)) {
             const optionIndex = updatedValues.indexOf(filterItem.value);
@@ -66,6 +67,14 @@ const FilterByOptions: React.FC<FilterByProps> = ({
             updatedValues.push(filterItem.value);
             updatedParams.push({ name: filterBy, value: filterItem.value });
         }
+        // const hasOtherQueryParams = updatedParams.some(
+        //     (param) => !["limit", "page"].includes(param.name)
+        // );
+
+        // if (hasOtherQueryParams) {
+        //     updatedParams = updateParam(updatedParams, "page", 1);
+        // } // Reset page to 1 when filter is applied
+        updatedParams = updateParam(updatedParams, "page", 1);
 
         setParams(updatedParams);
         setSelectedValues(updatedValues);

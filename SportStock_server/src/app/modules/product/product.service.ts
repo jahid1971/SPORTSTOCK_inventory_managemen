@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { userRole } from "./../../constants/user";
-
 import { IProduct } from "./product.interface";
 import Product from "./product.model";
 import getAllItems from "../../utls/getAllItems";
@@ -33,7 +31,9 @@ const createProduct = async (file: any, payload: IProduct) => {
         payload.productCode = productCode;
     }
 
-    console.log("payload_______________________-", payload);
+    console.log(payload, "payload");
+
+
 
     const result = await Product.create(payload);
 
@@ -120,6 +120,7 @@ const deleteProduct = async (productId: string) => {
 };
 
 const multiProductDelete = async (productIds: string[]) => {
+    console.log(productIds, "productIds");
     const ids = productIds.map((id) => new mongoose.Types.ObjectId(id));
     const result = await Product.updateMany(
         { _id: { $in: ids } },

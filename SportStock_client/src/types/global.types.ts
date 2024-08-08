@@ -1,4 +1,5 @@
 import { BaseQueryApi } from "@reduxjs/toolkit/query";
+import React from "react";
 
 export type TUserRole = "seller" | "branchManager" | "superAdmin";
 

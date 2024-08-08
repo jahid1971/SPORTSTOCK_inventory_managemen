@@ -7,7 +7,7 @@ import {
     useChangePasswordMutation,
     useLogOutMutation,
 } from "@/redux/api/authApi";
-import {  nullifyState } from "@/redux/features/auth/authSlice";
+import { nullifyState } from "@/redux/features/auth/authSlice";
 import tryCatch from "@/utls/tryCatch";
 
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -25,13 +25,14 @@ const ChangePassword = () => {
     const onSubmit: SubmitHandler<FieldValues> = async (data) => {
         tryCatch(
             async () => {
-                const res = await changePassword(data).unwrap();
-             
+                const res:any = await changePassword(data).unwrap();
+
                 if (res?.success) {
                     signOut({});
                     dispatch(nullifyState());
                     navigate("/login");
                 }
+                return res;
             },
             "Password Changed Successfully",
             "Changing Password"
@@ -51,7 +52,6 @@ const ChangePassword = () => {
                     type="text"
                     label="Old Password"
                     {...form.register("oldPassword")}
-
                     className="bg-primary-100"
                 />
                 <FloatingInput

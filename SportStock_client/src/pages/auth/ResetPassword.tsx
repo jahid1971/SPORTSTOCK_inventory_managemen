@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm() as any
     const [resetPassword] = useResetPasswordMutation();
     const [message, setMessage] = useState("");
     const [searchParams] = useSearchParams();

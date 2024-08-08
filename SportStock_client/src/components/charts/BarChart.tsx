@@ -23,16 +23,15 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function Barchart() {
-    const { data, isLoading } = useGetStocksBarChartQuery(undefined);
+    const { data, isLoading }:any = useGetStocksBarChartQuery(undefined);
     if (isLoading) return <div>Loading...</div>;
     
-    const barChartData = data?.data?.map((item) => ({
+    const barChartData = data?.data?.map((item:any) => ({
         ...item,
 
         totalPrice: item.totalPrice / 1000,
     }));
-
-    console.log("data", data);
+  
     return (
         <div className="w-full ">
             <h5 className="text-slate-600 text-xl font-semibold text-center">
