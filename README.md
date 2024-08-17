@@ -127,11 +127,4 @@ API documentation is available at `/api-docs` when running the development serve
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- Special thanks to all contributors and mentors
-- Inspiration from leading inventory management systems
