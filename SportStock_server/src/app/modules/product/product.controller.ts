@@ -29,7 +29,11 @@ const getSingleProduct = catchAsynch(async (req, res) => {
     );
 });
 const updateProduct = catchAsynch(async (req, res) => {
-    const result = await productServices.updateProduct(req.params.id, req.body);
+    const result = await productServices.updateProduct(
+        req.params.id,
+        req.file,
+        req.body.data
+    );
     return sendSuccessResponse(
         res,
         result,

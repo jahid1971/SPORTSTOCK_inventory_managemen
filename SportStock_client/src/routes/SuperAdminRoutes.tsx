@@ -11,6 +11,7 @@ import NotFound from "@/pages/others/NotFound";
 import CreateVariant from "@/pages/products/CreateVariant";
 import CreatreProduct from "@/pages/products/CreatreProduct";
 import Products from "@/pages/products/Products";
+import UpdateProduct from "@/pages/products/UpdateProduct";
 import AddStock from "@/pages/stockManage/AddStock";
 import AdjustStock from "@/pages/stockManage/AdjustStock";
 import StockList from "@/pages/stockManage/StockList";
@@ -28,6 +29,10 @@ export const SuperAdminRoutes = () => {
             <Route path="dashboard" element={<Home />} />
             <Route path="users" element={<Users />} />
             <Route path="create-product" element={<CreatreProduct />} />
+            <Route
+                path="update-product/:productId"
+                element={<UpdateProduct />}
+            />
             <Route
                 path="create-variant/:productId"
                 element={<CreateVariant />}

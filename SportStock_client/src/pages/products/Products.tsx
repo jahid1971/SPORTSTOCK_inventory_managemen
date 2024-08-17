@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useCallback } from "react";
 import {
     useGetAllBrandNamesQuery,
     useGetAllCategoriesQuery,
@@ -8,7 +8,6 @@ import {
 } from "@/redux/api/productApi";
 import { TBrand, TCategory, TProduct } from "@/types/product";
 
-import { UpdateProduct } from "@/components/table/products/UpdateProduct";
 import { Button } from "@/components/ui/button";
 
 import { TQueryParam, TUserRole } from "@/types/global.types";
@@ -16,13 +15,11 @@ import FilterByOptions from "@/components/table/FilterByOptions";
 import FilterByInput from "@/components/table/FilterByInput";
 import DataTable from "@/components/table/DataTable";
 
-
-
 import { userRole } from "@/constants/user";
 import { useCurrentUser } from "@/redux/Hooks";
 import { ICellRendererParams } from "@ag-grid-community/core";
 import DeleteButton from "@/components/table/products/DeleteButton";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { PiPlusBold } from "react-icons/pi";
 import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 import {
@@ -33,25 +30,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { defaultParams } from "@/constants/global.constant";
 
-interface IRow extends TProduct{
+interface IRow extends TProduct {
     _id: string;
     id: string;
     name: string;
     image: string;
     price: number;
     quantity: number;
- 
-} 
+}
 
 const Products = () => {
     const [params, setParams] = useState<TQueryParam[]>(defaultParams);
 
-    const [productToUpdate, setProductToUpdate] = useState<TProduct | null>(null);
     const [deletIds, setDeleteIds] = useState<string[]>([]);
 
     const user = useCurrentUser();
     const role: any = user?.role;
     const selectedRowsRef = useRef<IRow[]>([]);
+    const navigate = useNavigate();
 
     const { data, isFetching }: any = useGetProductsQuery(params);
 
@@ -93,6 +89,7 @@ const Products = () => {
         {
             headerName: "Product Name",
             field: "name",
+            minWidth: 150,
         },
         {
             field: "image",
@@ -105,7 +102,7 @@ const Products = () => {
                     <img
                         src={params?.data?.image}
                         alt="product"
-                        className="size-10 "
+                        className="size-9 "
                     />
                 ) : undefined;
             },
@@ -119,7 +116,7 @@ const Products = () => {
         {
             field: "brand",
             headerName: "Brand",
-            maxWidth: 150,
+            maxWidth: 100,
         },
         {
             field: "price",
@@ -155,9 +152,9 @@ const Products = () => {
                         <DropdownMenuContent>
                             <DropdownMenuItem
                                 onClick={() =>
-                                    setTimeout(() => {
-                                        setProductToUpdate(params?.data ?? null);
-                                    }, 100)
+                                    navigate(
+                                        "/update-product/" + params?.data?._id
+                                    )
                                 }
                             >
                                 <Button
@@ -176,7 +173,9 @@ const Products = () => {
                                     size={"xsm"}
                                     onClick={() =>
                                         setTimeout(() => {
-                                            setDeleteIds([params?.data?._id ?? ""]);
+                                            setDeleteIds([
+                                                params?.data?._id ?? "",
+                                            ]);
                                         }, 100)
                                     }
                                 >
@@ -188,11 +187,6 @@ const Products = () => {
                     </DropdownMenu>
                 ),
         },
-        // {
-        //     headerName: "Delete",
-        //     cellRenderer: (params: ICellRendererParams<IRow>) =>
-        //         user?.role !== userRole.SELLER && <DeleteButton params={params} />,
-        // },
     ]);
 
     const getColumnDefsForRole = (role: TUserRole) => {
@@ -210,12 +204,9 @@ const Products = () => {
 
     const columnDefs = useMemo(() => getColumnDefsForRole(role), [role]);
 
-    const handleSelectedRows = (rows: any) => {
-        selectedRowsRef.current = rows; // Update the ref
-        
-    };
-
-
+    const handleSelectedRows = useCallback((rows: any) => {
+        selectedRowsRef.current = rows;
+    }, []);
 
     const createButton = (
         <NavLink to="/create-product">
@@ -289,10 +280,7 @@ const Products = () => {
                     createButton
                 }
                 checkedRowsActionBtn={checkedRowsActionBtn}
-            />
-            <UpdateProduct
-                productToUpdate={productToUpdate}
-                setProductToUpdate={setProductToUpdate}
+                minWidth={1000}
             />
             <DeleteButton deleteids={deletIds} setDeleteIds={setDeleteIds} />
         </div>

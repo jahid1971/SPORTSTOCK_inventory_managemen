@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FieldValues } from "react-hook-form";
 import tryCatch from "@/utls/tryCatch";
 import { useUpdateBranchManagerMutation } from "@/redux/api/userApi";
-import SellerForm from "@/components/form/SellerForm";
+import BranchManagerForm from "@/components/form/BranchManagerForm";
 import { TUser } from "@/types/global.types";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -48,18 +49,20 @@ const UpdateBranchManager = ({ userData }: { userData: TUser }) => {
                     });
                     navigate("/users");
                 }
+
                 return res;
             },
             "Branch Manager Updated",
             "Branch Manager is Updating"
         );
     };
+    
     return (
-        <div className=" w-11/12 md:w-8/12 mx-auto flex  flex-col  justify-center  gap-5 mt-5 px-8 py-8 shadow-lg bg-white rounded-2xl">
+        <div className="w-11/12 md:w-8/12 mx-auto flex flex-col justify-center gap-5 mt-5 px-8 py-8 shadow-lg bg-white rounded-2xl">
             <h3 className="text-primary-400 text-2xl font-semibold">
                 UPDATE BRANCH MANAGER
             </h3>
-            <SellerForm
+            <BranchManagerForm
                 isEditMode
                 onSubmit={onSubmit}
                 defaultValues={{

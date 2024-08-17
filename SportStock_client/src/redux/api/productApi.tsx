@@ -27,9 +27,12 @@ const productApi = baseApi.injectEndpoints({
             tagTypes.products,
         ]),
 
-        updateProduct: updateApiBuilder(builder, "products", [
-            tagTypes.products,
-        ]),
+        updateProduct: updateApiBuilder(
+            builder,
+            "products",
+            [tagTypes.products],
+            { contentType: false }
+        ),
 
         createCategory: createApiBuilder(
             builder,

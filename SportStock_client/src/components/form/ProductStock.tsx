@@ -18,6 +18,8 @@ const ProductStock = ({ control }: { control: any }) => {
         label: category?.category,
     }));
 
+    if (isCategoryFetching) return <div>loading</div>;
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-2  gap-4 items-end w-full">
             <FloatingInput

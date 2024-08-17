@@ -19,13 +19,19 @@ const ProtectedRoutes = ({
 }) => {
     const dispatch = useAppDispatch();
 
-    const { data, isLoading }:any = useGetMeQuery(undefined);
+    const { data, isLoading }: any = useGetMeQuery(undefined);
+
+    console.log("isLoading", isLoading);
 
     useEffect(() => {
-        if (!isLoading && data?.data?.user && data?.data?.token) {
-            dispatch(
-                setUser({ user: data?.data?.user, token: data?.data?.token })
-            );
+        if (!isLoading) {
+            if (data?.data?.user && data?.data?.token) {
+                dispatch(
+                    setUser({ user: data.data.user, token: data.data.token })
+                );
+            } else {
+                dispatch(setUser({ user: null, token: null }));
+            }
         }
     }, [isLoading, dispatch, data]);
 
@@ -44,7 +50,6 @@ const ProtectedRoutes = ({
         return <Navigate to="/login" replace={true} />;
     }
     if (role !== undefined && currentUser?.role !== role) {
-
         return <Navigate to="/login" replace={true} />;
     }
 

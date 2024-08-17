@@ -39,11 +39,12 @@ const DataTable = ({
     title,
     metaData,
     serial = true,
+    minWidth = 700,
 }: {
     rowData: any[];
     columnDefs: ColDef[];
     isFetching: boolean;
-    handleSelectedRows?: any,
+    handleSelectedRows?: any;
     searchField?: boolean;
     filterable?: boolean;
     params?: any;
@@ -54,6 +55,7 @@ const DataTable = ({
     title: string;
     metaData?: any;
     serial?: boolean;
+    minWidth?: number;
 }) => {
     const gridRef = useRef<AgGridReact>(null);
     const [showFilters, setShowFilters] = useState(false);
@@ -153,11 +155,9 @@ const DataTable = ({
         if (sortModel.length > 0) {
             const { colId, sort } = sortModel[0];
 
-       
-
             setParams((prevParams: any) => {
                 const filteredArray = prevParams.filter(
-                    (item:any) =>
+                    (item: any) =>
                         item.name !== "sortBy" &&
                         item.name !== "sortOrder" &&
                         item.name !== "page"
@@ -239,26 +239,30 @@ const DataTable = ({
                 </div>
             )}
 
-            <div className={`ag-theme-quartz ${styles.noBorders} my-3`}>
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={processedRowData}
-                    columnDefs={processedColumnDefs}
-                    defaultColDef={defaultColDef}
-                    domLayout="autoHeight"
-                    loadingOverlayComponent={LoadingOverlayComponent}
-                    noRowsOverlayComponent={noRowsOverlayComponent}
-                    rowSelection={"multiple"}
-                    suppressRowClickSelection={true}
-                    onGridReady={onGridReady}
-                    onSortChanged={onSortChanged}
-                    getRowClass={(params) => {
-                        return params.node?.rowIndex !== null &&
-                            params.node?.rowIndex % 2 === 0
-                            ? styles["even-row"]
-                            : styles["odd-row"];
-                    }}
-                />
+            <div className="w-full overflow-x-auto my-3">
+                <div
+                    className={`ag-theme-quartz ${styles.noBorders} min-w-[${minWidth}px] md:min-w-0`}
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={processedRowData}
+                        columnDefs={processedColumnDefs}
+                        defaultColDef={defaultColDef}
+                        domLayout="autoHeight"
+                        loadingOverlayComponent={LoadingOverlayComponent}
+                        noRowsOverlayComponent={noRowsOverlayComponent}
+                        rowSelection={"multiple"}
+                        suppressRowClickSelection={true}
+                        onGridReady={onGridReady}
+                        onSortChanged={onSortChanged}
+                        getRowClass={(params) => {
+                            return params.node?.rowIndex !== null &&
+                                params.node?.rowIndex % 2 === 0
+                                ? styles["even-row"]
+                                : styles["odd-row"];
+                        }}
+                    />
+                </div>
             </div>
 
             {metaData?.total > 5 && setParams && (

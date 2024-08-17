@@ -44,6 +44,7 @@ router.put(
 router.patch(
     "/:id",
     checkAuth(userRole.ADMIN, userRole.SUPER_ADMIN, userRole.BRANCH_MANAGER),
+    handleImageUpload,
     productControllers.updateProduct
 );
 router.patch(

@@ -1,29 +1,32 @@
-import { userRole } from "@/constants/user";
-
-import UpdateSeller from "./UpdateSeller";
-import UpdateAdmin from "./UpdateAdmin";
-import UpdateBranchManager from "./UpdateBranchManager";
-import { useLocation } from "react-router-dom";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGetuserByIdQuery } from "@/redux/api/userApi";
+import { useLocation } from "react-router-dom";
 import { Spinner } from "@/components/ui/Spinner";
-import { TUser } from "@/types/global.types";
+import { userRole } from "@/constants/user";
+import UpdateSeller from "./UpdateSeller";
+import UpdateBranchManager from "./UpdateBranchManager";
+import UpdateAdmin from "./UpdateAdmin";
+
 
 const UpdateUser = () => {
     const { state } = useLocation();
     const userId = state?.params;
 
-    const { data } = useGetuserByIdQuery(userId);
+    const { data, isLoading } = useGetuserByIdQuery(userId) as any;
 
-    if (!data) return <Spinner label="Please wait..." />;
+    if (isLoading) return <Spinner label="Loading..." />;
 
-    const userData = data?.data as TUser
+    const role = data?.data?.role;
 
-    if (userData?.role === userRole.SELLER)
-        return <UpdateSeller userData={userData} />;
-    if (userData?.role === userRole.ADMIN)
-        return <UpdateAdmin userData={userData} />;
-    if (userData?.role === userRole.BRANCH_MANAGER)
-        return <UpdateBranchManager userData={userData} />;
+    if (role === userRole.SELLER) {
+        return <UpdateSeller userData={data?.data} />;
+    } else if (role === userRole.BRANCH_MANAGER) {
+        return <UpdateBranchManager userData={data?.data} />;
+    } else if (role === userRole.ADMIN) {
+        return <UpdateAdmin userData={data?.data} />;
+    }
+
+    return <div>Unknown user role</div>;
 };
 
 export default UpdateUser;

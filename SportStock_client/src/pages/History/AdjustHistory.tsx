@@ -55,6 +55,7 @@ const AdjustHistory = () => {
         {
             headerName: "Product Name",
             field: "productName",
+            minWidth: 150,
         },
         {
             headerName: "Category",
@@ -86,7 +87,7 @@ const AdjustHistory = () => {
             field: "date",
             valueFormatter: (params) =>
                 new Date(params?.value).toLocaleDateString(),
-            maxWidth: 100,
+            // maxWidth: 100,
         },
     ];
 
@@ -168,6 +169,7 @@ const AdjustHistory = () => {
                 filterable={true}
                 metaData={data?.data?.meta}
                 filters={filters}
+                minWidth={800}
             />
         </div>
     );

@@ -33,8 +33,6 @@ const createProduct = async (file: any, payload: IProduct) => {
 
     console.log(payload, "payload");
 
-
-
     const result = await Product.create(payload);
 
     return result;
@@ -101,10 +99,40 @@ const getSingleProduct = (id: string) => {
     return result;
 };
 
-const updateProduct = (id: string, payload: Partial<IProduct>) => {
-    delete payload._id;
-    const result = Product.findByIdAndUpdate(id, payload, { new: true });
-    return result;
+const updateProduct = async (
+    id: string,
+    file: any,
+    payload: Partial<IProduct> = {}
+) => {
+    const product = await Product.findById(id);
+
+    if (!product) {
+        throw new AppError(404, "product not found");
+    }
+
+    // Handle profile photo update
+    if (file) {
+        const optimizedBuffer = await sharp(file.buffer)
+            .resize({ width: 240 })
+            .webp({ quality: 100 })
+            .toBuffer();
+
+        const image_Url = await sendImageToCloudinary("image", optimizedBuffer);
+
+        payload.image = (image_Url as any)?.secure_url;
+    }
+
+    console.log(payload,file, "payload -----------------------------");
+
+    const updateProduct = await Product.findByIdAndUpdate(id, payload, {
+        new: true,
+    });
+
+    if (!updateProduct) {
+        throw new AppError(500, "product to update seller");
+    }
+
+    return updateProduct;
 };
 
 const deleteProduct = async (productId: string) => {

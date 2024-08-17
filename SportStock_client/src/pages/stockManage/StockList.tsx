@@ -28,16 +28,17 @@ const StockList = () => {
     const [params, setParams] = useState<any[]>(defaultParams);
     const navigate = useNavigate();
 
-    const { data, isFetching: stockFetching }:any = useGetAllStocksQuery(params);
+    const { data, isFetching: stockFetching }: any =
+        useGetAllStocksQuery(params);
     const stocksData = data?.data?.data;
 
-    const { data: branchData }:any = useGetAllBranchesQuery(undefined);
+    const { data: branchData }: any = useGetAllBranchesQuery(undefined);
     const branchOptions = branchData?.data?.data.map((branch: TBranch) => ({
         value: branch._id,
         label: branch.branchName,
     }));
 
-    const { data: categoriesData }:any = useGetAllCategoriesQuery(undefined);
+    const { data: categoriesData }: any = useGetAllCategoriesQuery(undefined);
     const categoryOptions = categoriesData?.data?.map(
         (category: TCategory) => ({
             value: category._id,
@@ -49,16 +50,34 @@ const StockList = () => {
         {
             headerName: "Product Name",
             field: "productName",
+            minWidth: 150,
         },
+        {
+            headerName: "Image",
+            field: "image",
+            cellRenderer: (params: any) => {
+                return params?.data?.image ? (
+                    <img
+                        src={params?.data?.image}
+                        alt="product"
+                        className="size-9"
+                    />
+                ) : undefined;
+            },
+            maxWidth: 80,
+        },
+
         {
             headerName: "Category",
             field: "category",
             maxWidth: 150,
+            minWidth: 100,
         },
         {
             headerName: "Branch Name",
             field: "branchName",
             maxWidth: 150,
+            minWidth: 100,
         },
         {
             headerName: "Price",

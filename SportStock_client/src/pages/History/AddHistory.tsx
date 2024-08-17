@@ -56,6 +56,7 @@ const AddStockHistory = () => {
         {
             headerName: "Product Name",
             field: "productName",
+            minWidth: 150,
         },
         {
             headerName: "Category",

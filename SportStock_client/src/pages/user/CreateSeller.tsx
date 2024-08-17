@@ -10,7 +10,7 @@ import SellerForm from "@/components/form/SellerForm";
 const CreateSeller = () => {
     const [createSeller] = useCreateSellerMutation();
 
-    const onSubmit = async (data: FieldValues, reset: () => void) => {
+    const onSubmit = async (data: FieldValues, formOptions: any) => {
         const formData = new FormData();
 
         formData.append("data", JSON.stringify(data));
@@ -18,7 +18,7 @@ const CreateSeller = () => {
         tryCatch(
             async () => {
                 const res = await createSeller(formData);
-                if ((res as any)?.data?.success) reset();
+                if ((res as any)?.data?.success) formOptions.reset();
                 return res;
             },
             "Seller Created",

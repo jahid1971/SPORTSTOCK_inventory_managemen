@@ -33,8 +33,8 @@ const LogIn = () => {
         formState: { errors },
     } = useForm({
         defaultValues: {
-            email: "mrx@gmail.com",
-            password: "admin123",
+            email: import.meta.env.VITE_SUPERA_ADMIN_EMAIL,
+            password: import.meta.env.VITE_SUPER_ADMIN_PASS,
         },
     });
 

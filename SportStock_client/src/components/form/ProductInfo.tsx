@@ -14,14 +14,14 @@ import { TextArea } from "../ui/TextArea";
 import FileUploader from "../ui/FileUploader";
 
 const ProductInfo = ({ control }: { control: any }) => {
- 
-    const { data: brandNames, isFetching: isBrandNameFetching }:any =
+    const { data: brandNames, isFetching: isBrandNameFetching }: any =
         useGetAllBrandNamesQuery(undefined);
 
     const brandNamesOptions = brandNames?.data?.map((brand: TBrand) => ({
         value: brand._id,
         label: brand.brandName,
     }));
+    if (isBrandNameFetching) return <div>loading</div>;
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2  gap-4 items-end w-full">
@@ -71,7 +71,6 @@ const ProductInfo = ({ control }: { control: any }) => {
                     { value: "wood", label: "Wood" },
                 ]}
             />
-
 
             <div className="md:col-span-2">
                 <TextArea
